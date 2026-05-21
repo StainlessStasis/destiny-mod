@@ -1,5 +1,14 @@
 package com.example.examplemod;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
+import net.minecraft.world.item.*;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -8,10 +17,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -113,5 +118,19 @@ public class ExampleMod {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    @SubscribeEvent
+    public void onRightClick(PlayerInteractEvent.RightClickEmpty event) {
+        System.out.println("RIGHT CLICK EMPTY");
+        Player player = event.getEntity();
+        player.swing(InteractionHand.MAIN_HAND);
+        System.out.println("SIDE: "+event.getSide());
+
+        if (player.level() instanceof ServerLevel serverLevel) {
+            BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
+                    BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 3f, 0f
+            );
+        }
     }
 }
