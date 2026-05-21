@@ -18,13 +18,12 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(ExampleMod.MODID)
-public class ExampleMod {
+@Mod(DestinyMod.MODID)
+public class DestinyMod {
     public static final String MODID = "examplemod";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public ExampleMod(IEventBus modEventBus, ModContainer modContainer) {
+    public DestinyMod(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);

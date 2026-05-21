@@ -1,5 +1,6 @@
-package com.example.examplemod;
+package com.example.examplemod.client;
 
+import com.example.examplemod.DestinyMod;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -9,10 +10,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
-@Mod(value = ExampleMod.MODID, dist = Dist.CLIENT)
-@EventBusSubscriber(modid = ExampleMod.MODID, value = Dist.CLIENT)
-public class ExampleModClient {
-    public ExampleModClient(ModContainer container) {
+@Mod(value = DestinyMod.MODID, dist = Dist.CLIENT)
+@EventBusSubscriber(modid = DestinyMod.MODID, value = Dist.CLIENT)
+public class DestinyModClient {
+    public DestinyModClient(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
