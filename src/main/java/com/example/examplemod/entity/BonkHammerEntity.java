@@ -33,8 +33,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
     @Override
     protected double getDefaultGravity() {
-        return 0;
-//        return 0.03;
+        return 0.03;
     }
 
     @Override

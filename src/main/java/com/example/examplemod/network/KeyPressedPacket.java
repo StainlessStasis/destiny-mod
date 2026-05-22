@@ -37,7 +37,7 @@ public record KeyPressedPacket(Action action) implements CustomPacketPayload {
 
                         if (player.level() instanceof ServerLevel serverLevel) {
                             BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
-                                    BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 0.25f, 0f
+                                    BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
                             );
                         }
                     });
