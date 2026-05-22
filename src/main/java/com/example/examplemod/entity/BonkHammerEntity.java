@@ -1,7 +1,7 @@
 package com.example.examplemod.entity;
 
-import com.example.examplemod.collision.CollisionContext;
-import com.example.examplemod.collision.ProjectileCollisionUtils;
+import com.example.examplemod.util.collision.CollisionContext;
+import com.example.examplemod.util.collision.ProjectileCollisionUtils;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
@@ -38,14 +38,20 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
+        init();
     }
 
     public BonkHammerEntity(Level level, LivingEntity owner, ItemStack tridentItem) {
         super(DestinyModEntities.HAMMER_OF_SOL.get(), owner, level, tridentItem, null);
+        init();
     }
 
     public static BonkHammerEntity createDefault(EntityType<? extends AbstractArrow> entityType, Level level) {
         return new BonkHammerEntity(entityType, level);
+    }
+
+    private void init() {
+        this.setSoundEvent(SoundEvents.IRON_FALL);
     }
 
     private void updateVisualSpin() {
@@ -254,8 +260,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             }
         }
 
-        // TODO: bonk sound
-        this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+        this.playSound(this.getHitGroundSoundEvent(), 1.0F, 0.8F / (this.random.nextFloat() * 0.2F + 0.9F));
     }
 
     /**
@@ -271,7 +276,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         this.shakeTime = 7;
         this.setCritArrow(false);
         this.setPierceLevel((byte)0);
-        this.setSoundEvent(SoundEvents.ARROW_HIT);
+        this.setSoundEvent(SoundEvents.IRON_BREAK);
         this.resetPiercedEntities();
     }
 
