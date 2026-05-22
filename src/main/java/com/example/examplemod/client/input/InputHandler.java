@@ -2,6 +2,7 @@ package com.example.examplemod.client.input;
 
 import com.example.examplemod.network.KeyPressedPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -31,6 +32,7 @@ public class InputHandler {
         if (player.hasContainerOpen() || Minecraft.getInstance().screen != null) return;
 
         if (key == DestinyModKeybinds.MELEE.get().getKey().getValue()) {
+            player.swing(InteractionHand.MAIN_HAND);
             ClientPacketDistributor.sendToServer(new KeyPressedPacket(KeyPressedPacket.Action.MELEE));
         }
     }

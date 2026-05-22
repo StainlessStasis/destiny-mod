@@ -1,0 +1,33 @@
+package com.example.examplemod.entity;
+
+import com.example.examplemod.BonkHammerEntity;
+import com.example.examplemod.DestinyMod;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
+
+public class DestinyModEntities {
+    public static final DeferredRegister.Entities ENTITY_TYPES = DeferredRegister.createEntities(DestinyMod.MODID);
+    public static final Supplier<EntityType<@NotNull BonkHammerEntity>> HAMMER_OF_SOL = ENTITY_TYPES.register(
+            "hammer_of_sol",
+            () -> EntityType.Builder.of(
+                            BonkHammerEntity::createDefault,
+                            MobCategory.MISC
+                    )
+                    .sized(0.5f, 0.5f)
+                    .noSummon()
+                    .noSave()
+                    .clientTrackingRange(8)
+                    .updateInterval(10)
+                    .build(ResourceKey.create(
+                            Registries.ENTITY_TYPE,
+                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "hammer_of_sol")
+                    ))
+    );
+}
