@@ -21,9 +21,4 @@ public class DestinyModClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {}
-
-    @SubscribeEvent
-    public static void onPostTick(ClientTickEvent.Post event) {
-        InputHandler.handleInput();
-    }
 }
