@@ -28,8 +28,9 @@ import java.util.UUID;
 
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
-    public static final float RESTITUTION = 0.3f;
-    public static final float STICK_SPEED_THRESHOLD = 0.15f;
+    public static final float RESTITUTION = 0.420f;
+    public static final float FRICTION = 0.676767f;
+    public static final float STICK_SPEED_THRESHOLD = 0.2f;
     private final Set<UUID> collidedThisTick = new HashSet<>();
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
@@ -46,10 +47,15 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
     @Override
     public void tick() {
-        moveAndCollide();
-
         // Modified version of AbstractArrow tick (replaced collision)
         boolean physicsEnabled = !this.isNoPhysics();
+
+        // Custom collision
+        if (physicsEnabled && !this.isInGround()) {
+            moveAndCollide();
+        }
+        //
+
         Vec3 movement = this.getDeltaMovement();
         BlockPos blockPos = this.blockPosition();
         BlockState blockState = this.level().getBlockState(blockPos);
@@ -147,8 +153,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     public void onCollisionResult(CollisionContext context) {
         HitResult result = context.result();
 
-        if (result instanceof EntityHitResult entityHit) {
-            collidedThisTick.add(entityHit.getEntity().getUUID());
+        if (result instanceof EntityHitResult entityResult) {
+            collidedThisTick.add(entityResult.getEntity().getUUID());
 
             // OLD CODE FROM THE PLACE THIS CAME FROM. Here just as a reference in case this functionality is added
             // if the other entity is also a spell, resolve the collision from both sides
@@ -161,18 +167,26 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 //            }
         }
 
+        if (result instanceof BlockHitResult blockResult) {
+            vanillaHitBlock(blockResult);
+        }
+
         // collide with non-spell entity or blocks
         handleCollision(context);
     }
 
     public void handleCollision(CollisionContext context) {
         Vec3 position = context.result().getLocation();
-        this.setPos(position.x, position.y, position.z);
+        Vec3 normal = context.normal();
+
         Vec3 newVel = applyBounce(this.getDeltaMovement(), context);
         if (newVel.length() < STICK_SPEED_THRESHOLD) {
+            this.setPos(position.x, position.y, position.z);
             vanillaStickInBlock();
+        } else {
+            this.setPos(position.add(normal.scale(0.005))); // prevent infinite collision loop
+            this.setDeltaMovement(newVel);
         }
-        this.setDeltaMovement(newVel);
     }
 
     /**
@@ -182,22 +196,20 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     public Vec3 applyBounce(Vec3 velocity, CollisionContext context) {
         Vec3 normal = context.normal();
         Vec3 relative = velocity.subtract(context.targetVelocity());
-        double dot = relative.dot(normal);
+        double normalSpeed = relative.dot(normal);
+        Vec3 scaledNormal = normal.scale(normalSpeed);
 
         float mass = /* getEnergy(); */ 1f;
         float targetMass = context.targetMass();
         float impulse = (1f / mass) + (targetMass > 0 ? 1f / targetMass : 0f);
 
-        double j = -(1 + RESTITUTION) * dot / impulse;
-        return velocity.add(normal.scale(j / mass));
-    }
+        double j = -(1 + RESTITUTION) * normalSpeed / impulse;
+        Vec3 bouncedNormal = normal.scale(j / mass);
 
-    @Override
-    protected void onHit(@NotNull HitResult result) {}
+        Vec3 tangential = relative.subtract(scaledNormal);
+        Vec3 friction = tangential.scale(FRICTION);
 
-    @Override
-    protected void onHitBlock(BlockHitResult hitResult) {
-        System.out.println("ON HIT BLOCK");
+        return velocity.add(bouncedNormal).subtract(friction);
     }
 
     /**
@@ -219,6 +231,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             }
         }
 
+        // TODO: bonk sound
         this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
     }
 
@@ -238,6 +251,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         this.setSoundEvent(SoundEvents.ARROW_HIT);
         this.resetPiercedEntities();
     }
+
+    @Override
+    protected void onHit(@NotNull HitResult result) {}
 
     @Override
     protected double getDefaultGravity() {
