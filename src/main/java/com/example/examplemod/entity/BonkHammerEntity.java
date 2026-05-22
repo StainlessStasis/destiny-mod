@@ -28,8 +28,7 @@ import java.util.UUID;
 
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
-    public static final float BOUNCE_FACTOR = 0.45f;
-    public static final float FRICTION = 0.7f;
+    public static final float RESTITUTION = 0.3f;
     public static final float STICK_SPEED_THRESHOLD = 0.15f;
     private final Set<UUID> collidedThisTick = new HashSet<>();
 
@@ -109,7 +108,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 //                BlockHitResult blockHitResult = this.level().clipIncludingBorder(new ClipContext(originalPosition, originalPosition.add(movement), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 //                this.stepMoveAndHit(blockHitResult);
             } else {
-                this.setPos(originalPosition.add(movement));
+//                this.setPos(originalPosition.add(movement));
                 this.applyEffectsFromBlocks();
             }
 
@@ -128,7 +127,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             }
 
             this.checkLeftOwner();
-            super.tick();
             this.leftOwnerChecked = false;
         }
     }
@@ -190,7 +188,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         float targetMass = context.targetMass();
         float impulse = (1f / mass) + (targetMass > 0 ? 1f / targetMass : 0f);
 
-        double j = -(1 + BOUNCE_FACTOR) * dot / impulse;
+        double j = -(1 + RESTITUTION) * dot / impulse;
         return velocity.add(normal.scale(j / mass));
     }
 
