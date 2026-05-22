@@ -4,6 +4,7 @@ import com.example.examplemod.BonkHammerEntity;
 import com.example.examplemod.entity.DestinyModEntities;
 import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.renderer.base.RenderPassInfo;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.EntityType;
@@ -15,5 +16,10 @@ public class BonkHammerRenderer<R extends EntityRenderState & GeoRenderState> ex
 
     public BonkHammerRenderer(EntityRendererProvider.Context context) {
         this(context, DestinyModEntities.HAMMER_OF_SOL.get());
+    }
+
+    @Override
+    public void scaleModelForRender(RenderPassInfo<R> renderPassInfo, float widthScale, float heightScale) {
+        super.scaleModelForRender(renderPassInfo, widthScale/2, heightScale/2);
     }
 }
