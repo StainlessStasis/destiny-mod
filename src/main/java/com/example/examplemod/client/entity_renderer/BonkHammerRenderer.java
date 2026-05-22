@@ -1,18 +1,19 @@
 package com.example.examplemod.client.entity_renderer;
 
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import com.example.examplemod.BonkHammerEntity;
+import com.example.examplemod.entity.DestinyModEntities;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.entity.EntityType;
 
-public class BonkHammerRenderer extends EntityRenderer<@NotNull Entity, @NotNull EntityRenderState> {
-    public BonkHammerRenderer(EntityRendererProvider.Context context) {
-        super(context);
+public class BonkHammerRenderer<R extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<BonkHammerEntity, R> {
+    public BonkHammerRenderer(EntityRendererProvider.Context context, EntityType<BonkHammerEntity> entityType) {
+        super(context, entityType);
     }
 
-    @Override
-    public EntityRenderState createRenderState() {
-        return new EntityRenderState();
+    public BonkHammerRenderer(EntityRendererProvider.Context context) {
+        this(context, DestinyModEntities.HAMMER_OF_SOL.get());
     }
 }

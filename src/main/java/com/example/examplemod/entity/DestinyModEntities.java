@@ -22,7 +22,6 @@ public class DestinyModEntities {
                             MobCategory.MISC
                     )
                     .sized(0.5f, 0.5f)
-                    .noSummon()
                     .noSave()
                     .clientTrackingRange(8)
                     .updateInterval(10)
