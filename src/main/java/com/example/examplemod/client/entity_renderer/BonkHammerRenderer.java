@@ -5,6 +5,7 @@ import com.example.examplemod.entity.DestinyModEntities;
 import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.EntityType;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.EntityType;
 public class BonkHammerRenderer<R extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<BonkHammerEntity, R> {
     public BonkHammerRenderer(EntityRendererProvider.Context context, EntityType<BonkHammerEntity> entityType) {
         super(context, entityType);
+        withRenderLayer(new AutoGlowingGeoLayer<>(this));
     }
 
     public BonkHammerRenderer(EntityRendererProvider.Context context) {
