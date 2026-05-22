@@ -1,6 +1,5 @@
-package com.example.examplemod;
+package com.example.examplemod.entity;
 
-import com.example.examplemod.entity.DestinyModEntities;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
@@ -28,8 +27,14 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+    }
+
+    @Override
     protected double getDefaultGravity() {
-        return 0.03;
+        return 0;
+//        return 0.03;
     }
 
     @Override

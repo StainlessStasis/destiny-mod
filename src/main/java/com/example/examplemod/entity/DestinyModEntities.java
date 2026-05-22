@@ -1,6 +1,5 @@
 package com.example.examplemod.entity;
 
-import com.example.examplemod.BonkHammerEntity;
 import com.example.examplemod.DestinyMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;

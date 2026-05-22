@@ -1,6 +1,6 @@
 package com.example.examplemod.network;
 
-import com.example.examplemod.BonkHammerEntity;
+import com.example.examplemod.entity.BonkHammerEntity;
 import com.example.examplemod.DestinyMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -31,14 +31,13 @@ public record KeyPressedPacket(Action action) implements CustomPacketPayload {
         public static void handleServerbound(final KeyPressedPacket packet, final IPayloadContext context) {
             switch (packet.action()) {
                 case MELEE -> {
-                    System.out.println("MELEE ATTACK");
                     context.enqueueWork(() -> {
                         Player player = context.player();
                         player.swing(InteractionHand.MAIN_HAND);
 
                         if (player.level() instanceof ServerLevel serverLevel) {
                             BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
-                                    BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
+                                    BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 0.25f, 0f
                             );
                         }
                     });

@@ -1,16 +1,22 @@
 package com.example.examplemod.client.entity_renderer;
 
-import com.example.examplemod.BonkHammerEntity;
+import com.example.examplemod.DestinyMod;
+import com.example.examplemod.entity.BonkHammerEntity;
 import com.example.examplemod.entity.DestinyModEntities;
 import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import org.jetbrains.annotations.ApiStatus;
 
-public class BonkHammerRenderer<R extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<BonkHammerEntity, R> {
+public class BonkHammerRenderer<S extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<BonkHammerEntity, S> {
+    public static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/entity/hammer_of_sol.png");
+
     public BonkHammerRenderer(EntityRendererProvider.Context context, EntityType<BonkHammerEntity> entityType) {
         super(context, entityType);
         withRenderLayer(new AutoGlowingGeoLayer<>(this));
@@ -21,7 +27,17 @@ public class BonkHammerRenderer<R extends EntityRenderState & GeoRenderState> ex
     }
 
     @Override
-    public void scaleModelForRender(RenderPassInfo<R> renderPassInfo, float widthScale, float heightScale) {
+    public void scaleModelForRender(RenderPassInfo<S> renderPassInfo, float widthScale, float heightScale) {
         super.scaleModelForRender(renderPassInfo, widthScale/2, heightScale/2);
+    }
+
+    @Override
+    protected void applyRotations(RenderPassInfo<S> renderPassInfo, PoseStack poseStack, float nativeScale) {
+        super.applyRotations(renderPassInfo, poseStack, nativeScale);
+    }
+
+    @Override
+    public Identifier getTextureLocation(S state) {
+        return TEXTURE_LOCATION;
     }
 }
