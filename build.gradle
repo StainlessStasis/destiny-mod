@@ -36,6 +36,10 @@ repositories {
         }
         filter { includeGroupAndSubgroups('com.geckolib') }
     }
+    maven {
+        name = "Gegy"
+        url = uri("https://maven.gegy.dev")
+    }
 }
 
 base {
@@ -120,9 +124,32 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+def mappingsAttribute = Attribute.of("net.minecraft.mappings", String)
+
 dependencies {
     implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolibVersion}"
     interfaceInjectionData "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolibVersion}"
+
+    attributesSchema {
+        attribute(mappingsAttribute)
+    }
+    compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:${lambDynamicLightsVersion}+${minecraft_version}") {
+        attributes {
+            attribute(mappingsAttribute, "mojmap")
+        }
+    }
+    // For runtime of LambDynamicLights.
+    // Include only if you need to test in your dev env compatibility with LambDynamicLights.
+    // Replace with runtimeOnly if you want the dependency to be transitive.
+    localRuntime("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:${lambDynamicLightsVersion}+${minecraft_version}") {
+        attributes {
+            attribute(mappingsAttribute, "mojmap")
+        }
+        exclude group: "net.fabricmc"
+        exclude group: "net.fabricmc.fabric-api"
+        exclude group: "dev.lambdaurora", module: "spruceui"
+        exclude group: "io.github.queerbric", module: "pridelib"
+    }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
