@@ -4,15 +4,22 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+    private static final float BOUNCE_FACTOR = 0.45f;
+    private static final float FRICTION = 0.7f;
+    private static final float STICK_SPEED_THRESHOLD = 0.25f;
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
@@ -29,6 +36,41 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
+    }
+
+    // TODO: copy over AbstractArrow stuff and directly modify it to ensure stuff works on all block hits that don't stick (e.g. target blocks)
+    @Override
+    protected void onHitBlock(BlockHitResult hitResult) {
+        Direction hitFace = hitResult.getDirection();
+        Vec3 motion = this.getDeltaMovement();
+        double speed = motion.length();
+        if (speed < STICK_SPEED_THRESHOLD) {
+            super.onHitBlock(hitResult);
+            return;
+        }
+
+        double x = motion.x;
+        double y = motion.y;
+        double z = motion.z;
+        switch (hitFace) {
+            case UP -> {
+                y = -y * BOUNCE_FACTOR;
+                x *= FRICTION;
+                z *= FRICTION;
+            }
+            case DOWN -> {
+                y = -y * BOUNCE_FACTOR;
+            }
+            case NORTH, SOUTH -> {
+                z = -z * BOUNCE_FACTOR;
+                x *= FRICTION;
+            }
+            case EAST, WEST -> {
+                x = -x * BOUNCE_FACTOR;
+                z *= FRICTION;
+            }
+        }
+        this.setDeltaMovement(new Vec3(x, y, z));
     }
 
     @Override
