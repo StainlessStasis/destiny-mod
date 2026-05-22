@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private static final float BOUNCE_FACTOR = 0.45f;
     private static final float FRICTION = 0.7f;
-    private static final float STICK_SPEED_THRESHOLD = 0.25f;
+    private static final float STICK_SPEED_THRESHOLD = 0.15f;
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
@@ -71,6 +72,13 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             }
         }
         this.setDeltaMovement(new Vec3(x, y, z));
+    }
+
+    protected void vanillaHitBlock(BlockHitResult hitResult) {
+        this.lastState = this.level().getBlockState(hitResult.getBlockPos());
+        // From Projectile
+        BlockState state = this.level().getBlockState(hitResult.getBlockPos());
+        state.onProjectileHit(this.level(), state, hitResult, this);
     }
 
     @Override
