@@ -4,6 +4,7 @@ import com.example.examplemod.DestinyMod;
 import com.example.examplemod.entity.BonkHammerEntity;
 import com.example.examplemod.entity.DestinyModEntities;
 import com.geckolib.constant.DataTickets;
+import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
@@ -14,9 +15,12 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.Nullable;
 
 public class BonkHammerRenderer<S extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<BonkHammerEntity, S> {
     public static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/entity/hammer_of_sol.png");
+    public static final DataTicket<Boolean> IS_GROUNDED = DataTicket.create("is_grounded", Boolean.class);
 
     public BonkHammerRenderer(EntityRendererProvider.Context context, EntityType<BonkHammerEntity> entityType) {
         super(context, entityType);
@@ -37,10 +41,20 @@ public class BonkHammerRenderer<S extends EntityRenderState & GeoRenderState> ex
         var state = renderPassInfo.renderState();
         float xRot = state.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
         float yRot = state.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
+        boolean isGrounded = state.getOrDefaultGeckolibData(IS_GROUNDED, false);
+
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot + 90f));
         poseStack.mulPose(Axis.ZP.rotationDegrees(-xRot));
-        float spin = state.ageInTicks * 30f;
-        poseStack.mulPose(Axis.ZP.rotationDegrees(spin));
+        if (!isGrounded) {
+            float spin = state.ageInTicks * 30f;
+            poseStack.mulPose(Axis.ZP.rotationDegrees(spin));
+        }
+    }
+
+    @ApiStatus.OverrideOnly
+    @Override
+    public void addRenderData(BonkHammerEntity entity, Void relatedObject, S renderState, float partialTick) {
+        renderState.addGeckolibData(IS_GROUNDED, entity.isGrounded());
     }
 
     @Override

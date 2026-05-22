@@ -41,6 +41,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         return ItemStack.EMPTY;
     }
 
+    public boolean isGrounded() {
+        return isInGround();
+    }
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
 
