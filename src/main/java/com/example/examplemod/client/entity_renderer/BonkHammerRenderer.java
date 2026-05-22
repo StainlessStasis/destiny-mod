@@ -20,8 +20,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 public class BonkHammerRenderer<S extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<BonkHammerEntity, S> {
     public static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/entity/hammer_of_sol.png");
-    public static final DataTicket<Boolean> IS_GROUNDED = DataTicket.create("is_grounded", Boolean.class);
-    public static final DataTicket<Boolean> IS_IN_LIQUID = DataTicket.create("is_in_liquid", Boolean.class);
     public static final DataTicket<Float> SPIN_DEGREES = DataTicket.create("spin_degrees", Float.class);
 
     public BonkHammerRenderer(EntityRendererProvider.Context context, EntityType<BonkHammerEntity> entityType) {
@@ -48,23 +46,17 @@ public class BonkHammerRenderer<S extends EntityRenderState & GeoRenderState> ex
         var state = renderPassInfo.renderState();
         float xRot = state.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
         float yRot = state.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
-        boolean isGrounded = state.getOrDefaultGeckolibData(IS_GROUNDED, false);
-        boolean isInLiquid = state.getOrDefaultGeckolibData(IS_IN_LIQUID, false);
 
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot + 90f));
         poseStack.mulPose(Axis.ZP.rotationDegrees(-xRot));
-        if (!isGrounded) {
-            float spinSpeed = isInLiquid ? 10f : 30f;
-            float rotation = state.ageInTicks * spinSpeed;
-            poseStack.mulPose(Axis.ZP.rotationDegrees(rotation));
-        }
+        float rotation = state.getOrDefaultGeckolibData(SPIN_DEGREES, xRot);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(rotation));
     }
 
     @ApiStatus.OverrideOnly
     @Override
     public void addRenderData(BonkHammerEntity entity, Void relatedObject, S renderState, float partialTick) {
-        renderState.addGeckolibData(IS_GROUNDED, entity.isGrounded());
-        renderState.addGeckolibData(IS_IN_LIQUID, entity.isInLiquid());
+        renderState.addGeckolibData(SPIN_DEGREES, entity.getVisualSpinDegrees(partialTick));
     }
 
     @Override

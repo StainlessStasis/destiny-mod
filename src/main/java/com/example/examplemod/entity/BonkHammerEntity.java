@@ -29,9 +29,12 @@ import java.util.UUID;
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     public static final float RESTITUTION = 0.420f;
-    public static final float FRICTION = 0.676767f;
+    public static final float FRICTION = 0.55f;
     public static final float STICK_SPEED_THRESHOLD = 0.2f;
     private final Set<UUID> collidedThisTick = new HashSet<>();
+    private float visualSpinDegrees = 0f;
+    private static final float AIR_SPIN_SPEED = 30f;
+    private static final float WATER_SPIN_SPEED = 10f;
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
@@ -45,16 +48,36 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         return new BonkHammerEntity(entityType, level);
     }
 
+    private void updateVisualSpin() {
+        if (!this.isInGround()) {
+            this.visualSpinDegrees += getVisualSpinSpeed();
+            this.visualSpinDegrees %= 360f;
+        }
+    }
+
+    public float getVisualSpinSpeed() {
+        return this.isInWater() ? WATER_SPIN_SPEED : AIR_SPIN_SPEED;
+    }
+
+    public float getVisualSpinDegrees() {
+        return getVisualSpinDegrees(0f);
+    }
+
+    public float getVisualSpinDegrees(float partialTick) {
+        if (this.isGrounded()) return this.visualSpinDegrees;
+        return this.visualSpinDegrees + (getVisualSpinSpeed() * partialTick);
+    }
+
     @Override
     public void tick() {
         // Modified version of AbstractArrow tick (replaced collision)
         boolean physicsEnabled = !this.isNoPhysics();
 
-        // Custom collision
+        // Custom collision and stuff
         if (physicsEnabled && !this.isInGround()) {
             moveAndCollide();
+            updateVisualSpin();
         }
-        //
 
         Vec3 movement = this.getDeltaMovement();
         BlockPos blockPos = this.blockPosition();
