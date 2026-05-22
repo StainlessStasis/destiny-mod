@@ -34,7 +34,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private final Set<UUID> collidedThisTick = new HashSet<>();
     private float visualSpinDegrees = 0f;
     private static final float AIR_SPIN_SPEED = 30f;
-    private static final float WATER_SPIN_SPEED = 10f;
+    private static final float LIQUID_SPIN_SPEED = 10f;
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
@@ -56,7 +56,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     }
 
     public float getVisualSpinSpeed() {
-        return this.isInWater() ? WATER_SPIN_SPEED : AIR_SPIN_SPEED;
+        return this.isInLiquid() ? LIQUID_SPIN_SPEED : AIR_SPIN_SPEED;
     }
 
     public float getVisualSpinDegrees() {
