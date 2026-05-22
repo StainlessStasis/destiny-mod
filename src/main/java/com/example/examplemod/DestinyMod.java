@@ -1,5 +1,6 @@
 package com.example.examplemod;
 
+import com.example.examplemod.entity.DestinyModEntities;
 import com.example.examplemod.network.KeyPressedPacket;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,6 +23,7 @@ public class DestinyMod {
 
     public DestinyMod(IEventBus modEventBus, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        DestinyModEntities.register(modEventBus);
     }
 
     @EventBusSubscriber
