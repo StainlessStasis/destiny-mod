@@ -15,13 +15,14 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
-import org.jspecify.annotations.Nullable;
 
 public class BonkHammerRenderer<S extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<BonkHammerEntity, S> {
     public static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/entity/hammer_of_sol.png");
     public static final DataTicket<Boolean> IS_GROUNDED = DataTicket.create("is_grounded", Boolean.class);
     public static final DataTicket<Boolean> IS_IN_LIQUID = DataTicket.create("is_in_liquid", Boolean.class);
+    public static final DataTicket<Float> SPIN_DEGREES = DataTicket.create("spin_degrees", Float.class);
 
     public BonkHammerRenderer(EntityRendererProvider.Context context, EntityType<BonkHammerEntity> entityType) {
         super(context, entityType);
@@ -35,6 +36,11 @@ public class BonkHammerRenderer<S extends EntityRenderState & GeoRenderState> ex
     @Override
     public void scaleModelForRender(RenderPassInfo<S> renderPassInfo, float widthScale, float heightScale) {
         super.scaleModelForRender(renderPassInfo, widthScale/2, heightScale/2);
+    }
+
+    @Override
+    public Vec3 getRenderOffset(S state) {
+        return super.getRenderOffset(state).add(new Vec3(0, 0.2, 0));
     }
 
     @Override
