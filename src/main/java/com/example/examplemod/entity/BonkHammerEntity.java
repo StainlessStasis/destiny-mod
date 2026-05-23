@@ -7,27 +7,34 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
+import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -132,12 +139,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
                 this.addBubbleParticles(originalPosition);
             }
 
-            if (this.isCritArrow()) {
-                for(int i = 0; i < 4; ++i) {
-                    this.level().addParticle(ParticleTypes.CRIT, originalPosition.x + movement.x * (double)i / (double)4.0F, originalPosition.y + movement.y * (double)i / (double)4.0F, originalPosition.z + movement.z * (double)i / (double)4.0F, -movement.x, -movement.y + 0.2, -movement.z);
-                }
-            }
-
             float yRot;
             if (!physicsEnabled) {
                 yRot = (float)(Mth.atan2(-movement.x, -movement.z) * (double)180.0F / (double)(float)Math.PI);
@@ -190,39 +191,34 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     }
 
     public void onCollisionResult(CollisionContext context) {
-        HitResult result = context.result();
-
-        if (result instanceof EntityHitResult entityResult) {
-            collidedThisTick.add(entityResult.getEntity().getUUID());
-
-            // OLD CODE FROM THE PLACE THIS CAME FROM. Here just as a reference in case this functionality is added
-            // if the other entity is also a spell, resolve the collision from both sides
-//            if (entityHit.getEntity() instanceof Spell<?> other) {
-//                if (entityHit.getEntity() instanceof SpellProjectileEntity otherProjectile) {
-//                    otherProjectile.collidedThisTick.add(this.getUUID()); // prevent calculating the same collision twice by the other projectile
-//                }
-//                SpellCollisionResolvers.resolve(this, other, context);
-//                return;
-//            }
-        }
-
-        if (result instanceof BlockHitResult blockResult) {
-            if (blockResult.getDirection() == Direction.DOWN) {
-                this.hitCeiling = true;
-            }
-            vanillaHitBlock(blockResult);
-            if (this.level() instanceof ServerLevel level) {
-                double speed = context.sourceVelocity().length();
-                if (speed > STICK_SPEED_THRESHOLD) {
-                    BlockDestructionManager.addDamage(level, blockResult.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
-                }
-            }
-        }
-
+        handleBlockCollision(context);
+        handleEntityCollision(context);
         handleCollision(context);
     }
 
+    protected void handleBlockCollision(CollisionContext context) {
+        if (!(context.result() instanceof BlockHitResult result)) return;
 
+        if (result.getDirection() == Direction.DOWN) {
+            this.hitCeiling = true;
+        }
+
+        vanillaHitBlock(result);
+
+        if (this.level() instanceof ServerLevel level) {
+            double speed = context.sourceVelocity().length();
+            if (speed > STICK_SPEED_THRESHOLD) {
+                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
+            }
+        }
+    }
+
+    protected void handleEntityCollision(CollisionContext context) {
+        if (!(context.result() instanceof EntityHitResult result)) return;
+
+        collidedThisTick.add(result.getEntity().getUUID());
+        vanillaHitEntity(result);
+    }
 
     protected void handleCollision(CollisionContext context) {
         Vec3 position = context.result().getLocation();
@@ -278,7 +274,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             }
         }
 
-        this.playSound(this.getHitGroundSoundEvent(), 1.0F, 0.8F / (this.random.nextFloat() * 0.2F + 0.9F));
+        this.playHitSound(true);
     }
 
     /**
@@ -296,6 +292,104 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         this.setPierceLevel((byte)0);
         this.setSoundEvent(SoundEvents.IRON_BREAK);
         this.resetPiercedEntities();
+    }
+
+    /**
+     *  All the stuff from AbstractArrow's onEntityHit, but just the important parts (damage, knockback).
+     *  So yeah like half of it is gone
+     */
+    protected void vanillaHitEntity(EntityHitResult hitResult) {
+        Entity entity = hitResult.getEntity();
+        Entity currentOwner = this.getOwner();
+        DamageSource damageSource = this.damageSources().arrow(this, currentOwner != null ? currentOwner : this);
+        double damage = this.baseDamage;
+
+        if (this.getPierceLevel() > 0) {
+            if (this.piercingIgnoreEntityIds == null) {
+                this.piercingIgnoreEntityIds = new IntOpenHashSet(5);
+            }
+
+            if (this.piercedAndKilledEntities == null) {
+                this.piercedAndKilledEntities = Lists.newArrayListWithCapacity(5);
+            }
+
+            if (this.piercingIgnoreEntityIds.size() >= this.getPierceLevel() + 1) {
+                this.discard();
+                return;
+            }
+
+            this.piercingIgnoreEntityIds.add(entity.getId());
+        }
+
+        if (entity.is(EntityType.ENDERMAN)) {
+            return;
+        }
+
+        if (currentOwner instanceof LivingEntity livingOwner) {
+            livingOwner.setLastHurtMob(entity);
+        }
+
+        int remainingFireTicks = entity.getRemainingFireTicks();
+        if (this.isOnFire()) {
+            entity.igniteForSeconds(5.0F);
+        }
+
+        // It's YOUR code Mojang, why is it deprecated???
+        if (!entity.hurtOrSimulate(damageSource, (float)damage)) {
+            entity.setRemainingFireTicks(remainingFireTicks);
+            return;
+        }
+
+        if (entity instanceof LivingEntity mob) {
+            this.doKnockback(mob, damageSource);
+            Level level = this.level();
+            if (level instanceof ServerLevel serverLevel) {
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
+            }
+
+            this.doPostHurtEffects(mob);
+            if (mob instanceof Player && currentOwner instanceof ServerPlayer ownerPlayer) {
+                if (!this.isSilent() && mob != ownerPlayer) {
+                    ownerPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PLAY_ARROW_HIT_SOUND, 0.0F));
+                }
+            }
+
+            if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
+                this.piercedAndKilledEntities.add(mob);
+            }
+
+            // TODO: custom statistics?
+//            if (!this.level().isClientSide() && currentOwner instanceof ServerPlayer player) {
+//                if (this.piercedAndKilledEntities != null) {
+//                    CriteriaTriggers.KILLED_BY_ARROW.trigger(player, this.piercedAndKilledEntities, this.firedFromWeapon);
+//                } else if (!entity.isAlive()) {
+//                    CriteriaTriggers.KILLED_BY_ARROW.trigger(player, List.of(entity), this.firedFromWeapon);
+//                }
+//            }
+        }
+
+        this.playHitSound(false);
+    }
+
+    // TODO: this
+    protected void tryPickup() {
+        if (this.level() instanceof ServerLevel level) {
+            System.out.println("IS GROUNDED: "+this.isGrounded());
+            System.out.println("GROUNDED TIME: "+this.inGroundTime);
+            if (this.isGrounded()) {
+                if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
+                    this.spawnAtLocation(level, this.getPickupItem(), 0.1F);
+                }
+
+                this.discard();
+            }
+        }
+    }
+
+    protected void playHitSound(boolean hitGround) {
+        var sound = hitGround ? this.getHitGroundSoundEvent() : this.soundEvent;
+        float pitch = 0.8F / (this.random.nextFloat() * 0.2F + 0.9F);
+        this.playSound(sound, 1.0F, pitch);
     }
 
     @Override
