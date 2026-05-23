@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -81,7 +82,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         boolean physicsEnabled = !this.isNoPhysics();
 
         // Custom collision and stuff
-        if (physicsEnabled && !this.isInGround()) {
+        if (physicsEnabled && !this.isGrounded()) {
             moveAndCollide();
             updateVisualSpin();
         }
@@ -98,7 +99,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             this.clearFire();
         }
 
-        if (this.isInGround() && physicsEnabled) {
+        if (isGrounded() && physicsEnabled) {
             if (!this.level().isClientSide()) {
                 if (this.lastState != blockState && this.shouldFall()) {
                     this.startFalling();
@@ -200,11 +201,13 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         if (result instanceof BlockHitResult blockResult) {
             vanillaHitBlock(blockResult);
             if (this.level() instanceof ServerLevel level) {
-                BlockDestructionManager.addDamage(level, blockResult.getBlockPos(), 0.5f, this, true, true);
+                double speed = context.sourceVelocity().length();
+                if (speed > STICK_SPEED_THRESHOLD) {
+                    BlockDestructionManager.addDamage(level, blockResult.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
+                }
             }
         }
 
-        // collide with non-spell entity or blocks
         handleCollision(context);
     }
 
@@ -271,10 +274,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
      *  All the stuff from AbstractArrow's onBlockHit which make the arrow stick into the block.
      */
     protected void vanillaStickInBlock() {
-        Vec3 movement = this.getDeltaMovement();
-        Vec3 offsetDirection = new Vec3(Math.signum(movement.x), Math.signum(movement.y), Math.signum(movement.z));
-        Vec3 scaledMovement = offsetDirection.scale(0.05F);
-        this.setPos(this.position().subtract(scaledMovement));
+//        Vec3 movement = this.getDeltaMovement();
+//        Vec3 offsetDirection = new Vec3(Math.signum(movement.x), Math.signum(movement.y), Math.signum(movement.z));
+//        Vec3 scaledMovement = offsetDirection.scale(0.05F);
+//        this.setPos(this.position().subtract(scaledMovement));
         this.setDeltaMovement(Vec3.ZERO);
         this.setInGround(true);
         this.shakeTime = 7;
@@ -299,6 +302,24 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
     public boolean isGrounded() {
         return isInGround();
+    }
+
+    private boolean isBottomFaceUnsupported() {
+        AABB bb = this.getBoundingBox();
+
+        AABB bottomFace = new AABB(
+                bb.minX, bb.minY - 0.05, bb.minZ,
+                bb.maxX, bb.minY, bb.maxZ
+        );
+        bottomFace.deflate(0.05);
+
+        Iterable<VoxelShape> blockCollisions = this.level().getBlockCollisions(this, bottomFace);
+        return !blockCollisions.iterator().hasNext();
+    }
+
+    @Override
+    public boolean shouldFall() {
+        return !this.isGrounded() || isBottomFaceUnsupported();
     }
 
     @Override
