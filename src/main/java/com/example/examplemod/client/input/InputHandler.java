@@ -1,6 +1,7 @@
 package com.example.examplemod.client.input;
 
-import com.example.examplemod.network.KeyPressedPacket;
+import com.example.examplemod.ability.Ability;
+import com.example.examplemod.network.AbilityCastPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +34,7 @@ public class InputHandler {
 
         if (key == DestinyModKeybinds.MELEE.get().getKey().getValue()) {
             player.swing(InteractionHand.MAIN_HAND);
-            ClientPacketDistributor.sendToServer(new KeyPressedPacket(KeyPressedPacket.Action.MELEE));
+            ClientPacketDistributor.sendToServer(new AbilityCastPacket(Ability.MELEE));
         }
     }
 }

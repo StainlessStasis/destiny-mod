@@ -1,8 +1,8 @@
 package com.example.examplemod;
 
 import com.example.examplemod.entity.DestinyModEntities;
-import com.example.examplemod.network.KeyPressedPacket;
-import com.example.examplemod.util.world_interaction.BlockDestructionManager;
+import com.example.examplemod.network.AbilityCastPacket;
+import com.example.examplemod.ability.world_interaction.BlockDestructionManager;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -35,9 +35,9 @@ public class DestinyMod {
         public static void registerPackets(RegisterPayloadHandlersEvent event) {
             final PayloadRegistrar registrar = event.registrar(NETWORK_VERSION);
             registrar.playToServer(
-                    KeyPressedPacket.TYPE,
-                    KeyPressedPacket.STREAM_CODEC,
-                    KeyPressedPacket.Handler::handleServerbound
+                    AbilityCastPacket.TYPE,
+                    AbilityCastPacket.STREAM_CODEC,
+                    AbilityCastPacket.Handler::handleServerbound
             );
         }
     }

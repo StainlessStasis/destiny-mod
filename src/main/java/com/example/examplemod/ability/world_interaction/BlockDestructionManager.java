@@ -1,4 +1,4 @@
-package com.example.examplemod.util.world_interaction;
+package com.example.examplemod.ability.world_interaction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;

@@ -1,5 +1,6 @@
 package com.example.examplemod.network;
 
+import com.example.examplemod.ability.Ability;
 import com.example.examplemod.entity.BonkHammerEntity;
 import com.example.examplemod.DestinyMod;
 import io.netty.buffer.ByteBuf;
@@ -15,21 +16,21 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record KeyPressedPacket(Action action) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<@NotNull KeyPressedPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(DestinyMod.MODID, "key_pressed_packet"));
+public record AbilityCastPacket(Ability ability) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<@NotNull AbilityCastPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(DestinyMod.MODID, "key_pressed_packet"));
 
-    public static final StreamCodec<ByteBuf, KeyPressedPacket> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, AbilityCastPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BYTE.map(
-                    byte_ -> Action.values()[byte_],
+                    byte_ -> Ability.values()[byte_],
                     action -> (byte)action.ordinal()
             ),
-            KeyPressedPacket::action,
-            KeyPressedPacket::new
+            AbilityCastPacket::ability,
+            AbilityCastPacket::new
     );
 
     public static class Handler {
-        public static void handleServerbound(final KeyPressedPacket packet, final IPayloadContext context) {
-            switch (packet.action()) {
+        public static void handleServerbound(final AbilityCastPacket packet, final IPayloadContext context) {
+            switch (packet.ability()) {
                 case MELEE -> {
                     context.enqueueWork(() -> {
                         Player player = context.player();
@@ -45,10 +46,6 @@ public record KeyPressedPacket(Action action) implements CustomPacketPayload {
                 }
             }
         }
-    }
-
-    public enum Action {
-        MELEE
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.example.examplemod.entity;
 
-import com.example.examplemod.util.collision.CollisionContext;
-import com.example.examplemod.util.collision.ProjectileCollisionUtils;
-import com.example.examplemod.util.world_interaction.BlockDestructionManager;
+import com.example.examplemod.ability.collision.CollisionContext;
+import com.example.examplemod.ability.collision.ProjectileCollisionUtils;
+import com.example.examplemod.ability.world_interaction.BlockDestructionManager;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;

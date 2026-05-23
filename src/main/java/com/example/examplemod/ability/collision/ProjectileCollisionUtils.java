@@ -1,4 +1,4 @@
-package com.example.examplemod.util.collision;
+package com.example.examplemod.ability.collision;
 
 import com.mojang.math.Constants;
 import net.minecraft.core.BlockPos;

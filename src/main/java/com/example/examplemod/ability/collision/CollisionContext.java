@@ -1,4 +1,4 @@
-package com.example.examplemod.util.collision;
+package com.example.examplemod.ability.collision;
 
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
