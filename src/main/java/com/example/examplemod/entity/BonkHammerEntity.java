@@ -103,12 +103,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         }
 
         if (isGrounded() && physicsEnabled) {
-            if (!this.level().isClientSide()) {
-                if (this.lastState != blockState && this.shouldFall()) {
-                    this.startFalling();
-                } else {
-                    this.tickDespawn();
-                }
+            if (this.lastState != blockState && this.shouldFall()) {
+                this.startFalling();
+            } else {
+                this.tickDespawn();
             }
 
             ++this.inGroundTime;
