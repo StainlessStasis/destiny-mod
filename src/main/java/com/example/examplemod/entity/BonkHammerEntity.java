@@ -10,10 +10,8 @@ import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +22,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -46,6 +43,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private static final float AIR_SPIN_SPEED = 30f;
     private static final float LIQUID_SPIN_SPEED = 10f;
     private boolean hitCeiling = false;
+    private boolean hasEverCollided = false;
     /**
      * Ok so this serves no purpose, but there's a VERY rare bug where a hammer can get infinitely stuck falling and colliding inside a block.
      * The thing is, it is nearly impossible to recreate, so I need to be able to hotswap changes to fix it.
@@ -175,6 +173,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             this.checkLeftOwner();
             this.leftOwnerChecked = false;
         }
+
+        tryCollectHammer();
     }
 
     public void moveAndCollide() {
@@ -191,6 +191,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     }
 
     public void onCollisionResult(CollisionContext context) {
+        this.hasEverCollided = true;
         handleBlockCollision(context);
         handleEntityCollision(context);
         handleCollision(context);
@@ -371,19 +372,19 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         this.playHitSound(false);
     }
 
-    // TODO: this
-    protected void tryPickup() {
-        if (this.level() instanceof ServerLevel level) {
-            System.out.println("IS GROUNDED: "+this.isGrounded());
-            System.out.println("GROUNDED TIME: "+this.inGroundTime);
-            if (this.isGrounded()) {
-                if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
-                    this.spawnAtLocation(level, this.getPickupItem(), 0.1F);
-                }
+    protected void tryCollectHammer() {
+        if (this.level().isClientSide()) return;
+        if (!(this.getOwner() instanceof Player player)) return;
+        if (!canCollectHammer()) return;
+        if (!(this.getBoundingBox().inflate(0.5f).intersects(player.getBoundingBox()))) return;
 
-                this.discard();
-            }
-        }
+        this.playSound(SoundEvents.ITEM_PICKUP, 0.2F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+        this.discard();
+    }
+
+    protected boolean canCollectHammer() {
+        if (this.tickCount < 3) return false;
+        return this.tickCount > 15 || (this.tickCount > 5 && this.hasEverCollided) || !this.collidedThisTick.isEmpty();
     }
 
     protected void playHitSound(boolean hitGround) {
