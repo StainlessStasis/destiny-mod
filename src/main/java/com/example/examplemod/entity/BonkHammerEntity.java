@@ -2,6 +2,7 @@ package com.example.examplemod.entity;
 
 import com.example.examplemod.util.collision.CollisionContext;
 import com.example.examplemod.util.collision.ProjectileCollisionUtils;
+import com.example.examplemod.util.world_interaction.BlockDestructionManager;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
@@ -198,6 +199,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
         if (result instanceof BlockHitResult blockResult) {
             vanillaHitBlock(blockResult);
+            if (this.level() instanceof ServerLevel level) {
+                BlockDestructionManager.addDamage(level, blockResult.getBlockPos(), 0.5f, this, true, true);
+            }
         }
 
         // collide with non-spell entity or blocks
