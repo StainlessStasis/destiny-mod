@@ -175,6 +175,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         }
 
         tryCollectHammer();
+        this.firstTick = false;
     }
 
     public void moveAndCollide() {
@@ -378,12 +379,13 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         if (!canCollectHammer()) return;
         if (!(this.getBoundingBox().inflate(0.5f).intersects(player.getBoundingBox()))) return;
 
-        this.playSound(SoundEvents.ITEM_PICKUP, 0.2F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+        float pitch = 0.2F / (this.random.nextFloat() * 0.2F + 0.9F);
+        this.playSound(SoundEvents.ITEM_PICKUP, 0.3F, pitch);
         this.discard();
     }
 
     protected boolean canCollectHammer() {
-        if (this.tickCount < 3) return false;
+        if (this.firstTick) return false;
         return this.tickCount > 15 || (this.tickCount > 5 && this.hasEverCollided) || !this.collidedThisTick.isEmpty();
     }
 

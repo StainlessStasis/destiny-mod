@@ -39,6 +39,7 @@ public record KeyPressedPacket(Action action) implements CustomPacketPayload {
                             BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
                                     BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
                             );
+                            hammer.setBaseDamage(7f);
                         }
                     });
                 }
