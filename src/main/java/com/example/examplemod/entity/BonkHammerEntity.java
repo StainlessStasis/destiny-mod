@@ -217,7 +217,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
         Vec3 newVel = applyBounce(this.getDeltaMovement(), context);
         if (newVel.length() < STICK_SPEED_THRESHOLD) {
-            this.setPos(position.x, position.y, position.z);
             vanillaStickInBlock();
         } else {
             this.setPos(position.add(normal.scale(0.005))); // prevent infinite collision loop
@@ -311,13 +310,26 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
                 bb.minX, bb.minY - 0.05, bb.minZ,
                 bb.maxX, bb.minY, bb.maxZ
         );
-        bottomFace.inflate(0.05);
+        bottomFace.inflate(0.067, 0, 0.067);
+        bottomFace.expandTowards(0, -0.05, 0);
         return this.level().noCollision(bottomFace);
     }
 
     @Override
     public boolean shouldFall() {
         return !this.isGrounded() || isBottomFaceUnsupported();
+    }
+
+    @Override
+    public void startFalling() {
+        this.setInGround(false);
+        this.life = 0;
+        Vec3 nudge = new Vec3(
+                (this.random.nextDouble() - 0.5) * 0.025,
+                -0.01,
+                (this.random.nextDouble() - 0.5) * 0.025
+        );
+        this.setDeltaMovement(nudge);
     }
 
     @Override
