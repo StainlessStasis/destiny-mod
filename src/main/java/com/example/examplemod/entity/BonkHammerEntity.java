@@ -311,10 +311,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
                 bb.minX, bb.minY - 0.05, bb.minZ,
                 bb.maxX, bb.minY, bb.maxZ
         );
-        bottomFace.deflate(0.05);
-
-        Iterable<VoxelShape> blockCollisions = this.level().getBlockCollisions(this, bottomFace);
-        return !blockCollisions.iterator().hasNext();
+        bottomFace.inflate(0.05);
+        return this.level().noCollision(bottomFace);
     }
 
     @Override
