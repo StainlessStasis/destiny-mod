@@ -222,7 +222,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         handleCollision(context);
     }
 
-    public void handleCollision(CollisionContext context) {
+
+
+    protected void handleCollision(CollisionContext context) {
         Vec3 position = context.result().getLocation();
         Vec3 normal = context.normal();
         Vec3 newVel = applyBounce(this.getDeltaMovement(), context);
@@ -238,7 +240,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
      * Applies bounce physics given a collision.
      * Reflects velocity off the collision normal using the spell's coefficient of restitution.
      */
-    public Vec3 applyBounce(Vec3 velocity, CollisionContext context) {
+    protected Vec3 applyBounce(Vec3 velocity, CollisionContext context) {
         Vec3 normal = context.normal();
         Vec3 relative = velocity.subtract(context.targetVelocity());
         double normalSpeed = relative.dot(normal);
