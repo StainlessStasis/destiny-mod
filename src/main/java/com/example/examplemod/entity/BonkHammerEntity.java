@@ -7,7 +7,9 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
+import com.mojang.math.Constants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -37,6 +38,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private float visualSpinDegrees = 0f;
     private static final float AIR_SPIN_SPEED = 30f;
     private static final float LIQUID_SPIN_SPEED = 10f;
+    private boolean hitCeiling = false;
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
@@ -82,6 +84,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         boolean physicsEnabled = !this.isNoPhysics();
 
         // Custom collision and stuff
+        this.hitCeiling = false;
         if (physicsEnabled && !this.isGrounded()) {
             moveAndCollide();
             updateVisualSpin();
@@ -199,6 +202,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         }
 
         if (result instanceof BlockHitResult blockResult) {
+            if (blockResult.getDirection() == Direction.DOWN) {
+                this.hitCeiling = true;
+            }
             vanillaHitBlock(blockResult);
             if (this.level() instanceof ServerLevel level) {
                 double speed = context.sourceVelocity().length();
@@ -214,9 +220,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     public void handleCollision(CollisionContext context) {
         Vec3 position = context.result().getLocation();
         Vec3 normal = context.normal();
-
         Vec3 newVel = applyBounce(this.getDeltaMovement(), context);
-        if (newVel.length() < STICK_SPEED_THRESHOLD) {
+        if (!this.hitCeiling && normal.length() > Constants.EPSILON && newVel.length() < STICK_SPEED_THRESHOLD) {
             vanillaStickInBlock();
         } else {
             this.setPos(position.add(normal.scale(0.005))); // prevent infinite collision loop
