@@ -39,6 +39,13 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     private static final float AIR_SPIN_SPEED = 30f;
     private static final float LIQUID_SPIN_SPEED = 10f;
     private boolean hitCeiling = false;
+    /**
+     * Ok so this serves no purpose, but there's a VERY rare bug where a hammer can get infinitely stuck falling and colliding inside a block.
+     * The thing is, it is nearly impossible to recreate, so I need to be able to hotswap changes to fix it.
+     * One solution, if it comes up again, is to just check if it has collided way too many times within x ticks, and then either discard it, or try nudging it out of the block.
+     * However, because I can't hotswap the code if I add a new field, I'm leaving this here in case it ever comes up again.
+     */
+    private int _ignoreThis = 0;
 
     public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
