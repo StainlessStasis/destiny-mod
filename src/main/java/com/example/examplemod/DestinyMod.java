@@ -1,11 +1,14 @@
 package com.example.examplemod;
 
+import com.example.examplemod.ability.cooldown.AbilityCooldowns;
 import com.example.examplemod.entity.DestinyModEntities;
 import com.example.examplemod.network.AbilityCastPacket;
 import com.example.examplemod.ability.world_interaction.BlockDestructionManager;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -26,6 +29,7 @@ public class DestinyMod {
 
     public DestinyMod(IEventBus modEventBus, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        DestinyModAttachments.register(modEventBus);
         DestinyModEntities.register(modEventBus);
     }
 
@@ -52,6 +56,14 @@ public class DestinyMod {
         @SubscribeEvent
         public static void onServerStopping(ServerStoppingEvent event) {
             BlockDestructionManager.cleanup();
+        }
+
+        @SubscribeEvent
+        public static void onPlayerTick(PlayerTickEvent.Post event) {
+            Player player = event.getEntity();
+
+            AbilityCooldowns abilityCooldowns = player.getData(DestinyModAttachments.ABILITY_COOLDOWNS);
+            abilityCooldowns.tick();
         }
     }
 }

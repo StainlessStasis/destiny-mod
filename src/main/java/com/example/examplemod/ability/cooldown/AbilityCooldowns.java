@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -20,7 +21,7 @@ public class AbilityCooldowns {
 
     private static final Codec<Map<Ability, CooldownInstance>> MAP_CODEC = Codec.unboundedMap(Ability.CODEC, CooldownInstance.CODEC);
 
-    public static final Codec<AbilityCooldowns> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<AbilityCooldowns> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             MAP_CODEC.fieldOf("cooldowns").forGetter(abilityCooldowns -> abilityCooldowns.cooldowns),
             Codec.INT.fieldOf("ticks").forGetter(abilityCooldowns -> abilityCooldowns.tickCount)
     ).apply(instance, AbilityCooldowns::new));
@@ -40,7 +41,9 @@ public class AbilityCooldowns {
         this.tickCount = tickCount;
         this.cooldowns.putAll(cooldownInstances);
     }
-    
+
+    public AbilityCooldowns() {}
+
     public boolean isEmpty() {
         return cooldowns.isEmpty();
     }
