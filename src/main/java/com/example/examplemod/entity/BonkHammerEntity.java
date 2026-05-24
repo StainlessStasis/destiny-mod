@@ -1,7 +1,9 @@
 package com.example.examplemod.entity;
 
+import com.example.examplemod.ability.Ability;
 import com.example.examplemod.ability.collision.CollisionContext;
 import com.example.examplemod.ability.collision.ProjectileCollisionUtils;
+import com.example.examplemod.ability.cooldown.AbilityCooldownManager;
 import com.example.examplemod.ability.world_interaction.BlockDestructionManager;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -131,10 +133,15 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             }
         } else {
             this.inGroundTime = 0;
+
             Vec3 originalPosition = this.position();
-            if (this.isInWater()) {
+            if (!this.isInLiquid()) {
+                this.applyInertia(0.99F);
+            } else {
                 this.applyInertia(this.getWaterInertia());
-                this.addBubbleParticles(originalPosition);
+                if (this.isInWater()) {
+                    this.addBubbleParticles(originalPosition);
+                }
             }
 
             float yRot;
@@ -156,10 +163,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
                 this.applyEffectsFromBlocks();
             }
 
-            if (!this.isInWater()) {
-                this.applyInertia(0.99F);
-            }
-
             if (physicsEnabled && !this.isInGround()) {
                 this.applyGravity();
             }
@@ -176,6 +179,14 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
         tryCollectHammer();
         this.firstTick = false;
+    }
+
+    @Override
+    protected void tickDespawn() {
+        ++this.life;
+        if (this.life >= 200) {
+            this.discard();
+        }
     }
 
     public void moveAndCollide() {
@@ -210,7 +221,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         if (this.level() instanceof ServerLevel level) {
             double speed = context.sourceVelocity().length();
             if (speed > STICK_SPEED_THRESHOLD) {
-                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
+//                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
             }
         }
     }
@@ -381,6 +392,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
         float pitch = 0.2F / (this.random.nextFloat() * 0.2F + 0.9F);
         this.playSound(SoundEvents.ITEM_PICKUP, 0.3F, pitch);
+
+        AbilityCooldownManager.removeCooldown(player, Ability.MELEE);
+
         this.discard();
     }
 

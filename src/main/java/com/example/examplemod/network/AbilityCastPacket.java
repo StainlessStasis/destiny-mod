@@ -51,7 +51,7 @@ public record AbilityCastPacket(Ability ability) implements CustomPacketPayload 
                                     BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
                             );
                             hammer.setBaseDamage(7f);
-                            AbilityCooldownManager.addCooldown(player, packet.ability(), 20);
+//                            AbilityCooldownManager.addCooldown(player, packet.ability(), 600);
                         }
                     });
                 }
