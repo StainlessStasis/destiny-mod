@@ -14,10 +14,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ProjectileCollisionUtils {
@@ -72,24 +69,33 @@ public final class ProjectileCollisionUtils {
     private static Optional<CollisionContext> collideBlocks(Projectile projectile, Set<BlockPos> candidates) {
         AABB projectileBox = projectile.getBoundingBox();
         Vec3 velocity = projectile.getDeltaMovement();
+        Level level = projectile.level();
 
         double bestTime = Double.POSITIVE_INFINITY;
         BlockHitResult bestHit = null;
         Vec3 bestNormal = Vec3.ZERO;
 
         for (BlockPos pos : candidates) {
-            AABB blockBox = AABB.ofSize(pos.getCenter(), 1, 1, 1);
-            SweepTestResult result = sweepTest(projectileBox, blockBox, velocity, Vec3.ZERO);
+            BlockState state = level.getBlockState(pos);
+            var shape = state.getCollisionShape(level, pos);
+            List<AABB> blockBoxes = shape.isEmpty()
+                    ? List.of(AABB.ofSize(pos.getCenter(), 1, 1, 1))
+                    : shape.toAabbs();
+            for (AABB localBox : blockBoxes) {
+                AABB blockBox = localBox.move(pos.getX(), pos.getY(), pos.getZ());
 
-            if (result.hit() && result.tEntry() < bestTime) {
-                bestTime = result.tEntry();
-                bestNormal = result.normal();
-                Vec3 hitPos = projectile.position().add(velocity.scale(bestTime));
-                Vec3i bestNormalVec3i = new Vec3i((int) bestNormal.x, (int) bestNormal.y, (int) bestNormal.z);
-                bestHit = new BlockHitResult(
-                        hitPos,
-                        Direction.getNearest(bestNormalVec3i, Direction.getApproximateNearest(bestNormal)),
-                        pos, false);
+                SweepTestResult result = sweepTest(projectileBox, blockBox, velocity, Vec3.ZERO);
+
+                if (result.hit() && result.tEntry() < bestTime) {
+                    bestTime = result.tEntry();
+                    bestNormal = result.normal();
+                    Vec3 hitPos = projectile.position().add(velocity.scale(bestTime));
+                    Vec3i bestNormalVec3i = new Vec3i((int) bestNormal.x, (int) bestNormal.y, (int) bestNormal.z);
+                    bestHit = new BlockHitResult(
+                            hitPos,
+                            Direction.getNearest(bestNormalVec3i, Direction.getApproximateNearest(bestNormal)),
+                            pos, false);
+                }
             }
         }
 
