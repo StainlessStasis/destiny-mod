@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -96,6 +97,11 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     public void tick() {
         // Modified version of AbstractArrow tick (replaced collision)
         boolean physicsEnabled = !this.isNoPhysics();
+
+        if (this.firstTick && this.level() instanceof ServerLevel level) {
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.TRIDENT_THROW, SoundSource.AMBIENT, 0.8f, 0.7f);
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 0.5f, 1.5f);
+        }
 
         // Custom collision and stuff
         this.hitCeiling = false;
@@ -221,7 +227,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         if (this.level() instanceof ServerLevel level) {
             double speed = context.sourceVelocity().length();
             if (speed > STICK_SPEED_THRESHOLD) {
-//                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
+                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
             }
         }
     }

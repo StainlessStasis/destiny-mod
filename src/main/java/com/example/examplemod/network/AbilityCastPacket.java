@@ -11,6 +11,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -51,7 +53,7 @@ public record AbilityCastPacket(Ability ability) implements CustomPacketPayload 
                                     BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
                             );
                             hammer.setBaseDamage(7f);
-//                            AbilityCooldownManager.addCooldown(player, packet.ability(), 600);
+                            AbilityCooldownManager.addCooldown(player, packet.ability(), 600);
                         }
                     });
                 }
