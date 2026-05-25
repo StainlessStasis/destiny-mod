@@ -399,7 +399,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         float pitch = 0.2F / (this.random.nextFloat() * 0.2F + 0.9F);
         this.playSound(SoundEvents.ITEM_PICKUP, 0.3F, pitch);
 
-        AbilityCooldownManager.removeCooldown(player, Ability.MELEE);
+        AbilityCooldownManager.reduceCooldownPercent(player, Ability.MELEE, 0.5f);
 
         this.discard();
     }

@@ -89,6 +89,27 @@ public class AbilityCooldowns {
         this.onCooldownEnded(ability);
     }
 
+    void reduceCooldownPercent(Ability ability, float reductionAmount) {
+        CooldownInstance cooldown = this.cooldowns.get(ability);
+        if (cooldown == null) {
+            return;
+        }
+
+        int totalDuration = cooldown.getTotalDuration();
+        int currentRemainingTicks = cooldown.endTime - this.tickCount;
+        int ticksToSubtract = Math.round(totalDuration * reductionAmount);
+        int newRemainingTicks = currentRemainingTicks - ticksToSubtract;
+
+        if (newRemainingTicks <= 0) {
+            removeCooldown(ability);
+            return;
+        }
+
+        int newStartTime = cooldown.startTime - ticksToSubtract;
+        int newEndTime = cooldown.endTime - ticksToSubtract;
+        this.cooldowns.put(ability, new CooldownInstance(newStartTime, newEndTime));
+    }
+
     protected void onCooldownStarted(Ability ability, int ticks) {
     }
 
@@ -108,6 +129,10 @@ public class AbilityCooldowns {
                 ByteBufCodecs.INT, CooldownInstance::endTime,
                 CooldownInstance::new
         );
+
+        public int getTotalDuration() {
+            return endTime - startTime;
+        }
     }
 }
 

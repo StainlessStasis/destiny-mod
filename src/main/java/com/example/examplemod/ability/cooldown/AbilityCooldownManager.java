@@ -34,4 +34,10 @@ public class AbilityCooldownManager {
         var cooldowns = getCooldowns(entity);
         return cooldowns.getCooldownPercent(ability, partialTick);
     }
+
+    public static void reduceCooldownPercent(Entity entity, Ability ability, float reductionAmount) {
+        var cooldowns = getCooldowns(entity);
+        cooldowns.reduceCooldownPercent(ability, reductionAmount);
+        entity.setData(DestinyModAttachments.ABILITY_COOLDOWNS, cooldowns);
+    }
 }
