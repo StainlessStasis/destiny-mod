@@ -10,10 +10,6 @@ public class SeparatorTooltipComponent implements ClientTooltipComponent {
     private final int height;
     private final int color;
 
-    public SeparatorTooltipComponent() {
-        this(new TooltipWidthContext(), 5, 0xFFFFFFFF);
-    }
-
     public SeparatorTooltipComponent(TooltipWidthContext widthContext, int height, int color) {
         this.widthContext = widthContext;
         this.height = height;
@@ -32,6 +28,8 @@ public class SeparatorTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
-        graphics.fill(x, y, x+getWidth(font), y+1, this.color);
+        int renderX = x - 4;
+        int renderY = y - 2;
+        graphics.fill(renderX, renderY, renderX+getWidth(font), renderY+this.height, this.color);
     }
 }

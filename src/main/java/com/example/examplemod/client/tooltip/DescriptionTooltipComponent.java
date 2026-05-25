@@ -36,8 +36,8 @@ public class DescriptionTooltipComponent implements ClientTooltipComponent {
             maxLineWidth = Math.max(maxLineWidth, (int) (font.width(line) * TEXT_SCALE));
         }
 
-        this.calculatedWidth = Math.min(MAX_WIDTH, maxLineWidth + 4);
-        this.widthContext.setWidth(this.calculatedWidth+WIDTH_PADDING);
+        this.calculatedWidth = Math.min(MAX_WIDTH, maxLineWidth + 4) + WIDTH_PADDING;
+        this.widthContext.setWidth(this.calculatedWidth);
 
         this.calculatedHeight = (this.wrappedLines.size() * LINE_SPACING) + 4;
     }

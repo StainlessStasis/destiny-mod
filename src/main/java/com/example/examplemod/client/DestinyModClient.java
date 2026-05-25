@@ -58,25 +58,25 @@ public class DestinyModClient {
         List<Either<FormattedText, TooltipComponent>> newElements = new ArrayList<>();
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
-        var header = new HeaderComponent("MELTING POINT", "Sunbreaker Aspect", widthContext, 0xEE9D310F);
+        var header = new HeaderComponent("MELTING POINT", "Sunbreaker Aspect", widthContext, 0xFA9D310F);
         newElements.add(Either.right(header));
 
+        var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
+        newElements.add(Either.right(bar));
+
         Component desc = Component.literal("While standing in a ").withStyle(ChatFormatting.GRAY)
-                .append(Component.literal("Sunspot, ").withStyle(ChatFormatting.GOLD))
-                .append("and for 3s afterward, ").withStyle(ChatFormatting.GRAY)
+                .append(Component.literal("Sunspot").withStyle(ChatFormatting.GOLD))
+                .append(", and for 3s afterward, ").withStyle(ChatFormatting.GRAY)
                 .append(Component.literal("Throwing Hammer ").withStyle(ChatFormatting.WHITE))
                 .append("inflicts targets with ").withStyle(ChatFormatting.GRAY)
                 .append(Component.literal("Melting Point").withStyle(ChatFormatting.GOLD))
                 .append(". \n\nTargets affected by ").withStyle(ChatFormatting.GRAY)
-                .append(Component.literal("Melting Point").withStyle(ChatFormatting.GOLD))
+                .append(Component.literal("Melting Point ").withStyle(ChatFormatting.GOLD))
                 .append("take more damage from all sources, and the threshold to trigger an ")
-                .append("Ignition").withStyle(ChatFormatting.GOLD)
+                .append(Component.literal("Ignition ").withStyle(ChatFormatting.GOLD))
                 .append("is reduced.").withStyle(ChatFormatting.GRAY);
-        var description = new DescriptionComponent(desc, widthContext, 0xAA000000);
+        var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
         newElements.add(Either.right(description));
-
-        var bar = new SeparatorComponent(widthContext, 5, 0xFFAAFFFF);
-        newElements.add(Either.right(bar));
 
         elements.clear();
         elements.addAll(newElements);
