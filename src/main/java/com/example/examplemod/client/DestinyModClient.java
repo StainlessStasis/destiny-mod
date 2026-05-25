@@ -54,21 +54,10 @@ public class DestinyModClient {
         var mc = Minecraft.getInstance();
 
         TooltipWidthContext widthContext = new TooltipWidthContext();
-        var header = new HeaderComponent("MELTING POINT", "Sunbreaker Aspect", widthContext, 0xAA9D310F);
+        var header = new HeaderComponent("MELTING POINT", "Sunbreaker Aspect", widthContext, 0xEE9D310F);
         var bar = new SeparatorComponent(widthContext, 5, 0xFFAAFFFF);
         newElements.addFirst(Either.right(header));
         newElements.add(Either.right(bar));
-
-        Set<String> tooltipStrings = new HashSet<>();
-        tooltipStrings.add(header.title());
-        tooltipStrings.add(header.subtitle());
-        int maxWidth = 0;
-        for (String string : tooltipStrings) {
-            int width = mc.font.width(string);
-            if (width > maxWidth) maxWidth = width;
-        }
-        maxWidth += 16;
-        widthContext.setWidth(maxWidth);
 
         elements.clear();
         elements.addAll(newElements);
