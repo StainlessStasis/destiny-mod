@@ -43,7 +43,7 @@ public class HeaderTooltipComponent implements ClientTooltipComponent {
     public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
         int renderX = x - 4;
 
-        graphics.fill(renderX, y, renderX + getWidth(font), y + getHeight(font), this.color);
+        graphics.fill(renderX, y-2, renderX + getWidth(font), y + getHeight(font), this.color);
 
         var pose = graphics.pose();
         pose.pushMatrix();

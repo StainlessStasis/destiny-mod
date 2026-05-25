@@ -2,14 +2,18 @@ package com.example.examplemod.client;
 
 import com.example.examplemod.DestinyMod;
 import com.example.examplemod.client.entity_renderer.BonkHammerRenderer;
+import com.example.examplemod.client.tooltip.DescriptionTooltipComponent;
 import com.example.examplemod.client.tooltip.HeaderTooltipComponent;
+import com.example.examplemod.tooltip.DescriptionComponent;
 import com.example.examplemod.tooltip.HeaderComponent;
 import com.example.examplemod.tooltip.SeparatorComponent;
 import com.example.examplemod.client.tooltip.SeparatorTooltipComponent;
 import com.example.examplemod.entity.DestinyModEntities;
 import com.example.examplemod.tooltip.TooltipWidthContext;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -45,18 +49,33 @@ public class DestinyModClient {
     public static void registerTooltipFactories(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(SeparatorComponent.class, component -> new SeparatorTooltipComponent(component.widthContext(), component.height(), component.color()));
         event.register(HeaderComponent.class, component -> new HeaderTooltipComponent(component.title(), component.subtitle(), component.widthContext(), component.color()));
+        event.register(DescriptionComponent.class, component -> new DescriptionTooltipComponent(component.description(), component.widthContext(), component.color()));
     }
 
     @SubscribeEvent
     public static void onGatherTooltipComponents(RenderTooltipEvent.GatherComponents event) {
         var elements = event.getTooltipElements();
         List<Either<FormattedText, TooltipComponent>> newElements = new ArrayList<>();
-        var mc = Minecraft.getInstance();
-
         TooltipWidthContext widthContext = new TooltipWidthContext();
+
         var header = new HeaderComponent("MELTING POINT", "Sunbreaker Aspect", widthContext, 0xEE9D310F);
+        newElements.add(Either.right(header));
+
+        Component desc = Component.literal("While standing in a ").withStyle(ChatFormatting.GRAY)
+                .append(Component.literal("Sunspot, ").withStyle(ChatFormatting.GOLD))
+                .append("and for 3s afterward, ").withStyle(ChatFormatting.GRAY)
+                .append(Component.literal("Throwing Hammer ").withStyle(ChatFormatting.WHITE))
+                .append("inflicts targets with ").withStyle(ChatFormatting.GRAY)
+                .append(Component.literal("Melting Point").withStyle(ChatFormatting.GOLD))
+                .append(". \n\nTargets affected by ").withStyle(ChatFormatting.GRAY)
+                .append(Component.literal("Melting Point").withStyle(ChatFormatting.GOLD))
+                .append("take more damage from all sources, and the threshold to trigger an ")
+                .append("Ignition").withStyle(ChatFormatting.GOLD)
+                .append("is reduced.").withStyle(ChatFormatting.GRAY);
+        var description = new DescriptionComponent(desc, widthContext, 0xAA000000);
+        newElements.add(Either.right(description));
+
         var bar = new SeparatorComponent(widthContext, 5, 0xFFAAFFFF);
-        newElements.addFirst(Either.right(header));
         newElements.add(Either.right(bar));
 
         elements.clear();
