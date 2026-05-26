@@ -1,0 +1,13 @@
+{
+  "destinymod.configuration.title": "Example Mod Configs",
+  "destinymod.configuration.section.destinymod.common.toml": "Example Mod Configs",
+  "destinymod.configuration.section.destinymod.common.toml.title": "Example Mod Configs",
+  "destinymod.configuration.items": "Item List",
+  "destinymod.configuration.logDirtBlock": "Log Dirt Block",
+  "destinymod.configuration.magicNumberIntroduction": "Magic Number Text",
+  "destinymod.configuration.magicNumber": "Magic Number",
+
+  "tooltip.destinymod.melting_point.title": "MELTING POINT",
+  "tooltip.destinymod.melting_point.subtitle": "Sunbreaker Aspect",
+  "tooltip.destinymod.melting_point.desc": "While standing in a <keyword:Sunspot>, and for 3s afterward, <ability:Throwing Hammer> inflicts targets with <keyword:Melting Point> for 8s.\n\nTargets affected by <keyword:Melting Point> take 20% more damage from all sources, and the threshold to trigger an <keyword:Ignition> is reduced."
+}
