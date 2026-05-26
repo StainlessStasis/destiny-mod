@@ -61,7 +61,7 @@ public class AbilityHUD {
                     THROWING_HAMMER_SIZE, THROWING_HAMMER_SIZE
             );
 
-            int chargeBarY = renderY - 40;
+            int chargeBarY = renderY + THROWING_HAMMER_SIZE + 3;
             for (int i = 0; i < charges-1; i++) {
                 graphics.fill(
                         renderX,
@@ -70,7 +70,7 @@ public class AbilityHUD {
                         chargeBarY+2,
                         0xFFC35922
                 );
-                chargeBarY += 4;
+                chargeBarY += 3;
             }
         }
 
