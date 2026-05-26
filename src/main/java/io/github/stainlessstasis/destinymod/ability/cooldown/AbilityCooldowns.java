@@ -1,13 +1,11 @@
 package io.github.stainlessstasis.destinymod.ability.cooldown;
 
 import io.github.stainlessstasis.destinymod.ability.Ability;
-import io.github.stainlessstasis.destinymod.ability.AbilityType;
 import com.google.common.collect.Maps;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -18,10 +16,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 
 public class AbilityCooldowns {
-    private final Map<AbilityType, CooldownInstance> cooldowns = Maps.newHashMap();
+    private final Map<Ability, CooldownInstance> cooldowns = Maps.newHashMap();
     private int tickCount;
 
-    private static final Codec<Map<AbilityType, CooldownInstance>> MAP_CODEC = Codec.unboundedMap(AbilityType.CODEC, CooldownInstance.CODEC);
+    private static final Codec<Map<Ability, CooldownInstance>> MAP_CODEC = Codec.unboundedMap(Ability.CODEC, CooldownInstance.CODEC);
 
     public static final MapCodec<AbilityCooldowns> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             MAP_CODEC.fieldOf("cooldowns").forGetter(abilityCooldowns -> abilityCooldowns.cooldowns),
@@ -31,7 +29,7 @@ public class AbilityCooldowns {
     public static final StreamCodec<ByteBuf, AbilityCooldowns> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.map(
                     HashMap::new,
-                    ByteBufCodecs.fromCodec(AbilityType.CODEC),
+                    ByteBufCodecs.fromCodec(Ability.CODEC),
                     CooldownInstance.STREAM_CODEC
             ),
             abilityCooldowns -> abilityCooldowns.cooldowns,
@@ -39,7 +37,7 @@ public class AbilityCooldowns {
             AbilityCooldowns::new
     );
 
-    private AbilityCooldowns(Map<AbilityType, CooldownInstance> cooldownInstances, int tickCount) {
+    private AbilityCooldowns(Map<Ability, CooldownInstance> cooldownInstances, int tickCount) {
         this.tickCount = tickCount;
         this.cooldowns.putAll(cooldownInstances);
     }
@@ -50,18 +48,22 @@ public class AbilityCooldowns {
         return cooldowns.isEmpty();
     }
 
-    public boolean isOnCooldown(AbilityType type) {
-        return !hasCharges(type);
+    public boolean isOnCooldown(Ability ability) {
+        return !hasCharges(ability);
     }
 
-    public boolean hasCharges(AbilityType type) {
-        CooldownInstance cooldown = this.cooldowns.get(type);
-        if (cooldown == null) return true;
-        return cooldown.currentCharges > 0;
+    public boolean hasCharges(Ability ability) {
+        return getCharges(ability) > 0;
     }
 
-    public float getCooldownPercent(AbilityType type, float partialTicks) {
-        CooldownInstance cooldown = this.cooldowns.get(type);
+    public int getCharges(Ability ability) {
+        CooldownInstance cooldown = this.cooldowns.get(ability);
+        if (cooldown == null) return 1;
+        return cooldown.currentCharges();
+    }
+
+    public float getCooldownPercent(Ability ability, float partialTicks) {
+        CooldownInstance cooldown = this.cooldowns.get(ability);
         if (cooldown != null) {
             float f = (float)(cooldown.endTime - cooldown.startTime);
             float f1 = (float)cooldown.endTime - ((float)this.tickCount + partialTicks);
@@ -71,98 +73,132 @@ public class AbilityCooldowns {
         }
     }
 
-    public void tick(Function<AbilityType, Ability> abilityLookup) {
+    public void tick() {
         ++this.tickCount;
         if (this.cooldowns.isEmpty()) return;
 
-        Iterator<Map.Entry<AbilityType, CooldownInstance>> iterator = this.cooldowns.entrySet().iterator();
+        Iterator<Map.Entry<Ability, CooldownInstance>> iterator = this.cooldowns.entrySet().iterator();
 
         while (iterator.hasNext()) {
-            Map.Entry<AbilityType, CooldownInstance> entry = iterator.next();
-            AbilityType type = entry.getKey();
+            Map.Entry<Ability, CooldownInstance> entry = iterator.next();
+            Ability ability = entry.getKey();
             CooldownInstance instance = entry.getValue();
 
             if (instance.endTime <= this.tickCount) {
-                Ability ability = abilityLookup.apply(type);
                 int nextCharges = instance.currentCharges() + 1;
 
-                if (nextCharges >= ability.maxCharges()) {
+                if (nextCharges >= instance.maxCharges()) {
                     iterator.remove();
-                    this.onCooldownEnded(type);
+                    this.onCooldownEnded(ability);
                 } else {
                     entry.setValue(new CooldownInstance(
                             nextCharges,
+                            instance.maxCharges(),
+                            instance.cooldownTicks(),
                             this.tickCount,
-                            this.tickCount + ability.cooldownTicks()
+                            this.tickCount + instance.cooldownTicks()
                     ));
                 }
             }
         }
     }
 
-    public void consumeCharge(AbilityType type, int cooldownTicks, int maxCharges) {
-        CooldownInstance instance = this.cooldowns.get(type);
+    void consumeCharge(Ability ability, int cooldownTicks, int maxCharges) {
+        CooldownInstance instance = this.cooldowns.get(ability);
 
         if (instance == null) {
-            this.cooldowns.put(type, new CooldownInstance(maxCharges - 1, this.tickCount, this.tickCount + cooldownTicks));
-            this.onCooldownStarted(type, cooldownTicks);
+            this.cooldowns.put(ability, new CooldownInstance(maxCharges - 1, maxCharges, cooldownTicks, this.tickCount, this.tickCount + cooldownTicks));
+            this.onCooldownStarted(ability, cooldownTicks);
         } else if (instance.currentCharges() > 0) {
-            this.cooldowns.put(type, new CooldownInstance(
+            this.cooldowns.put(ability, new CooldownInstance(
                     instance.currentCharges() - 1,
+                    instance.maxCharges(),
+                    instance.cooldownTicks(),
                     instance.startTime(),
                     instance.endTime()
             ));
         }
     }
 
-    void addCooldown(AbilityType type, int cooldownTicks, int maxCharges) {
-        this.cooldowns.put(type, new CooldownInstance(maxCharges, this.tickCount, this.tickCount + cooldownTicks));
-        this.onCooldownStarted(type, cooldownTicks);
+    void addCooldown(Ability ability) {
+        CooldownInstance instance = this.cooldowns.get(ability);
+        int currentCharges = instance != null ? instance.currentCharges() : ability.maxCharges();
+        int nextCharges = Math.max(0, currentCharges - 1);
+
+        this.cooldowns.put(ability, new CooldownInstance(
+                nextCharges,
+                ability.maxCharges(),
+                ability.cooldownTicks(),
+                this.tickCount,
+                this.tickCount + ability.cooldownTicks()
+        ));
+        this.onCooldownStarted(ability, ability.cooldownTicks());
     }
 
-    void removeCooldown(AbilityType type) {
-        this.cooldowns.remove(type);
-        this.onCooldownEnded(type);
+    void removeCooldown(Ability ability) {
+        this.cooldowns.remove(ability);
+        this.onCooldownEnded(ability);
     }
 
-    void reduceCooldownPercent(AbilityType type, float reductionAmount) {
-        CooldownInstance cooldown = this.cooldowns.get(type);
-        if (cooldown == null) {
-            return;
-        }
+    void reduceCooldownPercent(Ability ability, float reductionAmount) {
+        CooldownInstance cooldown = this.cooldowns.get(ability);
+        if (cooldown == null) return;
 
         int totalDuration = cooldown.getTotalDuration();
         int currentRemainingTicks = cooldown.endTime - this.tickCount;
         int ticksToSubtract = Math.round(totalDuration * reductionAmount);
         int newRemainingTicks = currentRemainingTicks - ticksToSubtract;
 
-        if (newRemainingTicks <= 0) {
-            removeCooldown(type);
+        if (newRemainingTicks > 0) {
+            int newStartTime = cooldown.startTime - ticksToSubtract;
+            int newEndTime = cooldown.endTime - ticksToSubtract;
+            this.cooldowns.put(ability, new CooldownInstance(
+                    cooldown.currentCharges(),
+                    cooldown.maxCharges(),
+                    cooldown.cooldownTicks(),
+                    newStartTime,
+                    newEndTime
+            ));
             return;
         }
 
-        int newStartTime = cooldown.startTime - ticksToSubtract;
-        int newEndTime = cooldown.endTime - ticksToSubtract;
-        this.cooldowns.put(type, new CooldownInstance(newStartTime, newEndTime));
+        int nextCharges = cooldown.currentCharges() + 1;
+        if (nextCharges >= cooldown.maxCharges()) {
+            this.cooldowns.remove(ability);
+            this.onCooldownEnded(ability);
+        } else {
+            this.cooldowns.put(ability, new CooldownInstance(
+                    nextCharges,
+                    cooldown.maxCharges(),
+                    cooldown.cooldownTicks(),
+                    this.tickCount,
+                    this.tickCount + cooldown.cooldownTicks()
+            ));
+        }
     }
 
-    protected void onCooldownStarted(AbilityType type, int ticks) {
+    protected void onCooldownStarted(Ability ability, int ticks) {
     }
 
-    protected void onCooldownEnded(AbilityType type) {
+    protected void onCooldownEnded(Ability ability) {
     }
 
-    record CooldownInstance(int currentCharges, int startTime, int endTime) {
+    record CooldownInstance(int currentCharges, int maxCharges, int cooldownTicks, int startTime, int endTime) {
         public static final Codec<CooldownInstance> CODEC =
                 RecordCodecBuilder.create(instance -> instance.group(
-                                Codec.INT.fieldOf("currentCharges").forGetter(CooldownInstance::currentCharges),
-                                Codec.INT.fieldOf("startTime").forGetter(CooldownInstance::startTime),
-                                Codec.INT.fieldOf("endTime").forGetter(CooldownInstance::endTime)
+                            Codec.INT.fieldOf("currentCharges").forGetter(CooldownInstance::currentCharges),
+                            Codec.INT.fieldOf("maxCharges").forGetter(CooldownInstance::maxCharges),
+                            // cooldownTicks doesn't technically need to exist right now, but getTotalDuration may change in the future
+                            Codec.INT.fieldOf("cooldownTicks").forGetter(CooldownInstance::cooldownTicks),
+                            Codec.INT.fieldOf("startTime").forGetter(CooldownInstance::startTime),
+                            Codec.INT.fieldOf("endTime").forGetter(CooldownInstance::endTime)
                         ).apply(instance, CooldownInstance::new)
                 );
 
         public static final StreamCodec<ByteBuf, CooldownInstance> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.INT, CooldownInstance::currentCharges,
+                ByteBufCodecs.INT, CooldownInstance::maxCharges,
+                ByteBufCodecs.INT, CooldownInstance::cooldownTicks,
                 ByteBufCodecs.INT, CooldownInstance::startTime,
                 ByteBufCodecs.INT, CooldownInstance::endTime,
                 CooldownInstance::new

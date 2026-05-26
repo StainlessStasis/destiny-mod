@@ -1,5 +1,7 @@
 package io.github.stainlessstasis.destinymod.ability;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,4 +13,10 @@ public record Ability(AbilityType abilityType, int cooldownTicks, int maxCharges
             ByteBufCodecs.VAR_INT, Ability::maxCharges,
             Ability::new
     );
+
+    public static final Codec<Ability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            AbilityType.CODEC.fieldOf("abilityType").forGetter(Ability::abilityType),
+            Codec.INT.fieldOf("cooldownTicks").forGetter(Ability::cooldownTicks),
+            Codec.INT.fieldOf("maxCharges").forGetter(Ability::maxCharges)
+    ).apply(instance, Ability::new));
 }

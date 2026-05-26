@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.client.input;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;

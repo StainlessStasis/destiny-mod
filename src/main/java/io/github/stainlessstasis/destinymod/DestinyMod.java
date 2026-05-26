@@ -1,5 +1,8 @@
 package io.github.stainlessstasis.destinymod;
 
+import io.github.stainlessstasis.destinymod.ability.Abilities;
+import io.github.stainlessstasis.destinymod.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
 import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
@@ -7,6 +10,7 @@ import io.github.stainlessstasis.destinymod.ability.world_interaction.BlockDestr
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -64,6 +68,12 @@ public class DestinyMod {
 
             AbilityCooldowns abilityCooldowns = player.getData(DestinyModAttachments.ABILITY_COOLDOWNS);
             abilityCooldowns.tick();
+        }
+
+        @SubscribeEvent
+        public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+            Player player = event.getEntity();
+            PlayerAbilities.get(player).equip(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
         }
     }
 }

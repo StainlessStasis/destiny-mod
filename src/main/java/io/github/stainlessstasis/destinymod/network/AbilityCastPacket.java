@@ -1,13 +1,14 @@
 package io.github.stainlessstasis.destinymod.network;
 
+import io.github.stainlessstasis.destinymod.ability.Abilities;
 import io.github.stainlessstasis.destinymod.ability.Ability;
 import io.github.stainlessstasis.destinymod.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
 import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -19,39 +20,37 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record AbilityCastPacket(Ability ability) implements CustomPacketPayload {
+public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<@NotNull AbilityCastPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(DestinyMod.MODID, "ability_cast_packet"));
 
     public static final StreamCodec<ByteBuf, AbilityCastPacket> STREAM_CODEC = StreamCodec.composite(
-            Ability.STREAM_CODEC, AbilityCastPacket::ability,
+            AbilityType.STREAM_CODEC, AbilityCastPacket::slot,
             AbilityCastPacket::new
     );
 
     public static class Handler {
         public static void handleServerbound(final AbilityCastPacket packet, final IPayloadContext context) {
             // TODO: move this shit to its own class
-            Ability ability = packet.ability();
             Player player = context.player();
 
-            switch (ability.abilityType()) {
-                case MELEE -> {
-                    if (AbilityCooldownManager.isOnCooldown(player, ability)) {
-                        float percent = AbilityCooldownManager.getCooldownPercent(player, ability);
-                        context.player().sendSystemMessage(Component.literal("Ability is on cooldown, idiot ("+percent+")"));
-                        return;
-                    }
-                    context.enqueueWork(() -> {
-                        player.swing(InteractionHand.MAIN_HAND);
-
-                        if (player.level() instanceof ServerLevel serverLevel) {
-                            BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
-                                    BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
-                            );
-                            hammer.setBaseDamage(7f);
-                            AbilityCooldownManager.addCooldown(player, ability, ability.cooldownTicks());
-                        }
-                    });
+            if (packet.slot == AbilityType.MELEE) {
+                var ability = PlayerAbilities.getEquippedMelee(player);
+                if (AbilityCooldownManager.isOnCooldown(player, ability)) {
+                    float percent = AbilityCooldownManager.getCooldownPercent(player, ability);
+                    context.player().sendSystemMessage(Component.literal("Ability is on cooldown, idiot ("+percent+")"));
+                    return;
                 }
+                context.enqueueWork(() -> {
+                    player.swing(InteractionHand.MAIN_HAND);
+
+                    if (player.level() instanceof ServerLevel serverLevel) {
+                        BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
+                                BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
+                        );
+                        hammer.setBaseDamage(7f);
+                        AbilityCooldownManager.addCooldown(player, ability);
+                    }
+                });
             }
         }
     }

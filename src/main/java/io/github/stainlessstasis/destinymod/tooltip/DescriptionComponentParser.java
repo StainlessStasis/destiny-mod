@@ -37,7 +37,7 @@ public class DescriptionComponentParser {
             MutableComponent styledPart = Component.literal(tagText);
             switch (tagType.toLowerCase()) {
                 case "keyword" -> styledPart.withStyle(ChatFormatting.GOLD);
-                case "ability" -> styledPart.withStyle(ChatFormatting.WHITE);
+                case "slot" -> styledPart.withStyle(ChatFormatting.WHITE);
                 default -> styledPart.withStyle(ChatFormatting.GRAY);
             }
 
