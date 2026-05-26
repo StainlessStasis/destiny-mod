@@ -28,8 +28,8 @@ public class SeparatorTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
-        int renderX = x - 4;
+        int renderX = x - 2;
         int renderY = y - 2;
-        graphics.fill(renderX, renderY, renderX+getWidth(font), renderY+this.height, this.color);
+        graphics.fill(renderX, renderY, renderX+4+getWidth(font), renderY+this.height, this.color);
     }
 }

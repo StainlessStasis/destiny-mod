@@ -54,8 +54,8 @@ public class DescriptionTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
-        int renderX = x - 4;
-        graphics.fill(renderX, y-2, renderX + getWidth(font), y + getHeight(font), this.color);
+        int renderX = x-2;
+        graphics.fill(renderX, y-2, renderX+4+getWidth(font), y + getHeight(font), this.color);
 
         var pose = graphics.pose();
         int currentY = y + 2;
@@ -65,7 +65,7 @@ public class DescriptionTooltipComponent implements ClientTooltipComponent {
             pose.translate(x, currentY);
             pose.scale(TEXT_SCALE);
 
-            graphics.text(font, line, 0, 0, 0xFFFFFFFF, true);
+            graphics.text(font, line, 2, 0, 0xFFFFFFFF, true);
             pose.popMatrix();
 
             currentY += LINE_SPACING;
