@@ -122,17 +122,31 @@ public class AbilityCooldowns {
 
     void addCooldown(Ability ability) {
         CooldownInstance instance = this.cooldowns.get(ability);
-        int currentCharges = instance != null ? instance.currentCharges() : ability.maxCharges();
-        int nextCharges = Math.max(0, currentCharges - 1);
 
-        this.cooldowns.put(ability, new CooldownInstance(
-                nextCharges,
-                ability.maxCharges(),
-                ability.cooldownTicks(),
-                this.tickCount,
-                this.tickCount + ability.cooldownTicks()
-        ));
-        this.onCooldownStarted(ability, ability.cooldownTicks());
+        if (instance == null) {
+            this.cooldowns.put(ability, new CooldownInstance(
+                    ability.maxCharges() - 1,
+                    ability.maxCharges(),
+                    ability.cooldownTicks(),
+                    this.tickCount,
+                    this.tickCount + ability.cooldownTicks()
+            ));
+            this.onCooldownStarted(ability, ability.cooldownTicks());
+        } else {
+            int currentCharges = instance.currentCharges();
+            int nextCharges = Math.max(0, currentCharges - 1);
+
+            this.cooldowns.put(ability, new CooldownInstance(
+                    nextCharges,
+                    instance.maxCharges(),
+                    instance.cooldownTicks(),
+                    instance.startTime(),
+                    instance.endTime()
+            ));
+            if (currentCharges == instance.maxCharges()) {
+                this.onCooldownStarted(ability, ability.cooldownTicks());
+            }
+        }
     }
 
     void removeCooldown(Ability ability) {

@@ -26,6 +26,16 @@ public class AbilityCooldownManager {
         return cooldowns.isOnCooldown(ability);
     }
 
+    public static boolean hasCharges(Entity entity, Ability ability) {
+        var cooldowns = getCooldowns(entity);
+        return cooldowns.hasCharges(ability);
+    }
+
+    public static int getCharges(Entity entity, Ability ability) {
+        var cooldowns = getCooldowns(entity);
+        return cooldowns.getCharges(ability);
+    }
+
     public static float getCooldownPercent(Entity entity, Ability ability) {
         return getCooldownPercent(entity, ability, 0);
     }
