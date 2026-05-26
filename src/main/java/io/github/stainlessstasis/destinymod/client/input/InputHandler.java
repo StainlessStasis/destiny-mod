@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client.input;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.ability.Ability;
+import io.github.stainlessstasis.destinymod.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +36,7 @@ public class InputHandler {
 
         if (key == DestinyModKeybinds.MELEE.get().getKey().getValue()) {
             player.swing(InteractionHand.MAIN_HAND);
-            ClientPacketDistributor.sendToServer(new AbilityCastPacket(Ability.MELEE));
+            ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.MELEE));
         }
     }
 }

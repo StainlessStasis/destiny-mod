@@ -1,25 +1,14 @@
 package io.github.stainlessstasis.destinymod.ability;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.util.StringRepresentable;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public enum Ability implements StringRepresentable {
-    MELEE("melee");
-
-    public static final Codec<Ability> CODEC = StringRepresentable.fromEnum(Ability::values);
-
-    private final String name;
-    Ability(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getSerializedName() {
-        return this.name;
-    }
-
-    @Override
-    public String toString() {
-        return this.name;
-    }
+public record Ability(AbilityType abilityType, int cooldownTicks, int maxCharges) {
+    public static final StreamCodec<ByteBuf, Ability> STREAM_CODEC = StreamCodec.composite(
+            AbilityType.STREAM_CODEC, Ability::abilityType,
+            ByteBufCodecs.VAR_INT, Ability::cooldownTicks,
+            ByteBufCodecs.VAR_INT, Ability::maxCharges,
+            Ability::new
+    );
 }
