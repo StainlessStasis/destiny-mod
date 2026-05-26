@@ -1,10 +1,12 @@
 package io.github.stainlessstasis.destinymod.client.input;
 
+import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.ability.Ability;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
@@ -12,7 +14,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = DestinyMod.MODID, value = Dist.CLIENT)
 public class InputHandler {
     @SubscribeEvent
     public static void onMouseInput(InputEvent.MouseButton.Post event) {
