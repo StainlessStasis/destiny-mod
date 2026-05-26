@@ -58,7 +58,7 @@ public class AbilityCooldowns {
 
     public int getCharges(Ability ability) {
         CooldownInstance cooldown = this.cooldowns.get(ability);
-        if (cooldown == null) return 1;
+        if (cooldown == null) return ability.maxCharges();
         return cooldown.currentCharges();
     }
 

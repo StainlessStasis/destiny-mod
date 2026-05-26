@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.client.ui;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
 import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldownManager;
+import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldowns;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -26,11 +27,13 @@ public class AbilityHUD {
         if (player == null || mc.options.hideGui) return;
 
         int renderX = THROWING_HAMMER_SIZE/2;
-        int renderY = mc.getWindow().getGuiScaledHeight() - 4 - THROWING_HAMMER_SIZE;
+        int renderY = mc.getWindow().getGuiScaledHeight() - (int)(THROWING_HAMMER_SIZE * 1.5f);
         var ability = PlayerAbilities.getEquippedMelee(player);
+        var graphics = event.getGuiGraphics();
 
+        // border
         int borderSize = THROWING_HAMMER_SIZE+2;
-        event.getGuiGraphics().blit(
+        graphics.blit(
                 RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
                 renderX-1, renderY-1, 0f, 0f,
                 borderSize, borderSize,
@@ -38,7 +41,8 @@ public class AbilityHUD {
                 borderSize, borderSize
         );
 
-        event.getGuiGraphics().blit(
+        // hammer
+        graphics.blit(
                 RenderPipelines.GUI_TEXTURED, THROWING_HAMMER,
                 renderX, renderY, 0f, 0f,
                 THROWING_HAMMER_SIZE, THROWING_HAMMER_SIZE,
@@ -46,16 +50,53 @@ public class AbilityHUD {
                 THROWING_HAMMER_SIZE, THROWING_HAMMER_SIZE
         );
 
-        if (AbilityCooldownManager.hasCharges(player, ability)) {
-            event.getGuiGraphics().blit(
+        // charge background and amounts
+        int charges = AbilityCooldownManager.getCharges(player, ability);
+        if (charges > 0) {
+            graphics.blit(
                     RenderPipelines.GUI_TEXTURED, THROWING_HAMMER_CHARGED,
                     renderX, renderY, 0f, 0f,
                     THROWING_HAMMER_SIZE, THROWING_HAMMER_SIZE,
                     THROWING_HAMMER_SIZE, THROWING_HAMMER_SIZE,
                     THROWING_HAMMER_SIZE, THROWING_HAMMER_SIZE
             );
+
+            int chargeBarY = renderY - 40;
+            for (int i = 0; i < charges-1; i++) {
+                graphics.fill(
+                        renderX,
+                        chargeBarY,
+                        renderX + THROWING_HAMMER_SIZE,
+                        chargeBarY+2,
+                        0xFFC35922
+                );
+                chargeBarY += 4;
+            }
         }
 
-        System.out.println(AbilityCooldownManager.getCooldownPercent(player, ability));
+        // cooldown
+        float cooldownPercent = AbilityCooldownManager.getCooldownPercent(player, ability, event.getPartialTick().getGameTimeDeltaTicks());
+        if (cooldownPercent > 0f) {
+            int boxBottom = renderY + THROWING_HAMMER_SIZE;
+            int overlayHeight = boxBottom - (int)((1-cooldownPercent) * THROWING_HAMMER_SIZE);
+
+            // main fill
+            graphics.fill(
+                    renderX,
+                    overlayHeight,
+                    renderX + THROWING_HAMMER_SIZE,
+                    boxBottom,
+                    0x55555555
+            );
+
+            // highlight bar
+            graphics.fill(
+                    renderX,
+                    overlayHeight,
+                    renderX + THROWING_HAMMER_SIZE,
+                    overlayHeight-1,
+                    0x99FFFFFF
+            );
+        }
     }
 }
