@@ -4,15 +4,14 @@ import com.example.examplemod.DestinyMod;
 import com.example.examplemod.client.entity_renderer.BonkHammerRenderer;
 import com.example.examplemod.client.tooltip.DescriptionTooltipComponent;
 import com.example.examplemod.client.tooltip.HeaderTooltipComponent;
-import com.example.examplemod.tooltip.DescriptionComponent;
-import com.example.examplemod.tooltip.HeaderComponent;
-import com.example.examplemod.tooltip.SeparatorComponent;
+import com.example.examplemod.tooltip.*;
 import com.example.examplemod.client.tooltip.SeparatorTooltipComponent;
 import com.example.examplemod.entity.DestinyModEntities;
-import com.example.examplemod.tooltip.TooltipWidthContext;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
@@ -58,23 +57,15 @@ public class DestinyModClient {
         List<Either<FormattedText, TooltipComponent>> newElements = new ArrayList<>();
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
-        var header = new HeaderComponent("MELTING POINT", "Sunbreaker Aspect", widthContext, 0xFA9D310F);
+        String title = Language.getInstance().getOrDefault("tooltip.examplemod.melting_point.title");
+        String subtitle = Language.getInstance().getOrDefault("tooltip.examplemod.melting_point.subtitle");
+        var header = new HeaderComponent(title, subtitle, widthContext, 0xFA9D310F);
         newElements.add(Either.right(header));
 
         var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
         newElements.add(Either.right(bar));
 
-        Component desc = Component.literal("While standing in a ").withStyle(ChatFormatting.GRAY)
-                .append(Component.literal("Sunspot").withStyle(ChatFormatting.GOLD))
-                .append(", and for 3s afterward, ").withStyle(ChatFormatting.GRAY)
-                .append(Component.literal("Throwing Hammer ").withStyle(ChatFormatting.WHITE))
-                .append("inflicts targets with ").withStyle(ChatFormatting.GRAY)
-                .append(Component.literal("Melting Point").withStyle(ChatFormatting.GOLD))
-                .append(". \n\nTargets affected by ").withStyle(ChatFormatting.GRAY)
-                .append(Component.literal("Melting Point ").withStyle(ChatFormatting.GOLD))
-                .append("take more damage from all sources, and the threshold to trigger an ")
-                .append(Component.literal("Ignition ").withStyle(ChatFormatting.GOLD))
-                .append("is reduced.").withStyle(ChatFormatting.GRAY);
+        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.examplemod.melting_point.desc");
         var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
         newElements.add(Either.right(description));
 
