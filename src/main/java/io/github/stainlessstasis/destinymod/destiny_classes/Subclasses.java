@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.destiny_classes;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 public class Subclasses {

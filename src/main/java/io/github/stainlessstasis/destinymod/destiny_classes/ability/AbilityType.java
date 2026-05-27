@@ -7,7 +7,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 
 public enum AbilityType implements StringRepresentable {
-    MELEE("melee");
+    MELEE("melee"),
+    GRENADE("grenade"),
+    CLASS_ABILITY("class"),
+    SUPER("super");
 
     public static final Codec<AbilityType> CODEC = StringRepresentable.fromEnum(AbilityType::values);
     public static final StreamCodec<ByteBuf, AbilityType> STREAM_CODEC = ByteBufCodecs.BYTE.map(

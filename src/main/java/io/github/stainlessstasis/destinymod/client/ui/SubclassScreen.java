@@ -2,11 +2,15 @@ package io.github.stainlessstasis.destinymod.client.ui;
 
 import io.github.stainlessstasis.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+
+import java.util.List;
 
 import static io.github.stainlessstasis.destinymod.client.ui.UIElements.*;
 import static io.github.stainlessstasis.destinymod.client.ui.UIElements.THROWING_HAMMER;
@@ -56,26 +60,29 @@ public class SubclassScreen extends Screen {
         int iconSize = (int) (ABILITY_ICON_SIZE * scalar);
         int borderSize = iconSize + 2;
 
-        graphics.blit(
-                RenderPipelines.GUI_TEXTURED, THROWING_HAMMER,
-                renderX, renderY, 0f, 0f,
-                iconSize, iconSize,
-                iconSize, iconSize,
-                iconSize, iconSize
-        );
-
-        graphics.blit(
-                RenderPipelines.GUI_TEXTURED, THROWING_HAMMER_CHARGED,
-                renderX, renderY, 0f, 0f,
-                iconSize, iconSize,
-                iconSize, iconSize,
-                iconSize, iconSize
-        );
-
         // each of these components is already scaled, so no scalar, or it will break
         int verticalSpacing = scaledScreenHeight - (renderY*2) - (iconSize*2);
         verticalSpacing = (int) (verticalSpacing/3.5f);
         for (int i = 0; i < 4; i++) {
+            var subclassIcons = SUBCLASS_ICONS.get(subclass);
+            AbilityType abilityType = switch(i) {
+                case 0 -> AbilityType.SUPER;
+                case 1 -> AbilityType.MELEE;
+                case 2 -> AbilityType.GRENADE;
+                case 3 -> AbilityType.CLASS_ABILITY;
+                default -> throw new IllegalStateException("Unexpected value: " + i);
+            };
+
+            for (Identifier texture : subclassIcons.getIcons(abilityType, 0)) {
+                graphics.blit(
+                        RenderPipelines.GUI_TEXTURED, texture,
+                        renderX, renderY, 0f, 0f,
+                        iconSize, iconSize,
+                        iconSize, iconSize,
+                        iconSize, iconSize
+                );
+            }
+
             graphics.blit(
                     RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
                     renderX-1, renderY-1, 0f, 0f,
@@ -90,10 +97,20 @@ public class SubclassScreen extends Screen {
                 if (j % 3 == 0) {
                     gridX = renderX + iconSize + (iconSize/4);
                     if (j == 3) {
-                        gridY += iconSize + (iconSize/8);
+                        gridY += iconSize + (iconSize/8) + 1;
                     }
                 } else {
-                    gridX += iconSize + (iconSize/8);
+                    gridX += iconSize + (iconSize/8) + 1;
+                }
+
+                for (Identifier texture : subclassIcons.getIcons(abilityType, j+1)) {
+                    graphics.blit(
+                            RenderPipelines.GUI_TEXTURED, texture,
+                            gridX, gridY, 0f, 0f,
+                            iconSize, iconSize,
+                            iconSize, iconSize,
+                            iconSize, iconSize
+                    );
                 }
 
                 graphics.blit(

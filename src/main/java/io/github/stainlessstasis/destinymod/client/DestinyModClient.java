@@ -55,7 +55,7 @@ public class DestinyModClient {
 
         String title = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.title");
         String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.subtitle");
-        var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR.withOpacity(0.8f));
+        var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR_DARK.withOpacity(0.95f));
         newElements.add(Either.right(header));
 
         var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
