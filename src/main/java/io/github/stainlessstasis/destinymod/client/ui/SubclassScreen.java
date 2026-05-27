@@ -74,7 +74,7 @@ public class SubclassScreen extends Screen {
 
         // each of these components is already scaled, so no scalar, or it will break
         int verticalSpacing = scaledScreenHeight - (renderY*2) - (iconSize*2);
-        verticalSpacing = (int) (verticalSpacing / 3f);
+        verticalSpacing = (int) (verticalSpacing/3.5f);
         for (int i = 0; i < 4; i++) {
             graphics.blit(
                     RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
