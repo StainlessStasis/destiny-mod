@@ -1,19 +1,28 @@
 package io.github.stainlessstasis.destinymod.client.ui;
 
+import com.mojang.datafixers.util.Either;
 import io.github.stainlessstasis.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.tooltip.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.stainlessstasis.destinymod.client.ui.UIElements.*;
-import static io.github.stainlessstasis.destinymod.client.ui.UIElements.THROWING_HAMMER;
 import static io.github.stainlessstasis.destinymod.client.ui.UIElements.ABILITY_ICON_SIZE;
 
 public class SubclassScreen extends Screen {
@@ -73,7 +82,9 @@ public class SubclassScreen extends Screen {
                 default -> throw new IllegalStateException("Unexpected value: " + i);
             };
 
-            for (Identifier texture : subclassIcons.getIcons(abilityType, 0)) {
+            // The main 4 icons (super, melee, grenade, class)
+            List<Identifier> abilityIcons = subclassIcons.getIcons(abilityType, 0);
+            for (Identifier texture : abilityIcons) {
                 graphics.blit(
                         RenderPipelines.GUI_TEXTURED, texture,
                         renderX, renderY, 0f, 0f,
@@ -83,6 +94,8 @@ public class SubclassScreen extends Screen {
                 );
             }
 
+            // TODO: ability tooltip
+
             graphics.blit(
                     RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
                     renderX-1, renderY-1, 0f, 0f,
@@ -91,6 +104,7 @@ public class SubclassScreen extends Screen {
                     borderSize, borderSize
             );
 
+            // Aspect icons grid
             int gridX = renderX;
             int gridY = renderY;
             for (int j = 0; j < 6; j++) {
@@ -103,7 +117,8 @@ public class SubclassScreen extends Screen {
                     gridX += iconSize + (iconSize/8) + 1;
                 }
 
-                for (Identifier texture : subclassIcons.getIcons(abilityType, j+1)) {
+                List<Identifier> aspectIcons = subclassIcons.getIcons(abilityType, j + 1);
+                for (Identifier texture : aspectIcons) {
                     graphics.blit(
                             RenderPipelines.GUI_TEXTURED, texture,
                             gridX, gridY, 0f, 0f,
@@ -111,6 +126,19 @@ public class SubclassScreen extends Screen {
                             iconSize, iconSize,
                             iconSize, iconSize
                     );
+                }
+
+                // Aspect tooltips
+                if (!aspectIcons.isEmpty() && isHovering(mouseX, mouseY, gridX, gridY, iconSize)) {
+                    List<String> aspectNames = switch (abilityType) {
+                        case SUPER -> subclassIcons.superIcons();
+                        case MELEE -> subclassIcons.meleeIcons();
+                        case GRENADE -> subclassIcons.grenadeIcons();
+                        case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
+                    };
+                    if (j + 1 < aspectNames.size()) {
+                        createAspectTooltip(graphics, aspectNames.get(j+1), mouseX, mouseY);
+                    }
                 }
 
                 graphics.blit(
@@ -124,6 +152,30 @@ public class SubclassScreen extends Screen {
 
             renderY += verticalSpacing;
         }
+    }
+
+    private void createAspectTooltip(GuiGraphicsExtractor graphics, String aspectName, int x, int y) {
+        List<Either<FormattedText, TooltipComponent>> elements = new ArrayList<>();
+        TooltipWidthContext widthContext = new TooltipWidthContext();
+
+        String title = Language.getInstance().getOrDefault("tooltip.destinymod." + aspectName + ".title");
+        String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + aspectName + ".subtitle");
+
+        var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR_DARK.withOpacity(0.95f));
+        elements.add(Either.right(header));
+
+        var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
+        elements.add(Either.right(bar));
+
+        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + aspectName + ".desc");
+        var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
+        elements.add(Either.right(description));
+
+        graphics.setComponentTooltipFromElementsForNextFrame(this.font, elements, x, y, ItemStack.EMPTY);
+    }
+
+    private boolean isHovering(int mouseX, int mouseY, int x, int y, int scale) {
+        return mouseX >= x && mouseX < x + scale && mouseY >= y && mouseY < y + scale;
     }
 
     @Override

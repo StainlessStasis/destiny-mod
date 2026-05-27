@@ -33,15 +33,9 @@ public class UIElements {
      */
     public record SubclassIcons(List<String> superIcons, List<String> meleeIcons, List<String> grenadeIcons, List<String> classAbilityIcons) {
         public List<Identifier> getIcons(AbilityType type, int index) {
-            List<String> iconList = switch (type) {
-                case SUPER -> superIcons;
-                case MELEE -> meleeIcons;
-                case GRENADE -> grenadeIcons;
-                case CLASS_ABILITY -> classAbilityIcons;
-            };
-            if (index >= iconList.size()) return List.of();
+            String name = getIconName(type, index);
+            if (name.isEmpty()) return List.of();
 
-            String name = iconList.get(index);
             List<Identifier> textures = new ArrayList<>();
             ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 
@@ -52,6 +46,18 @@ public class UIElements {
                 textures.add(chargedTexture);
             }
             return textures;
+        }
+
+        String getIconName(AbilityType type, int index) {
+            List<String> iconList = switch (type) {
+                case SUPER -> superIcons;
+                case MELEE -> meleeIcons;
+                case GRENADE -> grenadeIcons;
+                case CLASS_ABILITY -> classAbilityIcons;
+            };
+            if (index >= iconList.size()) return "";
+
+            return iconList.get(index);
         }
     }
 }

@@ -49,24 +49,24 @@ public class DestinyModClient {
 
     @SubscribeEvent
     public static void onGatherTooltipComponents(RenderTooltipEvent.GatherComponents event) {
-        var elements = event.getTooltipElements();
-        List<Either<FormattedText, TooltipComponent>> newElements = new ArrayList<>();
-        TooltipWidthContext widthContext = new TooltipWidthContext();
-
-        String title = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.title");
-        String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.subtitle");
-        var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR_DARK.withOpacity(0.95f));
-        newElements.add(Either.right(header));
-
-        var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
-        newElements.add(Either.right(bar));
-
-        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod.melting_point.desc");
-        var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
-        newElements.add(Either.right(description));
-
-        elements.clear();
-        elements.addAll(newElements);
+//        var elements = event.getTooltipElements();
+//        List<Either<FormattedText, TooltipComponent>> newElements = new ArrayList<>();
+//        TooltipWidthContext widthContext = new TooltipWidthContext();
+//
+//        String title = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.title");
+//        String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.subtitle");
+//        var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR_DARK.withOpacity(0.95f));
+//        newElements.add(Either.right(header));
+//
+//        var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
+//        newElements.add(Either.right(bar));
+//
+//        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod.melting_point.desc");
+//        var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
+//        newElements.add(Either.right(description));
+//
+//        elements.clear();
+//        elements.addAll(newElements);
     }
 
     @SubscribeEvent
