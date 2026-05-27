@@ -1,12 +1,12 @@
 package io.github.stainlessstasis.destinymod;
 
-import io.github.stainlessstasis.destinymod.ability.Abilities;
-import io.github.stainlessstasis.destinymod.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
-import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
-import io.github.stainlessstasis.destinymod.ability.world_interaction.BlockDestructionManager;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.world_interaction.BlockDestructionManager;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

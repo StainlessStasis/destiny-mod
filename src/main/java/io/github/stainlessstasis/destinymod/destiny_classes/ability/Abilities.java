@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.ability;
+package io.github.stainlessstasis.destinymod.destiny_classes.ability;
 
 public class Abilities {
     public static final Ability NONE = new Ability(AbilityType.MELEE, 0, 0);

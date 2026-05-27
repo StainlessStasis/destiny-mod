@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod;
 
-import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
-import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;

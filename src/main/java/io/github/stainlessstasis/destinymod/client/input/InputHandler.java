@@ -1,10 +1,12 @@
 package io.github.stainlessstasis.destinymod.client.input;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.client.ui.SubclassScreen;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -31,13 +33,18 @@ public class InputHandler {
     public static void onAnyKeyInput(int key, int action) {
         if (action != GLFW.GLFW_PRESS) return;
 
-        Player player = Minecraft.getInstance().player;
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
         if (player == null) return; // player can be null while in the main menu and whatnot
         if (player.hasContainerOpen() || Minecraft.getInstance().screen != null) return;
 
         if (key == DestinyModKeybinds.MELEE.get().getKey().getValue()) {
             player.swing(InteractionHand.MAIN_HAND);
             ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.MELEE));
+        }
+
+        if (key == DestinyModKeybinds.SUBCLASS_SCREEN.get().getKey().getValue()) {
+            mc.setScreen(new SubclassScreen(Subclasses.SUNBREAKER));
         }
     }
 }

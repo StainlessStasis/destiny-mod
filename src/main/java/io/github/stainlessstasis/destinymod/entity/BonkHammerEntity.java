@@ -1,11 +1,10 @@
 package io.github.stainlessstasis.destinymod.entity;
 
-import io.github.stainlessstasis.destinymod.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
-import io.github.stainlessstasis.destinymod.ability.collision.CollisionContext;
-import io.github.stainlessstasis.destinymod.ability.collision.ProjectileCollisionUtils;
-import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldownManager;
-import io.github.stainlessstasis.destinymod.ability.world_interaction.BlockDestructionManager;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.CollisionContext;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.ProjectileCollisionUtils;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.world_interaction.BlockDestructionManager;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;

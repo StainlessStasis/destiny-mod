@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.client;
 
+import io.github.stainlessstasis.DMColor;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.entity_renderer.BonkHammerRenderer;
 import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
@@ -54,7 +55,7 @@ public class DestinyModClient {
 
         String title = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.title");
         String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod.melting_point.subtitle");
-        var header = new HeaderComponent(title, subtitle, widthContext, 0xFA9D310F);
+        var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR.withOpacity(0.8f));
         newElements.add(Either.right(header));
 
         var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);

@@ -1,10 +1,8 @@
 package io.github.stainlessstasis.destinymod.network;
 
-import io.github.stainlessstasis.destinymod.ability.Abilities;
-import io.github.stainlessstasis.destinymod.ability.Ability;
-import io.github.stainlessstasis.destinymod.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.ability.PlayerAbilities;
-import io.github.stainlessstasis.destinymod.ability.cooldown.AbilityCooldownManager;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.netty.buffer.ByteBuf;
