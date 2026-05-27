@@ -8,9 +8,6 @@ import io.github.stainlessstasis.destinymod.tooltip.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -94,7 +91,18 @@ public class SubclassScreen extends Screen {
                 );
             }
 
-            // TODO: ability tooltip
+            // Ability tooltips
+            if (!abilityIcons.isEmpty() && isHovering(mouseX, mouseY, renderX, renderY, iconSize)) {
+                List<String> abilityNames = switch (abilityType) {
+                    case SUPER -> subclassIcons.superIcons();
+                    case MELEE -> subclassIcons.meleeIcons();
+                    case GRENADE -> subclassIcons.grenadeIcons();
+                    case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
+                };
+                if (!abilityNames.isEmpty()) {
+                    createAbilityTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY);
+                }
+            }
 
             graphics.blit(
                     RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
@@ -137,7 +145,7 @@ public class SubclassScreen extends Screen {
                         case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
                     };
                     if (j + 1 < aspectNames.size()) {
-                        createAspectTooltip(graphics, aspectNames.get(j+1), mouseX, mouseY);
+                        createAbilityTooltip(graphics, aspectNames.get(j+1), mouseX, mouseY);
                     }
                 }
 
@@ -154,12 +162,12 @@ public class SubclassScreen extends Screen {
         }
     }
 
-    private void createAspectTooltip(GuiGraphicsExtractor graphics, String aspectName, int x, int y) {
+    private void createAbilityTooltip(GuiGraphicsExtractor graphics, String abilityName, int x, int y) {
         List<Either<FormattedText, TooltipComponent>> elements = new ArrayList<>();
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
-        String title = Language.getInstance().getOrDefault("tooltip.destinymod." + aspectName + ".title");
-        String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + aspectName + ".subtitle");
+        String title = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".title");
+        String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".subtitle");
 
         var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR_DARK.withOpacity(0.95f));
         elements.add(Either.right(header));
@@ -167,7 +175,7 @@ public class SubclassScreen extends Screen {
         var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
         elements.add(Either.right(bar));
 
-        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + aspectName + ".desc");
+        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
         var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
         elements.add(Either.right(description));
 
