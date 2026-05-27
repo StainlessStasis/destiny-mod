@@ -51,7 +51,7 @@ public class SubclassScreen extends Screen {
         // Ability icon rows
         int scaledScreenWidth = mc.getWindow().getGuiScaledWidth();
         int scaledScreenHeight = mc.getWindow().getGuiScaledHeight();
-        int renderX = (int) (scaledScreenWidth - (ABILITY_ICON_SIZE*8f*scalar));
+        int renderX = (int) (scaledScreenWidth - (ABILITY_ICON_SIZE*6f*scalar));
         int renderY = (int) (TITLE_Y_OFFSET * scalar);
         int iconSize = (int) (ABILITY_ICON_SIZE * scalar);
         int borderSize = iconSize + 2;
