@@ -49,18 +49,12 @@ public class SubclassScreen extends Screen {
         pose.popMatrix();
 
         // Ability icon rows
-        int renderX = (int) (ABILITY_ICON_SIZE/2f * scalar);
+        int scaledScreenWidth = mc.getWindow().getGuiScaledWidth();
+        int scaledScreenHeight = mc.getWindow().getGuiScaledHeight();
+        int renderX = (int) (scaledScreenWidth - (ABILITY_ICON_SIZE*8f*scalar));
         int renderY = (int) (TITLE_Y_OFFSET * scalar);
         int iconSize = (int) (ABILITY_ICON_SIZE * scalar);
         int borderSize = iconSize + 2;
-
-        graphics.blit(
-                RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
-                renderX-1, renderY-1, 0f, 0f,
-                borderSize, borderSize,
-                borderSize, borderSize,
-                borderSize, borderSize
-        );
 
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED, THROWING_HAMMER,
@@ -77,6 +71,42 @@ public class SubclassScreen extends Screen {
                 iconSize, iconSize,
                 iconSize, iconSize
         );
+
+        // each of these components is already scaled, so no scalar, or it will break
+        int verticalSpacing = scaledScreenHeight - (renderY*2) - (iconSize*2);
+        verticalSpacing = (int) (verticalSpacing / 3f);
+        for (int i = 0; i < 4; i++) {
+            graphics.blit(
+                    RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
+                    renderX-1, renderY-1, 0f, 0f,
+                    borderSize, borderSize,
+                    borderSize, borderSize,
+                    borderSize, borderSize
+            );
+
+            int gridX = renderX;
+            int gridY = renderY;
+            for (int j = 0; j < 6; j++) {
+                if (j % 3 == 0) {
+                    gridX = renderX + iconSize + (iconSize/4);
+                    if (j == 3) {
+                        gridY += iconSize + (iconSize/8);
+                    }
+                } else {
+                    gridX += iconSize + (iconSize/8);
+                }
+
+                graphics.blit(
+                        RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
+                        gridX-1, gridY-1, 0f, 0f,
+                        borderSize, borderSize,
+                        borderSize, borderSize,
+                        borderSize, borderSize
+                );
+            }
+
+            renderY += verticalSpacing;
+        }
     }
 
     @Override
