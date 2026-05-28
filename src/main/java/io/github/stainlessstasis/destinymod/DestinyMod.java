@@ -8,6 +8,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.Play
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.world_interaction.BlockDestructionManager;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -36,6 +37,10 @@ public class DestinyMod {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         DestinyModAttachments.register(modEventBus);
         DestinyModEntities.register(modEventBus);
+    }
+
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
     @EventBusSubscriber
