@@ -1,14 +1,17 @@
 package io.github.stainlessstasis.destinymod.destiny_classes.player_equipped;
 
 import com.mojang.serialization.Codec;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Aspect;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SubclassLoadout {
     public static final SubclassLoadout NONE;
@@ -34,11 +37,41 @@ public class SubclassLoadout {
 
     public SubclassLoadout() {}
 
-    public AbilityLoadout getAbility(AbilityType type) {
-        return this.abilityLoadouts.computeIfAbsent(type, _ -> AbilityLoadout.NONE);
+    public AbilityLoadout getAbilityLoadout(AbilityType abilityType) {
+        return this.abilityLoadouts.get(abilityType);
     }
 
-    public void putAbilityLoadout(AbilityType type, AbilityLoadout loadout) {
-        this.abilityLoadouts.put(type, loadout);
+    void putAbilityLoadout(AbilityType abilityType, AbilityLoadout loadout) {
+        this.abilityLoadouts.put(abilityType, loadout);
+    }
+
+    public Ability getAbility(AbilityType abilityType) {
+        return getAbilityLoadout(abilityType).ability();
+    }
+
+    void replaceAbility(AbilityType abilityType, Ability newAbility) {
+        var currentLoadout = getAbilityLoadout(abilityType);
+        AbilityLoadout newLoadout = new AbilityLoadout(newAbility, currentLoadout.aspects());
+        putAbilityLoadout(abilityType, newLoadout);
+    }
+
+    public Set<Aspect> getAspectsForAbility(AbilityType abilityType) {
+        return getAbilityLoadout(abilityType).aspects();
+    }
+
+    public Ability getMelee() {
+        return getAbility(AbilityType.MELEE);
+    }
+
+    public Ability getGrenade() {
+        return getAbility(AbilityType.GRENADE);
+    }
+
+    public Ability getClassAbility() {
+        return getAbility(AbilityType.CLASS_ABILITY);
+    }
+
+    public Ability getSuper() {
+        return getAbility(AbilityType.SUPER);
     }
 }
