@@ -29,6 +29,10 @@ public class SubclassScreen extends Screen {
     public static final float SUBTITLE_SCALE = 2f;
     public static final int SUBTITLE_X_OFFSET = 16;
     public static final int SUBTITLE_Y_OFFSET = 50;
+    public static final int ASPECT_GRID_ROWS = 2;
+    public static final int ASPECT_GRID_COLS = 3;
+    /*** The amount of padding to add to the bounds in which the mouse is checked for whether it's hovering over the aspect grid*/
+    public static final int ASPECT_GRID_HOVER_PADDING = 24;
     private final Subclass subclass;
 
     public SubclassScreen(Subclass subclass) {
@@ -113,49 +117,58 @@ public class SubclassScreen extends Screen {
             );
 
             // Aspect icons grid
-            int gridX = renderX;
-            int gridY = renderY;
-            for (int j = 0; j < 6; j++) {
-                if (j % 3 == 0) {
-                    gridX = renderX + iconSize + (iconSize/4);
-                    if (j == 3) {
-                        gridY += iconSize + (iconSize/8) + 1;
+            final int gridRowOffsetFromAbility = iconSize + (iconSize/4);
+            final int gridStartingX = renderX + gridRowOffsetFromAbility;
+            final int gridSpacingX = iconSize + (iconSize/8) + 1;
+            final int gridSpacingY = iconSize + (iconSize/8) + 1;
+            int gridTotalWidth = (ASPECT_GRID_COLS * iconSize) + ((ASPECT_GRID_COLS - 1) * ((iconSize / 8) + 1));
+            int gridTotalHeight = (ASPECT_GRID_ROWS * iconSize) + ((ASPECT_GRID_ROWS - 1) * ((iconSize / 8) + 1));
+
+            if (isHoveringWithinBounds(
+                    mouseX, mouseY,
+                    renderX-ASPECT_GRID_HOVER_PADDING, renderY-ASPECT_GRID_HOVER_PADDING,
+                    gridRowOffsetFromAbility+gridTotalWidth+(ASPECT_GRID_HOVER_PADDING*2), gridTotalHeight+(ASPECT_GRID_HOVER_PADDING*2))
+            ) {
+
+                for (int row = 0; row < ASPECT_GRID_ROWS; row++) {
+                    for (int col = 0; col < ASPECT_GRID_COLS; col++) {
+
+                        int gridX = gridStartingX + (col * gridSpacingX);
+                        int gridY = renderY + (row * gridSpacingY);
+                        int cellIndex = (row * ASPECT_GRID_COLS) + col;
+                        List<Identifier> aspectIcons = subclassIcons.getIcons(abilityType, cellIndex + 1);
+
+                        for (Identifier texture : aspectIcons) {
+                            graphics.blit(
+                                    RenderPipelines.GUI_TEXTURED, texture,
+                                    gridX, gridY, 0f, 0f,
+                                    iconSize, iconSize,
+                                    iconSize, iconSize,
+                                    iconSize, iconSize
+                            );
+                        }
+
+                        if (!aspectIcons.isEmpty() && isHovering(mouseX, mouseY, gridX, gridY, iconSize)) {
+                            List<String> aspectNames = switch (abilityType) {
+                                case SUPER -> subclassIcons.superIcons();
+                                case MELEE -> subclassIcons.meleeIcons();
+                                case GRENADE -> subclassIcons.grenadeIcons();
+                                case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
+                            };
+                            if (cellIndex + 1 < aspectNames.size()) {
+                                createAbilityTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY);
+                            }
+                        }
+
+                        graphics.blit(
+                                RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
+                                gridX - 1, gridY - 1, 0f, 0f,
+                                borderSize, borderSize,
+                                borderSize, borderSize,
+                                borderSize, borderSize
+                        );
                     }
-                } else {
-                    gridX += iconSize + (iconSize/8) + 1;
                 }
-
-                List<Identifier> aspectIcons = subclassIcons.getIcons(abilityType, j + 1);
-                for (Identifier texture : aspectIcons) {
-                    graphics.blit(
-                            RenderPipelines.GUI_TEXTURED, texture,
-                            gridX, gridY, 0f, 0f,
-                            iconSize, iconSize,
-                            iconSize, iconSize,
-                            iconSize, iconSize
-                    );
-                }
-
-                // Aspect tooltips
-                if (!aspectIcons.isEmpty() && isHovering(mouseX, mouseY, gridX, gridY, iconSize)) {
-                    List<String> aspectNames = switch (abilityType) {
-                        case SUPER -> subclassIcons.superIcons();
-                        case MELEE -> subclassIcons.meleeIcons();
-                        case GRENADE -> subclassIcons.grenadeIcons();
-                        case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
-                    };
-                    if (j + 1 < aspectNames.size()) {
-                        createAbilityTooltip(graphics, aspectNames.get(j+1), mouseX, mouseY);
-                    }
-                }
-
-                graphics.blit(
-                        RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
-                        gridX-1, gridY-1, 0f, 0f,
-                        borderSize, borderSize,
-                        borderSize, borderSize,
-                        borderSize, borderSize
-                );
             }
 
             renderY += verticalSpacing;
@@ -184,6 +197,10 @@ public class SubclassScreen extends Screen {
 
     private boolean isHovering(int mouseX, int mouseY, int x, int y, int scale) {
         return mouseX >= x && mouseX < x + scale && mouseY >= y && mouseY < y + scale;
+    }
+
+    private boolean isHoveringWithinBounds(int mouseX, int mouseY, int minX, int minY, int width, int height) {
+        return mouseX >= minX && mouseX < minX + width && mouseY >= minY && mouseY < minY + height;
     }
 
     @Override
