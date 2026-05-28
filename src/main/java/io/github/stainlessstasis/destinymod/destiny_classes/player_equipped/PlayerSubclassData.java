@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlayerSubclassData {
-    private Subclass equippedSubclass;
+    private Subclass equippedSubclass = Subclasses.SUNBREAKER; // default value cus you cant really *not* have a subclass equipped
     private Map<Subclass, SubclassLoadout> subclassLoadouts = new HashMap<>();
 
     public static final MapCodec<PlayerSubclassData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -35,7 +35,7 @@ public class PlayerSubclassData {
 
     public PlayerSubclassData(Subclass subclass, Map<Subclass, SubclassLoadout> subclassLoadouts) {
         this.equippedSubclass = subclass;
-        this.subclassLoadouts = subclassLoadouts;
+        this.subclassLoadouts = new HashMap<>(subclassLoadouts);
     }
 
     public PlayerSubclassData() {}

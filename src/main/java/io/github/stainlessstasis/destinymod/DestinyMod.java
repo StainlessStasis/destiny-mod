@@ -3,7 +3,6 @@ package io.github.stainlessstasis.destinymod;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.EquippedAbilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
@@ -75,8 +74,8 @@ public class DestinyMod {
         @SubscribeEvent
         public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
             Player player = event.getEntity();
-            PlayerSubclassData.getInstance(player).setEquippedSubclass(player, Subclasses.SUNBREAKER);
-//            EquippedAbilities.get(player).equip(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
+            PlayerSubclassData.setEquippedSubclass(player, Subclasses.SUNBREAKER);
+            PlayerSubclassData.replaceAbility(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
         }
     }
 }
