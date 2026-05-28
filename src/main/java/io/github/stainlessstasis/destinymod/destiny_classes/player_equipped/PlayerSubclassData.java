@@ -44,6 +44,10 @@ public class PlayerSubclassData {
         return this.subclassLoadouts.computeIfAbsent(subclass, _ -> SubclassLoadout.NONE);
     }
 
+    public SubclassLoadout getSubclassLoadout() {
+        return getSubclassLoadout(getEquippedSubclass());
+    }
+
     public void putSubclassLoadout(Subclass subclass, SubclassLoadout loadout) {
         this.subclassLoadouts.put(subclass, loadout);
     }
@@ -68,10 +72,6 @@ public class PlayerSubclassData {
 
     public static SubclassLoadout getSubclassLoadout(Player player, Subclass subclass) {
         return getInstance(player).getSubclassLoadout(subclass);
-    }
-
-    SubclassLoadout getSubclassLoadout() {
-        return this.subclassLoadouts.get(this.equippedSubclass);
     }
 
     public static SubclassLoadout getSubclassLoadout(Player player) {
