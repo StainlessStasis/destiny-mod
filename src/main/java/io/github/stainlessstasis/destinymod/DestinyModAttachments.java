@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod;
 
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -22,12 +22,12 @@ public class DestinyModAttachments {
                     .build()
     );
 
-    public static final Supplier<AttachmentType<PlayerAbilities>> PLAYER_ABILITIES = ATTACHMENTS.register(
-            "player_abilities",
-            () -> AttachmentType.builder(PlayerAbilities::new)
-                    .serialize(PlayerAbilities.CODEC)
+    public static final Supplier<AttachmentType<PlayerSubclassData>> PLAYER_SUBCLASS_DATA = ATTACHMENTS.register(
+            "player_subclass_data",
+            () -> AttachmentType.builder(PlayerSubclassData::new)
+                    .serialize(PlayerSubclassData.CODEC)
                     .copyOnDeath()
-                    .sync(PlayerAbilities.STREAM_CODEC)
+                    .sync(PlayerSubclassData.STREAM_CODEC)
                     .build()
     );
 

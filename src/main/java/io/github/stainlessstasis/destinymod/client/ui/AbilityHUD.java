@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client.ui;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.EquippedAbilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -23,7 +23,7 @@ public class AbilityHUD {
 
         int renderX = ABILITY_ICON_SIZE /2;
         int renderY = mc.getWindow().getGuiScaledHeight() - (int)(ABILITY_ICON_SIZE * 1.5f);
-        var ability = PlayerAbilities.getEquippedMelee(player);
+        var ability = EquippedAbilities.getEquippedMelee(player);
         var graphics = event.getGuiGraphics();
 
         // border

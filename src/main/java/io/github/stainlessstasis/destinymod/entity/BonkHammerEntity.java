@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.destinymod.entity;
 
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.EquippedAbilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.CollisionContext;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.ProjectileCollisionUtils;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
@@ -399,7 +399,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         float pitch = 0.2F / (this.random.nextFloat() * 0.2F + 0.9F);
         this.playSound(SoundEvents.ITEM_PICKUP, 0.3F, pitch);
 
-        AbilityCooldownManager.reduceCooldownPercent(player, PlayerAbilities.getEquippedMelee(player), 0.5f);
+        AbilityCooldownManager.reduceCooldownPercent(player, EquippedAbilities.getEquippedMelee(player), 0.5f);
 
         this.discard();
     }

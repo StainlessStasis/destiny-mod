@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.network;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.PlayerAbilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.EquippedAbilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
@@ -32,7 +32,7 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
             Player player = context.player();
 
             if (packet.slot == AbilityType.MELEE) {
-                var ability = PlayerAbilities.getEquippedMelee(player);
+                var ability = EquippedAbilities.getEquippedMelee(player);
                 if (AbilityCooldownManager.isOnCooldown(player, ability)) {
                     float percent = AbilityCooldownManager.getCooldownPercent(player, ability);
                     context.player().sendSystemMessage(Component.literal("Ability is on cooldown, idiot ("+percent+")"));
