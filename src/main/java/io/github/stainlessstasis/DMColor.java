@@ -2,7 +2,8 @@ package io.github.stainlessstasis;
 
 public class DMColor {
     public static final DMColor WHITE = new DMColor(0xFFFFFFFF);
-    public static final DMColor GRAY = new DMColor(0xFFAAAAAA);
+    public static final DMColor BLACK = new DMColor(0xFF000000);
+    public static final DMColor LIGHT_GRAY = new DMColor(0xFFAAAAAA);
     public static final DMColor SOLAR = new DMColor(0xFFF36F26);
     public static final DMColor SOLAR_DARK = new DMColor(0xFF9D310F);
 

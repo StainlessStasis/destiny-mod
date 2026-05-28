@@ -9,10 +9,10 @@ import net.minecraft.util.StringRepresentable;
 
 public enum DestinyElement implements StringRepresentable {
     SOLAR("solar", DMColor.SOLAR.get()),
-    ARC("arc", DMColor.GRAY.get()),
-    VOID("void", DMColor.GRAY.get()),
-    STASIS("stasis", DMColor.GRAY.get()),
-    STRAND("strand", DMColor.GRAY.get());
+    ARC("arc", DMColor.LIGHT_GRAY.get()),
+    VOID("void", DMColor.LIGHT_GRAY.get()),
+    STASIS("stasis", DMColor.LIGHT_GRAY.get()),
+    STRAND("strand", DMColor.LIGHT_GRAY.get());
 
     public static final Codec<DestinyElement> CODEC = StringRepresentable.fromEnum(DestinyElement::values);
 

@@ -44,30 +44,30 @@ public class SubclassScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractRenderState(graphics, mouseX, mouseY, a);
         Minecraft mc = Minecraft.getInstance();
-        float scalar = GuiScaleUtil.getConsistencyScalar();
+        float guiScalar = GuiScaleUtil.getConsistencyScalar();
         var pose = graphics.pose();
 
         // Title
         pose.pushMatrix();
-        pose.translate(TITLE_X_OFFSET*scalar, TITLE_Y_OFFSET*scalar);
-        pose.scale(TITLE_SCALE*scalar);
+        pose.translate(TITLE_X_OFFSET*guiScalar, TITLE_Y_OFFSET*guiScalar);
+        pose.scale(TITLE_SCALE*guiScalar);
         graphics.text(font, subclass.title(), 0, 0, subclass.destinyElement().getColor(), true);
         pose.popMatrix();
 
         // Subtitle
         pose.pushMatrix();
-        pose.translate(SUBTITLE_X_OFFSET*scalar, SUBTITLE_Y_OFFSET*scalar);
-        pose.scale(SUBTITLE_SCALE*scalar);
+        pose.translate(SUBTITLE_X_OFFSET*guiScalar, SUBTITLE_Y_OFFSET*guiScalar);
+        pose.scale(SUBTITLE_SCALE*guiScalar);
         Component subtitle = Component.translatable("subclass.destinymod."+subclass.destinyClass().name().toLowerCase());
-        graphics.text(font, subtitle, 0, 0, DMColor.GRAY.get(), true);
+        graphics.text(font, subtitle, 0, 0, DMColor.LIGHT_GRAY.get(), true);
         pose.popMatrix();
 
         // Ability icon rows
         int scaledScreenWidth = mc.getWindow().getGuiScaledWidth();
         int scaledScreenHeight = mc.getWindow().getGuiScaledHeight();
-        int renderX = (int) (scaledScreenWidth - (ABILITY_ICON_SIZE*6f*scalar));
-        int renderY = (int) (TITLE_Y_OFFSET * scalar);
-        int iconSize = (int) (ABILITY_ICON_SIZE * scalar);
+        int renderX = (int) (scaledScreenWidth - (ABILITY_ICON_SIZE*6f*guiScalar));
+        int renderY = (int) (TITLE_Y_OFFSET * guiScalar);
+        int iconSize = (int) (ABILITY_ICON_SIZE * guiScalar);
         int borderSize = iconSize + 2;
 
         // each of these components is already scaled, so no scalar, or it will break
@@ -124,19 +124,32 @@ public class SubclassScreen extends Screen {
             int gridTotalWidth = (ASPECT_GRID_COLS * iconSize) + ((ASPECT_GRID_COLS - 1) * ((iconSize / 8) + 1));
             int gridTotalHeight = (ASPECT_GRID_ROWS * iconSize) + ((ASPECT_GRID_ROWS - 1) * ((iconSize / 8) + 1));
 
+            int gridBoundsPadding = (int) (ASPECT_GRID_HOVER_PADDING*guiScalar);
             if (isHoveringWithinBounds(
                     mouseX, mouseY,
-                    renderX-ASPECT_GRID_HOVER_PADDING, renderY-ASPECT_GRID_HOVER_PADDING,
-                    gridRowOffsetFromAbility+gridTotalWidth+(ASPECT_GRID_HOVER_PADDING*2), gridTotalHeight+(ASPECT_GRID_HOVER_PADDING*2))
+                    renderX-gridBoundsPadding, renderY-gridBoundsPadding,
+                    gridRowOffsetFromAbility+gridTotalWidth+(gridBoundsPadding*2), gridTotalHeight+(gridBoundsPadding*2))
             ) {
 
                 for (int row = 0; row < ASPECT_GRID_ROWS; row++) {
                     for (int col = 0; col < ASPECT_GRID_COLS; col++) {
-
-                        int gridX = gridStartingX + (col * gridSpacingX);
-                        int gridY = renderY + (row * gridSpacingY);
                         int cellIndex = (row * ASPECT_GRID_COLS) + col;
                         List<Identifier> aspectIcons = subclassIcons.getIcons(abilityType, cellIndex + 1);
+                        int gridX = gridStartingX + (col * gridSpacingX);
+                        int gridY = renderY + (row * gridSpacingY);
+
+                        graphics.blit(
+                                RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
+                                gridX - 1, gridY - 1, 0f, 0f,
+                                borderSize, borderSize,
+                                borderSize, borderSize,
+                                borderSize, borderSize
+                        );
+
+                        if (aspectIcons.isEmpty()) {
+                            graphics.fill(gridX, gridY, gridX+iconSize, gridY+iconSize, DMColor.BLACK.withOpacity(0.25f));
+                            continue;
+                        }
 
                         for (Identifier texture : aspectIcons) {
                             graphics.blit(
@@ -148,7 +161,7 @@ public class SubclassScreen extends Screen {
                             );
                         }
 
-                        if (!aspectIcons.isEmpty() && isHovering(mouseX, mouseY, gridX, gridY, iconSize)) {
+                        if (isHovering(mouseX, mouseY, gridX, gridY, iconSize)) {
                             List<String> aspectNames = switch (abilityType) {
                                 case SUPER -> subclassIcons.superIcons();
                                 case MELEE -> subclassIcons.meleeIcons();
@@ -159,14 +172,6 @@ public class SubclassScreen extends Screen {
                                 createAbilityTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY);
                             }
                         }
-
-                        graphics.blit(
-                                RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
-                                gridX - 1, gridY - 1, 0f, 0f,
-                                borderSize, borderSize,
-                                borderSize, borderSize,
-                                borderSize, borderSize
-                        );
                     }
                 }
             }
