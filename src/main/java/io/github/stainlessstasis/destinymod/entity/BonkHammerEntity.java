@@ -371,7 +371,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             Level level = this.level();
             if (level instanceof ServerLevel serverLevel) {
                 EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
-                DebuffManager.applyScorch(mob, 50);
+                LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
+                DebuffManager.applyScorch(mob, owner, 50);
             }
 
             this.doPostHurtEffects(mob);

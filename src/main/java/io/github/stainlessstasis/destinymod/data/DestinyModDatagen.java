@@ -49,6 +49,14 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
+
+                    bootstrap.register(DestinyModDamageTypes.SCORCH, new DamageType(
+                            DestinyMod.MODID+".scorch",
+                            DamageScaling.NEVER,
+                            0.1f,
+                            DamageEffects.HURT,
+                            DeathMessageType.DEFAULT
+                    ));
                 })
         );
 

@@ -15,8 +15,10 @@ public class DestinyModDamageTypes {
     public static final ResourceKey<DamageType> GRENADE_ABILITY = register("grenade_ability");
     public static final ResourceKey<DamageType> CLASS_ABILITY = register("class_ability");
     public static final ResourceKey<DamageType> SUPER = register("super");
+    public static final ResourceKey<DamageType> SCORCH = register("scorch");
 
     public static class Tags {
         public static final TagKey<DamageType> IS_ABILITY = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_ability"));
+        public static final TagKey<DamageType> IS_DEBUFF = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_debuff"));
     }
 }

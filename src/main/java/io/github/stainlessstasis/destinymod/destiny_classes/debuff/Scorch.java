@@ -3,12 +3,16 @@ package io.github.stainlessstasis.destinymod.destiny_classes.debuff;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.LivingEntity;
 
-public class Scorch implements Debuff {
+public class Scorch extends OwnableDebuff {
     public static final int IGNITION_THRESHOLD = 100;
     private int stacks = 0;
     private int decayDelay = 0;
@@ -50,11 +54,14 @@ public class Scorch implements Debuff {
             // TODO: ignitions here
 //        }
 
-        // TODO: DoT
-        System.out.println("SCORCH TICKING | STACKS REMAINING: "+this.stacks);
+        if (entity.level() instanceof ServerLevel level) {
+            LivingEntity owner = getOwner(level);
+            DamageSources damageSources = level.damageSources();
+            DamageSource damageSource = owner != null ? damageSources.source(DestinyModDamageTypes.SCORCH, owner) :  damageSources.source(DestinyModDamageTypes.SCORCH, entity, entity);
+            entity.hurtServer(level, damageSource, 1f);
+        }
 
         if (this.decayDelay > 0) {
-            System.out.println("SCORCH IS STILL ON DECAY DELAY");
             this.decayDelay--;
         } else {
             this.stacks = Math.max(0, this.stacks-1);

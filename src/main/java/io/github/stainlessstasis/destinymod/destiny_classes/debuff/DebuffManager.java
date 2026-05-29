@@ -1,11 +1,13 @@
 package io.github.stainlessstasis.destinymod.destiny_classes.debuff;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -19,8 +21,9 @@ public class DebuffManager {
         return entity.getData(debuffAttachment.get()).isActive();
     }
 
-    public static void applyScorch(LivingEntity target, int stacks) {
+    public static void applyScorch(LivingEntity target, @Nullable LivingEntity attacker, int stacks) {
         Scorch scorch = target.getData(DestinyModAttachments.SCORCH);
+        scorch.setOwner(attacker);
         scorch.addStacks(stacks);
     }
 

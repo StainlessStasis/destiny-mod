@@ -38,7 +38,6 @@ public class DestinyModAttachments {
             "scorch",
             () -> AttachmentType.builder(Scorch::new)
                     .serialize(Scorch.CODEC)
-                    .copyOnDeath()
                     .sync(Scorch.STREAM_CODEC)
                     .build()
     );

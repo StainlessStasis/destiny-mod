@@ -19,5 +19,8 @@ public class DMDamageTypeTagProvider extends DamageTypeTagsProvider {
                 .add(DestinyModDamageTypes.GRENADE_ABILITY)
                 .add(DestinyModDamageTypes.CLASS_ABILITY)
                 .add(DestinyModDamageTypes.SUPER);
+
+        tag(DestinyModDamageTypes.Tags.IS_DEBUFF)
+                .add(DestinyModDamageTypes.SCORCH);
     }
 }

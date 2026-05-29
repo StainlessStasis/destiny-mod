@@ -17,5 +17,6 @@
   "subclass.destinymod.titan": "Titan Subclass",
   "subclass.destinymod.warlock": "Warlock Subclass",
   "subclass.destinymod.sunbreaker": "Sunbreaker",
-  "death.attack.destinymod.melee_ability": "killed by melee ability"
+  "death.attack.destinymod.melee_ability": "killed by melee ability",
+  "death.attack.destinymod.scorch": "%1$s was scorched by %2$s"
 }
