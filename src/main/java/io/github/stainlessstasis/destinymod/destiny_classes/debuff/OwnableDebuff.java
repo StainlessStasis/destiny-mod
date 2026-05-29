@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public abstract class OwnableDebuff implements Debuff {
+public abstract class OwnableDebuff extends AbstractDebuff {
     @Nullable
     protected EntityReference<LivingEntity> ownerReference = null;
 

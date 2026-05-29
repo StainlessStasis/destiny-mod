@@ -1,11 +1,9 @@
 package io.github.stainlessstasis.destinymod.client;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.client.entity_renderer.BonkHammerRenderer;
 import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.HeaderTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.SeparatorTooltipComponent;
-import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.tooltip.*;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
@@ -13,7 +11,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
@@ -24,11 +21,6 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 public class DestinyModClient {
     public DestinyModClient(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-    }
-
-    @SubscribeEvent
-    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(DestinyModEntities.HAMMER_OF_SOL.get(), BonkHammerRenderer::new);
     }
 
     @SubscribeEvent

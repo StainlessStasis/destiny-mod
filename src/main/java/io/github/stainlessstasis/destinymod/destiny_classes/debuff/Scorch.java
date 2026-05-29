@@ -50,26 +50,32 @@ public class Scorch extends OwnableDebuff {
 
     @Override
     public void tick(LivingEntity entity) {
+        super.tick(entity);
 //        if (this.stacks >= IGNITION_THRESHOLD) {
             // TODO: ignitions here
 //        }
-
-        if (entity.level() instanceof ServerLevel level) {
-            LivingEntity owner = getOwner(level);
-            DestinyDamageBuilder.create(DestinyModDamageTypes.SCORCH, entity)
-                    .directSource(owner)
-                    .attacker(owner)
-                    .element(DestinyElement.SOLAR)
-                    .damage(0f)
-                    .invulnerabilityTicks(0)
-                    .knockback(false)
-                    .execute();
+        if (this.tickCount%10 == 0) {
+            hurt(entity);
         }
 
         if (this.decayDelay > 0) {
             this.decayDelay--;
         } else {
             this.stacks = Math.max(0, this.stacks-1);
+        }
+    }
+
+    public void hurt(LivingEntity entity) {
+        if (entity.level() instanceof ServerLevel level) {
+            LivingEntity owner = getOwner(level);
+            DestinyDamageBuilder.create(DestinyModDamageTypes.SCORCH, entity)
+                    .directSource(owner)
+                    .attacker(owner)
+                    .element(DestinyElement.SOLAR)
+                    .damage(1f)
+                    .invulnerabilityTicks(0)
+                    .knockback(false)
+                    .execute();
         }
     }
 
