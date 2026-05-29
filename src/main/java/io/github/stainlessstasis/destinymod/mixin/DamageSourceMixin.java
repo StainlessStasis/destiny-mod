@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(DamageSource.class)
 public abstract class DamageSourceMixin implements DestinyModDamageSource {
     @Unique private DestinyElement destinymod$element = DestinyElement.NONE;
-    @Unique private boolean destinymod$hasKnockback = false;
+    @Unique private boolean destinymod$hasKnockback = true;
 
     @Override
     public DestinyElement destinymod$getElement() {return this.destinymod$element;}
@@ -29,7 +29,7 @@ public abstract class DamageSourceMixin implements DestinyModDamageSource {
     @Inject(method = "is", at = @At("HEAD"), cancellable = true)
     private void checkKnockback(TagKey<DamageType> tag, CallbackInfoReturnable<Boolean> cir) {
         if (tag.equals(DamageTypeTags.NO_KNOCKBACK)) {
-            cir.setReturnValue(this.destinymod$hasKnockback);
+            cir.setReturnValue(!this.destinymod$hasKnockback);
         }
     }
 }

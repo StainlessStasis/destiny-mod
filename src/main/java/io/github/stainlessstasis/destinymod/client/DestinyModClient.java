@@ -1,19 +1,13 @@
 package io.github.stainlessstasis.destinymod.client;
 
-import io.github.stainlessstasis.DMColor;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.entity_renderer.BonkHammerRenderer;
 import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.HeaderTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.SeparatorTooltipComponent;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
-import com.mojang.datafixers.util.Either;
 import io.github.stainlessstasis.destinymod.tooltip.*;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -24,9 +18,6 @@ import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactori
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mod(value = DestinyMod.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = DestinyMod.MODID, value = Dist.CLIENT)
