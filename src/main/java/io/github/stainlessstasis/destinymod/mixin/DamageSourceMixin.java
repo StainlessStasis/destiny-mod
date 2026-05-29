@@ -8,16 +8,21 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(DamageSource.class)
 public abstract class DamageSourceMixin implements DestinyModDamageSource {
-    @Unique
-    private DestinyElement destinymod$element = DestinyElement.NONE;
+    @Unique private DestinyElement destinymod$element = DestinyElement.NONE;
+    @Unique private boolean destinymod$bypassKnockback = false;
 
     @Override
     public DestinyElement destinymod$getElement() {
         return this.destinymod$element;
     }
-
     @Override
     public void destinymod$setElement(DestinyElement element) {
         this.destinymod$element = element;
     }
+    @Override
+    public boolean destinymod$isBypassingKnockback() { return this.destinymod$bypassKnockback; }
+    @Override
+    public void destinymod$setBypassKnockback(boolean bypass) { this.destinymod$bypassKnockback = bypass; }
+
+
 }

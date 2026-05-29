@@ -3,6 +3,8 @@ package io.github.stainlessstasis.destinymod.destiny_classes.debuff;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DamageUtils;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -56,9 +58,7 @@ public class Scorch extends OwnableDebuff {
 
         if (entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);
-            DamageSources damageSources = level.damageSources();
-            DamageSource damageSource = owner != null ? damageSources.source(DestinyModDamageTypes.SCORCH, owner) :  damageSources.source(DestinyModDamageTypes.SCORCH, entity, entity);
-            entity.hurtServer(level, damageSource, 1f);
+            DamageUtils.hurt(DestinyModDamageTypes.SCORCH, entity, owner, owner, DestinyElement.SOLAR, 1f);
         }
 
         if (this.decayDelay > 0) {

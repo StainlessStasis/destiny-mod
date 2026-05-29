@@ -360,8 +360,14 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             entity.igniteForSeconds(5.0F);
         }
 
-        // It's YOUR code Mojang, why is it deprecated???
-        if (!entity.hurtOrSimulate(damageSource, (float)damage)) {
+        boolean wasHurt;
+        if (entity instanceof LivingEntity livingEntity) {
+            wasHurt = DamageUtils.hurt(damageSource, livingEntity, (float)damage);
+        } else {
+            wasHurt = entity.hurtOrSimulate(damageSource, (float)damage);
+        }
+
+        if (!wasHurt) {
             entity.setRemainingFireTicks(remainingFireTicks);
             return;
         }
