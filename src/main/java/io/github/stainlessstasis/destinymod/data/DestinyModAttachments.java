@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.data;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.destiny_classes.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.IEventBus;
@@ -30,6 +31,15 @@ public class DestinyModAttachments {
                     .serialize(PlayerSubclassData.CODEC)
                     .copyOnDeath()
                     .sync(PlayerSubclassData.STREAM_CODEC)
+                    .build()
+    );
+
+    public static final Supplier<AttachmentType<Scorch>> SCORCH = ATTACHMENTS.register(
+            "scorch",
+            () -> AttachmentType.builder(Scorch::new)
+                    .serialize(Scorch.CODEC)
+                    .copyOnDeath()
+                    .sync(Scorch.STREAM_CODEC)
                     .build()
     );
 
