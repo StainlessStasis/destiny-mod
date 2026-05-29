@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageEffects;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 @EventBusSubscriber
 public class DestinyModDatagen {
     @SubscribeEvent
-    public static void onGatherData(GatherDataEvent.Server event) {
+    public static void onGatherData(GatherDataEvent.Client event) {
         event.createDatapackRegistryObjects(new RegistrySetBuilder()
                 .add(Registries.DAMAGE_TYPE, bootstrap -> {
                     bootstrap.register(DestinyModDamageTypes.MELEE_ABILITY, new DamageType(

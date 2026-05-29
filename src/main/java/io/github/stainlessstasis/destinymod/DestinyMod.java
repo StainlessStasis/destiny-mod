@@ -7,12 +7,14 @@ import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
+import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
 import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.world_interaction.BlockDestructionManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -82,6 +84,16 @@ public class DestinyMod {
             Player player = event.getEntity();
             PlayerSubclassData.setEquippedSubclass(player, Subclasses.SUNBREAKER);
             PlayerSubclassData.replaceAbility(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
+        }
+
+        @SubscribeEvent
+        public static void onLivingDamage(LivingIncomingDamageEvent event) {
+            var source = event.getSource();
+            System.out.println("SOURCE: "+source);
+            if (source instanceof DestinyModDamageSource destinySource) {
+                System.out.println("IS DESTINY SOURCE");
+                System.out.println("ELEMENT: "+destinySource.destinymod$getElement());
+            }
         }
     }
 }

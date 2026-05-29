@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.CollisionContext;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.ProjectileCollisionUtils;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
@@ -10,7 +11,10 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DamageUtils;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -320,8 +324,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     protected void vanillaHitEntity(EntityHitResult hitResult) {
         Entity entity = hitResult.getEntity();
         Entity currentOwner = this.getOwner();
-        // TODO: custom damage source
-        DamageSource damageSource = this.damageSources().arrow(this, currentOwner != null ? currentOwner : this);
+        DamageSource damageSource = DamageUtils.createDamageSource(
+                DestinyModDamageTypes.MELEE_ABILITY, this.level(), this, currentOwner != null ? currentOwner : this, DestinyElement.SOLAR
+        );
         double damage = this.baseDamage;
 
         if (this.getPierceLevel() > 0) {
