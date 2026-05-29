@@ -16,5 +16,6 @@
   "subclass.destinymod.hunter": "Hunter Subclass",
   "subclass.destinymod.titan": "Titan Subclass",
   "subclass.destinymod.warlock": "Warlock Subclass",
-  "subclass.destinymod.sunbreaker": "Sunbreaker"
+  "subclass.destinymod.sunbreaker": "Sunbreaker",
+  "death.attack.destinymod.melee_ability": "killed by melee ability"
 }

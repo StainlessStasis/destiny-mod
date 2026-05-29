@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.damage;
+package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import net.minecraft.core.registries.Registries;
@@ -16,5 +16,7 @@ public class DestinyModDamageTypes {
     public static final ResourceKey<DamageType> CLASS_ABILITY = register("class_ability");
     public static final ResourceKey<DamageType> SUPER = register("super");
 
-    public static final TagKey<DamageType> IS_ABILITY = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_ability"));
+    public static class Tags {
+        public static final TagKey<DamageType> IS_ABILITY = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_ability"));
+    }
 }
