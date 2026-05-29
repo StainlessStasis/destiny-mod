@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.destinymod.destiny_classes;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.github.stainlessstasis.DMColor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -12,14 +13,12 @@ public enum DestinyElement implements StringRepresentable {
     ARC("arc", DMColor.LIGHT_GRAY.get()),
     VOID("void", DMColor.LIGHT_GRAY.get()),
     STASIS("stasis", DMColor.LIGHT_GRAY.get()),
-    STRAND("strand", DMColor.LIGHT_GRAY.get());
+    STRAND("strand", DMColor.LIGHT_GRAY.get()),
+    NONE("none", DMColor.LIGHT_GRAY.get());
 
     public static final Codec<DestinyElement> CODEC = StringRepresentable.fromEnum(DestinyElement::values);
-
-    public static final StreamCodec<ByteBuf, DestinyElement> STREAM_CODEC = ByteBufCodecs.BYTE.map(
-            b -> DestinyElement.values()[b],
-            e -> (byte) e.ordinal()
-    );
+    public static final MapCodec<DestinyElement> MAP_CODEC = CODEC.fieldOf("element");
+    public static final StreamCodec<ByteBuf, DestinyElement> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     private final String name;
     private final int color;

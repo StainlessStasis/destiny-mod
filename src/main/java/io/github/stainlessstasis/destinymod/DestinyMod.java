@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod;
 
+import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;

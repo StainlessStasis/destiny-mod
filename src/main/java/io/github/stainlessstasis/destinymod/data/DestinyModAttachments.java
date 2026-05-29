@@ -1,5 +1,7 @@
-package io.github.stainlessstasis.destinymod;
+package io.github.stainlessstasis.destinymod.data;
 
+import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import net.minecraft.world.entity.Entity;
@@ -30,6 +32,15 @@ public class DestinyModAttachments {
                     .sync(PlayerSubclassData.STREAM_CODEC)
                     .build()
     );
+
+//    public static final Supplier<AttachmentType<DestinyElement>> ELEMENT = ATTACHMENTS.register(
+//            "element",
+//            () -> AttachmentType.builder(() -> DestinyElement.NONE)
+//                    .serialize(DestinyElement.MAP_CODEC)
+//                    .copyOnDeath()
+//                    .sync(DestinyElement.STREAM_CODEC)
+//                    .build()
+//    );
 
     public static void register(IEventBus bus) {
         ATTACHMENTS.register(bus);

@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown;
 
-import io.github.stainlessstasis.destinymod.DestinyModAttachments;
+import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
 import net.minecraft.world.entity.Entity;
 

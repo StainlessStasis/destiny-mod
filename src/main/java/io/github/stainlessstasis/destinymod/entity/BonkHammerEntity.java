@@ -320,6 +320,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     protected void vanillaHitEntity(EntityHitResult hitResult) {
         Entity entity = hitResult.getEntity();
         Entity currentOwner = this.getOwner();
+        // TODO: custom damage source
         DamageSource damageSource = this.damageSources().arrow(this, currentOwner != null ? currentOwner : this);
         double damage = this.baseDamage;
 
