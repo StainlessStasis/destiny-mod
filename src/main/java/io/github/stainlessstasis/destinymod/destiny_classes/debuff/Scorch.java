@@ -4,14 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DamageUtils;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.LivingEntity;
 
 public class Scorch extends OwnableDebuff {
@@ -58,7 +56,13 @@ public class Scorch extends OwnableDebuff {
 
         if (entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);
-            DamageUtils.hurt(DestinyModDamageTypes.SCORCH, entity, owner, owner, DestinyElement.SOLAR, 1f);
+            DestinyDamageBuilder.create(DestinyModDamageTypes.SCORCH, entity)
+                    .directSource(owner)
+                    .attacker(owner)
+                    .element(DestinyElement.SOLAR)
+                    .damage(1f)
+                    .knockback(false)
+                    .execute();
         }
 
         if (this.decayDelay > 0) {

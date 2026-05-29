@@ -11,7 +11,7 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DamageUtils;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
@@ -325,10 +325,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     protected void vanillaHitEntity(EntityHitResult hitResult) {
         Entity entity = hitResult.getEntity();
         Entity currentOwner = this.getOwner();
-        DamageSource damageSource = DamageUtils.createDamageSource(
-                DestinyModDamageTypes.MELEE_ABILITY, this.level(), this, currentOwner != null ? currentOwner : this, DestinyElement.SOLAR
-        );
-        double damage = this.baseDamage;
 
         if (this.getPierceLevel() > 0) {
             if (this.piercingIgnoreEntityIds == null) {
@@ -360,22 +356,19 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             entity.igniteForSeconds(5.0F);
         }
 
-        boolean wasHurt;
-        if (entity instanceof LivingEntity livingEntity) {
-            wasHurt = DamageUtils.hurt(damageSource, livingEntity, (float)damage);
-        } else {
-            wasHurt = entity.hurtOrSimulate(damageSource, (float)damage);
-        }
-
-        if (!wasHurt) {
-            entity.setRemainingFireTicks(remainingFireTicks);
-            return;
-        }
-
         if (entity instanceof LivingEntity mob) {
-            this.doKnockback(mob, damageSource);
             Level level = this.level();
             if (level instanceof ServerLevel serverLevel) {
+                float damage = (float) this.baseDamage;
+                DestinyDamageBuilder builder = DestinyDamageBuilder.create(DestinyModDamageTypes.MELEE_ABILITY, mob)
+                        .directSource(this)
+                        .attacker(currentOwner != null ? currentOwner : this)
+                        .element(DestinyElement.SOLAR)
+                        .damage(damage)
+                        .knockback(true);
+                DamageSource damageSource = builder.buildDamageSource();
+                builder.execute();
+
                 EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
                 LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
                 DebuffManager.applyScorch(mob, owner, 50);
