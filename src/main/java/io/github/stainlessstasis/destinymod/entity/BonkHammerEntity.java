@@ -375,11 +375,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             }
 
             this.doPostHurtEffects(mob);
-            if (mob instanceof Player && currentOwner instanceof ServerPlayer ownerPlayer) {
-                if (!this.isSilent() && mob != ownerPlayer) {
-                    ownerPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PLAY_ARROW_HIT_SOUND, 0.0F));
-                }
-            }
 
             if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
                 this.piercedAndKilledEntities.add(mob);
