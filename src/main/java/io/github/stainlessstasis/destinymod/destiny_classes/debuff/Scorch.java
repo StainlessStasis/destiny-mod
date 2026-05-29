@@ -60,7 +60,8 @@ public class Scorch extends OwnableDebuff {
                     .directSource(owner)
                     .attacker(owner)
                     .element(DestinyElement.SOLAR)
-                    .damage(1f)
+                    .damage(0f)
+                    .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
         }

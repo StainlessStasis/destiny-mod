@@ -365,6 +365,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
                         .attacker(currentOwner != null ? currentOwner : this)
                         .element(DestinyElement.SOLAR)
                         .damage(damage)
+                        .invulnerabilityTicks(0)
                         .knockback(true);
                 DamageSource damageSource = builder.buildDamageSource();
                 builder.execute();
