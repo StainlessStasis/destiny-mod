@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DamageUtils;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -370,6 +371,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             Level level = this.level();
             if (level instanceof ServerLevel serverLevel) {
                 EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
+                DebuffManager.applyScorch(mob, 50);
             }
 
             this.doPostHurtEffects(mob);

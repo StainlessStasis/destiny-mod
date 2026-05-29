@@ -50,14 +50,15 @@ public class Scorch implements Debuff {
             // TODO: ignitions here
 //        }
 
-        if (this.decayDelay > 0) {
-            this.decayDelay--;
-            return;
-        }
-
         // TODO: DoT
+        System.out.println("SCORCH TICKING | STACKS REMAINING: "+this.stacks);
 
-        this.stacks = Math.max(0, this.stacks-1);
+        if (this.decayDelay > 0) {
+            System.out.println("SCORCH IS STILL ON DECAY DELAY");
+            this.decayDelay--;
+        } else {
+            this.stacks = Math.max(0, this.stacks-1);
+        }
     }
 
     @Override

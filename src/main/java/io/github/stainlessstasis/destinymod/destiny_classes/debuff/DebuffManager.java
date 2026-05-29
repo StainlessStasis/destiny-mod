@@ -14,6 +14,11 @@ import java.util.function.Supplier;
 public class DebuffManager {
     private static final List<Supplier<? extends AttachmentType<? extends Debuff>>> DEBUFFS = List.of(DestinyModAttachments.SCORCH);
 
+    public static boolean isActive(LivingEntity entity, Supplier<? extends AttachmentType<? extends Debuff>> debuffAttachment) {
+        if (!entity.hasData(debuffAttachment.get())) return false;
+        return entity.getData(debuffAttachment.get()).isActive();
+    }
+
     public static void applyScorch(LivingEntity target, int stacks) {
         Scorch scorch = target.getData(DestinyModAttachments.SCORCH);
         scorch.addStacks(stacks);
@@ -29,6 +34,8 @@ public class DebuffManager {
 
                 if (debuff.isActive()) {
                     debuff.tick(entity);
+                } else {
+                    entity.removeData(debuffSupplier.get());
                 }
             }
         }
