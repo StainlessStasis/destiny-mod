@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.solar.Ignition;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.netty.buffer.ByteBuf;
@@ -18,6 +19,7 @@ import java.util.function.Supplier;
 
 public class Scorch extends OwnableDebuff {
     public static final int IGNITION_THRESHOLD = 100;
+    public static final float DAMAGE = 0.5f;
     private int stacks = 0;
     private int decayDelay = 0;
 
@@ -55,9 +57,12 @@ public class Scorch extends OwnableDebuff {
     @Override
     public void tick(LivingEntity entity) {
         super.tick(entity);
-//        if (this.stacks >= IGNITION_THRESHOLD) {
-            // TODO: ignitions here
-//        }
+        if (this.stacks >= IGNITION_THRESHOLD && entity.level() instanceof ServerLevel level) {
+            LivingEntity owner = getOwner(level);
+            Ignition.ignite(entity, owner, owner);
+            this.clear(entity);
+            return;
+        }
         if (this.tickCount%10 == 0) {
             hurt(entity);
         }
@@ -76,7 +81,7 @@ public class Scorch extends OwnableDebuff {
                     .directSource(owner)
                     .attacker(owner)
                     .element(DestinyElement.SOLAR)
-                    .damage(1f)
+                    .damage(DAMAGE)
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
