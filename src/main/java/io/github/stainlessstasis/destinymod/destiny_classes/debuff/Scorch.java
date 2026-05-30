@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.destiny_classes.debuff;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
@@ -11,6 +12,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.attachment.AttachmentType;
+
+import java.util.function.Supplier;
 
 public class Scorch extends OwnableDebuff {
     public static final int IGNITION_THRESHOLD = 100;
@@ -80,8 +84,14 @@ public class Scorch extends OwnableDebuff {
     }
 
     @Override
-    public void clear() {
+    public void clear(LivingEntity entity) {
+        super.clear(entity);
         this.stacks = 0;
         this.decayDelay = 0;
+    }
+
+    @Override
+    public Supplier<AttachmentType<Boolean>> getClientStateSyncAttachment() {
+        return DestinyModAttachments.IS_SCORCH_ACTIVE;
     }
 }

@@ -2,13 +2,11 @@ package io.github.stainlessstasis.destinymod.client.entity_renderer;
 
 import com.google.common.reflect.TypeToken;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -17,6 +15,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -34,7 +33,7 @@ public class DMEntityRenderers {
         event.registerEntityModifier(
                 new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>() {},
                 (entity, state) -> {
-                    boolean isScorched = DebuffManager.isActive(entity, DestinyModAttachments.SCORCH);
+                    boolean isScorched = entity.getData(DestinyModAttachments.IS_SCORCH_ACTIVE);
                     state.setRenderData(DEBUFF_CONTEXT_KEY, new DebuffData(isScorched));
                 }
         );
@@ -46,7 +45,7 @@ public class DMEntityRenderers {
     }
 
     @SubscribeEvent
-    public static void onRenderLivingPost(RenderLivingEvent.Post<?, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> event) {
+    public static void onRenderLivingPre(RenderLivingEvent.Pre<?, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> event) {
         LivingEntityRenderState state = event.getRenderState();
         DebuffData debuffData = state.getRenderData(DEBUFF_CONTEXT_KEY);
 
@@ -66,7 +65,7 @@ public class DMEntityRenderers {
                 state,
                 poseStack,
                 renderType,
-                15728880,
+                0xFFFFFF,
                 LivingEntityRenderer.getOverlayCoords(state, 0f),
                 0,
                 null

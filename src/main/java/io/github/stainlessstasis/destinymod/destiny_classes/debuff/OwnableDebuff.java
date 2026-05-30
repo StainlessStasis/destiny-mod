@@ -27,7 +27,8 @@ public abstract class OwnableDebuff extends AbstractDebuff {
     }
 
     @Override
-    public void clear() {
+    public void clear(LivingEntity entity) {
+        super.clear(entity);
         this.ownerReference = null;
     }
 }

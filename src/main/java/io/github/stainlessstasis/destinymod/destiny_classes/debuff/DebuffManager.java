@@ -1,7 +1,6 @@
 package io.github.stainlessstasis.destinymod.destiny_classes.debuff;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -16,7 +15,7 @@ import java.util.function.Supplier;
 public class DebuffManager {
     private static final List<Supplier<? extends AttachmentType<? extends Debuff>>> DEBUFFS = List.of(DestinyModAttachments.SCORCH);
 
-    public static boolean isActive(LivingEntity entity, Supplier<? extends AttachmentType<? extends Debuff>> debuffAttachment) {
+    public static boolean isActiveOnServer(LivingEntity entity, Supplier<? extends AttachmentType<? extends Debuff>> debuffAttachment) {
         if (!entity.hasData(debuffAttachment.get())) return false;
         return entity.getData(debuffAttachment.get()).isActive();
     }
@@ -38,6 +37,7 @@ public class DebuffManager {
                 if (debuff.isActive()) {
                     debuff.tick(entity);
                 } else {
+                    debuff.clear(entity);
                     entity.removeData(debuffSupplier.get());
                 }
             }

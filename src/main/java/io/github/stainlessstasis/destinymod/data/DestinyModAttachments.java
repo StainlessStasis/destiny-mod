@@ -1,10 +1,12 @@
 package io.github.stainlessstasis.destinymod.data;
 
+import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.destiny_classes.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -34,13 +36,24 @@ public class DestinyModAttachments {
                     .build()
     );
 
+    /**
+     * NOT synced to clients. Use IS_SCORCH_ACTIVE
+     */
     public static final Supplier<AttachmentType<Scorch>> SCORCH = ATTACHMENTS.register(
             "scorch",
             () -> AttachmentType.builder(Scorch::new)
                     .serialize(Scorch.CODEC)
-                    .sync(Scorch.STREAM_CODEC)
                     .build()
     );
+
+    public static final Supplier<AttachmentType<Boolean>> IS_SCORCH_ACTIVE = ATTACHMENTS.register(
+            "is_scorch_active",
+            () -> AttachmentType.builder(() -> false)
+                    .serialize(Codec.BOOL.fieldOf("is_scorch_active"))
+                    .sync(ByteBufCodecs.BOOL)
+                    .build()
+    );
+
 
 //    public static final Supplier<AttachmentType<DestinyElement>> ELEMENT = ATTACHMENTS.register(
 //            "element",
