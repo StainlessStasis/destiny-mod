@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.client.entity_renderer;
+package io.github.stainlessstasis.destinymod.client.entity_rendering.renderer;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;

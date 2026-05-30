@@ -1,30 +1,24 @@
-package io.github.stainlessstasis.destinymod.client.entity_renderer;
+package io.github.stainlessstasis.destinymod.client.entity_rendering;
 
 import com.google.common.reflect.TypeToken;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.client.entity_rendering.layer.ScorchRenderLayer;
+import io.github.stainlessstasis.destinymod.client.entity_rendering.renderer.BonkHammerRenderer;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
-import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 
 @EventBusSubscriber(modid = DestinyMod.MODID, value = Dist.CLIENT)
-public class DMEntityRenderers {
+public class EntityRendererEvents {
     public static final ContextKey<DebuffData> DEBUFF_CONTEXT_KEY = new ContextKey<>(DestinyMod.id("debuff_data"));
     public record DebuffData(boolean isScorched) {}
 
@@ -45,30 +39,33 @@ public class DMEntityRenderers {
     }
 
     @SubscribeEvent
-    public static void onRenderLivingPre(RenderLivingEvent.Pre<?, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> event) {
-        LivingEntityRenderState state = event.getRenderState();
-        DebuffData debuffData = state.getRenderData(DEBUFF_CONTEXT_KEY);
+    public static void registerLayers(EntityRenderersEvent.AddLayers event) {
+        for (var skinType : event.getSkins()) {
+            LivingEntityRenderer<?, ?, ?> playerRenderer = event.getPlayerRenderer(skinType);
+            if (playerRenderer != null) {
+                addAllLayers(playerRenderer);
+            }
 
-        if (debuffData == null) return;
-        if (!debuffData.isScorched()) return;
+            LivingEntityRenderer<?, ?, ?> mannequinRenderer = event.getMannequinRenderer(skinType);
+            if (mannequinRenderer != null) {
+                addAllLayers(mannequinRenderer);
+            }
+        }
 
-        PoseStack poseStack = event.getPoseStack();
-        SubmitNodeCollector submitNodeCollector = event.getSubmitNodeCollector();
-        LivingEntityRenderer<?, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> renderer = event.getRenderer();
-        EntityModel<LivingEntityRenderState> model = renderer.getModel();
+        for (var entityType : event.getEntityTypes()) {
+            if (event.getRenderer(entityType) instanceof LivingEntityRenderer<?, ?, ?> renderer) {
+                addAllLayers(renderer);
+            }
+        }
+    }
 
-        Identifier texture = DestinyMod.id("textures/entity/hammer_of_sol.png");
-        RenderType renderType = RenderTypes.energySwirl(texture, 0f, 0f);
+    private static void addAllLayers(LivingEntityRenderer<?, ?, ?> renderer) {
+        addScorchLayer(renderer);
+    }
 
-        submitNodeCollector.submitModel(
-                model,
-                state,
-                poseStack,
-                renderType,
-                0xFFFFFF,
-                LivingEntityRenderer.getOverlayCoords(state, 0f),
-                0,
-                null
-        );
+    @SuppressWarnings("unchecked")
+    private static <T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> void addScorchLayer(LivingEntityRenderer<?, ?, ?> renderer) {
+        var castRenderer = (LivingEntityRenderer<T, S, M>) renderer;
+        castRenderer.addLayer(new ScorchRenderLayer<>(castRenderer));
     }
 }
