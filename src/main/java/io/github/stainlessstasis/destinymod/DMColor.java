@@ -1,4 +1,4 @@
-package io.github.stainlessstasis;
+package io.github.stainlessstasis.destinymod;
 
 public class DMColor {
     public static final DMColor WHITE = new DMColor(0xFFFFFFFF);

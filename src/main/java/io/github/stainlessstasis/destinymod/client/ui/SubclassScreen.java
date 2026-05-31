@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client.ui;
 
 import com.mojang.datafixers.util.Either;
-import io.github.stainlessstasis.DMColor;
+import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.tooltip.*;

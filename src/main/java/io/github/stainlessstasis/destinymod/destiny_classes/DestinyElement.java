@@ -2,7 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_classes;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import io.github.stainlessstasis.DMColor;
+import io.github.stainlessstasis.destinymod.DMColor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
