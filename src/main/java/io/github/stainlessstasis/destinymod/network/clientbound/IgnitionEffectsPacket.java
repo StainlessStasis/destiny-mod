@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.destinymod.network.clientbound;
 
-import io.github.stainlessstasis.destinymod.client.particle.ClientParticleEffects;
+import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -23,7 +23,7 @@ public record IgnitionEffectsPacket(Vector3fc center) implements CustomPacketPay
     public static class Handler {
         public static void handle(final IgnitionEffectsPacket packet, final IPayloadContext context) {
             context.enqueueWork(() -> {
-                ClientParticleEffects.ignition(new Vec3(packet.center()));
+                ClientAudioAndVFX.ignition(context.player().level(), new Vec3(packet.center()));
             });
         }
     }

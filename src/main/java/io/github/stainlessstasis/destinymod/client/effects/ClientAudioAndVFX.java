@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.client.particle;
+package io.github.stainlessstasis.destinymod.client.effects;
 
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.solar.Ignition;
@@ -6,16 +6,24 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ClientParticleEffects {
-    public static void ignition(Vec3 center) {
+public class ClientAudioAndVFX {
+    // Sound seeds from https://github.com/Owen1212055/mc-sound-seeds/blob/main/sound_seeds.json
+    public static final long LIGHTNING_THUNDER_1 = -3143421179731086385L;
+    public static final long LIGHTNING_THUNDER_2 = 4923755067258430535L;
+    public static final long LIGHTNING_THUNDER_3 = -1383406444080597295L;
+
+    public static void ignition(Level level, Vec3 center) {
+        // PARTICLES
         var particleEngine = Minecraft.getInstance().particleEngine;
         DMColor solar = DMColor.SOLAR;
         DMColor solarDark = DMColor.SOLAR_DARK;
         double x = center.x; double y = center.y; double z = center.z;
         float radius = Ignition.RANGE;
-        float halfRadius = radius/2f;
 
         int particleAmount = 80;
         for (int i = 0; i < particleAmount; i++) {
@@ -57,5 +65,12 @@ public class ClientParticleEffects {
                 }
             }
         }
+
+        // SOUNDS
+        level.playSeededSound(Minecraft.getInstance().player, center.x, center.y, center.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.AMBIENT, 1f, 2f, LIGHTNING_THUNDER_3);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, 1f, 1.3f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, 0.8f, 0.6f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.LAVA_EXTINGUISH, SoundSource.AMBIENT, 1f, 1.5f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_BURN, SoundSource.AMBIENT, 1f, 1.2f, true);
     }
 }
