@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class ClientParticleEffects {
@@ -15,6 +14,8 @@ public class ClientParticleEffects {
         DMColor solar = DMColor.SOLAR;
         DMColor solarDark = DMColor.SOLAR_DARK;
         double x = center.x; double y = center.y; double z = center.z;
+        float radius = Ignition.RANGE;
+        float halfRadius = radius/2f;
 
         int particleAmount = 80;
         for (int i = 0; i < particleAmount; i++) {
@@ -23,7 +24,7 @@ public class ClientParticleEffects {
             double theta = u * 2 * Math.PI;
             double phi = Math.acos(2 * v - 1);
 
-            double randomRadius = Math.cbrt(Math.random()) * Ignition.RANGE;
+            double randomRadius = Math.cbrt(Math.random()) * radius;
             double dx = Math.sin(phi) * Math.cos(theta) * randomRadius;
             double dy = Math.sin(phi) * Math.sin(theta) * randomRadius;
             double dz = Math.cos(phi) * randomRadius;
@@ -42,14 +43,14 @@ public class ClientParticleEffects {
                 particleEngine.add(particle);
             }
 
-            if (i < 5) {
+            if (i < 10) {
                 Particle explosionParticle = particleEngine.createParticle(
                         ParticleTypes.EXPLOSION,
                         x+dx, y+dy, z+dz, 0, 0, 0
                 );
                 if (explosionParticle != null) {
                     if (explosionParticle instanceof SingleQuadParticle singleQuadParticle) {
-                        DMColor color = DMColor.SOLAR;
+                        DMColor color = i > 3 ? DMColor.SOLAR : DMColor.SOLAR_DARK;
                         singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
                     }
                     particleEngine.add(explosionParticle);
