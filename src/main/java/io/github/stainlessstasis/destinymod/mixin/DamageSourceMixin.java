@@ -24,12 +24,13 @@ public abstract class DamageSourceMixin implements DestinyModDamageSource {
     @Override
     public boolean destinymod$hasKnockback() { return this.destinymod$hasKnockback; }
     @Override
-    public void destinymod$setHasKnockback(boolean bypass) { this.destinymod$hasKnockback = bypass; }
+    public void destinymod$setHasKnockback(boolean hasKnockback) { this.destinymod$hasKnockback = hasKnockback; }
 
-    @Inject(method = "is", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "is(Lnet/minecraft/tags/TagKey;)Z", at = @At("HEAD"), cancellable = true)
     private void checkKnockback(TagKey<DamageType> tag, CallbackInfoReturnable<Boolean> cir) {
         if (tag.equals(DamageTypeTags.NO_KNOCKBACK)) {
             cir.setReturnValue(!this.destinymod$hasKnockback);
         }
+
     }
 }
