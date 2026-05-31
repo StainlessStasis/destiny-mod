@@ -2,6 +2,8 @@ package io.github.stainlessstasis.destinymod.client.effects;
 
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.solar.Ignition;
+import io.github.stainlessstasis.destinymod.task.CancellableRunnable;
+import io.github.stainlessstasis.destinymod.task.ClientTaskScheduler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SingleQuadParticle;
@@ -67,10 +69,20 @@ public class ClientAudioAndVFX {
         }
 
         // SOUNDS
-        level.playSeededSound(Minecraft.getInstance().player, center.x, center.y, center.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.AMBIENT, 1f, 2f, LIGHTNING_THUNDER_3);
-        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, 1f, 1.3f, true);
-        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, 0.8f, 0.6f, true);
-        level.playLocalSound(center.x, center.y, center.z, SoundEvents.LAVA_EXTINGUISH, SoundSource.AMBIENT, 1f, 1.5f, true);
-        level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_BURN, SoundSource.AMBIENT, 1f, 1.2f, true);
+        float volume = radius/2f;
+        level.playSeededSound(Minecraft.getInstance().player, center.x, center.y, center.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.AMBIENT, 1.2f*volume, 2f, LIGHTNING_THUNDER_3);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, volume, 1.3f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, volume, 0.6f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.LAVA_EXTINGUISH, SoundSource.AMBIENT, 0.8f*volume, 1.5f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_BURN, SoundSource.AMBIENT, volume, 1.2f, true);
+
+        ClientTaskScheduler.INSTANCE.runTaskRepeating(0, 1, new CancellableRunnable() {
+            @Override
+            protected void execute() {
+                System.out.println("Iteration: "+this.getCurrentIteration());
+                System.out.println("Player tick count: "+Minecraft.getInstance().player.tickCount);
+                System.out.println();
+            }
+        });
     }
 }

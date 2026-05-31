@@ -150,7 +150,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
                 this.applyInertia(0.99F);
             } else {
                 this.applyInertia(this.getWaterInertia());
-                if (this.isInWater()) {
+                if (this.isInWater() && this.level().isClientSide()) {
                     this.addBubbleParticles(originalPosition);
                 }
             }
@@ -166,13 +166,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
             this.setXRot(lerpRotation(this.getXRot(), xRot));
             this.setYRot(lerpRotation(this.getYRot(), yRot));
             this.checkLeftOwner();
-            if (physicsEnabled) {
-//                BlockHitResult blockHitResult = this.level().clipIncludingBorder(new ClipContext(originalPosition, originalPosition.add(movement), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-//                this.stepMoveAndHit(blockHitResult);
-            } else {
-//                this.setPos(originalPosition.add(movement));
-                this.applyEffectsFromBlocks();
-            }
 
             if (physicsEnabled && !this.isInGround()) {
                 this.applyGravity();
@@ -258,7 +251,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
     /**
      * Applies bounce physics given a collision.
-     * Reflects velocity off the collision normal using the spell's coefficient of restitution.
+     * Reflects velocity off the collision normal using the hammer's coefficient of restitution.
      */
     protected Vec3 applyBounce(Vec3 velocity, CollisionContext context) {
         Vec3 normal = context.normal();
@@ -305,10 +298,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
      *  All the stuff from AbstractArrow's onBlockHit which make the arrow stick into the block.
      */
     protected void vanillaStickInBlock() {
-//        Vec3 movement = this.getDeltaMovement();
-//        Vec3 offsetDirection = new Vec3(Math.signum(movement.x), Math.signum(movement.y), Math.signum(movement.z));
-//        Vec3 scaledMovement = offsetDirection.scale(0.05F);
-//        this.setPos(this.position().subtract(scaledMovement));
         this.setDeltaMovement(Vec3.ZERO);
         this.setInGround(true);
         this.shakeTime = 7;

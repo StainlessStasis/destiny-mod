@@ -12,14 +12,18 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.attachment.AttachmentType;
 
 import java.util.function.Supplier;
 
 public class Scorch extends OwnableDebuff {
     public static final int IGNITION_THRESHOLD = 100;
-    public static final float DAMAGE = 0.5f;
+    /*** Damage at 0 stacks, scales up to 3x the amount*/
+    public static final float DAMAGE = 0.25f;
     private int stacks = 0;
     private int decayDelay = 0;
 
@@ -65,6 +69,7 @@ public class Scorch extends OwnableDebuff {
         }
         if (this.tickCount%10 == 0) {
             hurt(entity);
+            entity.level().playSound(null, entity, SoundEvents.LAVA_EXTINGUISH, SoundSource.AMBIENT, 0.5f, 2f);
         }
 
         if (this.decayDelay > 0) {
@@ -77,11 +82,13 @@ public class Scorch extends OwnableDebuff {
     public void hurt(LivingEntity entity) {
         if (entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);
+            float damageMultiplier = 1f + (this.stacks*2f/IGNITION_THRESHOLD);
+            float damage = DAMAGE * damageMultiplier;
             DestinyDamageBuilder.create(DestinyModDamageTypes.SCORCH, entity)
                     .directSource(owner)
                     .attacker(owner)
                     .element(DestinyElement.SOLAR)
-                    .damage(DAMAGE)
+                    .damage(damage)
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
