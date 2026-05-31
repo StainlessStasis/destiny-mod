@@ -14,12 +14,28 @@ public class DMColor {
     }
 
     public int withOpacity(float opacity) {
-        float clamped = Math.max(0f, Math.min(1f, opacity));
+        float clamped = Math.clamp(opacity, 0f, 1f);
         int alpha = Math.round(clamped * 255);
         return (this.hex & 0x00FFFFFF) | (alpha << 24);
     }
 
     public int get() {
         return this.hex;
+    }
+
+    public float getRed() {
+        return ((this.hex >> 16) & 0xFF) / 255f;
+    }
+
+    public float getGreen() {
+        return ((this.hex >> 8) & 0xFF) / 255f;
+    }
+
+    public float getBlue() {
+        return (this.hex & 0xFF) / 255f;
+    }
+
+    public float getAlpha() {
+        return ((this.hex >>> 24) & 0xFF) / 255f;
     }
 }

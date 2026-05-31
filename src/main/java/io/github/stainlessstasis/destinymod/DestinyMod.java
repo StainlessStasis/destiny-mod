@@ -7,8 +7,8 @@ import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
-import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
-import io.github.stainlessstasis.destinymod.network.AbilityCastPacket;
+import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
+import io.github.stainlessstasis.destinymod.network.serverbound.AbilityCastPacket;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.world_interaction.BlockDestructionManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +54,12 @@ public class DestinyMod {
             registrar.playToServer(
                     AbilityCastPacket.TYPE,
                     AbilityCastPacket.STREAM_CODEC,
-                    AbilityCastPacket.Handler::handleServerbound
+                    AbilityCastPacket.Handler::handle
+            );
+            registrar.playToClient(
+                    IgnitionEffectsPacket.TYPE,
+                    IgnitionEffectsPacket.STREAM_CODEC,
+                    IgnitionEffectsPacket.Handler::handle
             );
         }
     }

@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.network;
+package io.github.stainlessstasis.destinymod.network.serverbound;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
@@ -27,7 +27,7 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
     );
 
     public static class Handler {
-        public static void handleServerbound(final AbilityCastPacket packet, final IPayloadContext context) {
+        public static void handle(final AbilityCastPacket packet, final IPayloadContext context) {
             // TODO: move this shit to its own class
             Player player = context.player();
 

@@ -3,12 +3,13 @@ package io.github.stainlessstasis.destinymod.destiny_classes.ability.solar;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
-import net.minecraft.core.particles.ParticleTypes;
+import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class Ignition {
         for (LivingEntity victim : victims) {
             float distSq = (float) victim.distanceToSqr(ignitionPos);
             float falloff = 1f - (distSq / RANGE_SQUARED);
-            falloff = Math.max(0f, Math.min(1f, falloff));
+            falloff = Math.clamp(falloff, 0f, 1f);
             float damage = DAMAGE * falloff;
             if (damage <= 0.01f) continue;
 
@@ -44,30 +45,6 @@ public class Ignition {
                     .execute();
         }
 
-        spawnIgnitionEffects(entity);
-    }
-
-    private static void spawnIgnitionEffects(Entity entity) {
-        if (!(entity.level() instanceof ServerLevel level)) return;
-
-        Vec3 center = entity.getEyePosition();
-        double x = center.x; double y = center.y; double z = center.z;
-        level.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 1, 0, 0, 0, 0);
-
-        int particleAmount = 80;
-        for (int i = 0; i < particleAmount; i++) {
-            double u = Math.random();
-            double v = Math.random();
-            double theta = u * 2 * Math.PI;
-            double phi = Math.acos(2 * v - 1);
-
-            double randomRadius = Math.cbrt(Math.random()) * RANGE;
-            double dx = Math.sin(phi) * Math.cos(theta) * randomRadius;
-            double dy = Math.sin(phi) * Math.sin(theta) * randomRadius;
-            double dz = Math.cos(phi) * randomRadius;
-
-            var particleType = Math.random() < 0.7 ? ParticleTypes.LAVA : ParticleTypes.FLAME;
-            level.sendParticles(particleType, x, y, z, 1, dx, dy, dz, 0.2);
-        }
+        PacketDistributor.sendToPlayersTrackingEntity(entity, new IgnitionEffectsPacket(entity.getEyePosition().toVector3f()));
     }
 }
