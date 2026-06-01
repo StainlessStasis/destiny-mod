@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
@@ -85,23 +86,8 @@ public class SunspotEntity extends Entity implements TraceableEntity {
     }
 
     private void tickClient() {
-        if (tickCount%3 != 0) return;
-
-        double x = getX();
-        double y = getY();
-        double z = getZ();
-        int particles = 20;
-        for (int i = 0; i < particles; i++) {
-            double angle = (i * 2f * Math.PI) / particles;
-            double dx = Math.cos(angle) * RADIUS;
-            double dz = Math.sin(angle) * RADIUS;
-
-            level().addParticle(
-                    ParticleTypes.SMALL_FLAME,
-                    x+dx, y, z+dz,
-                    0.01, 0.05, 0.01
-            );
-        }
+        if (tickCount%5 != 0) return;
+        ClientAudioAndVFX.sunspot(level(), position(), random);
     }
 
     public void setOwner(@Nullable LivingEntity owner) {

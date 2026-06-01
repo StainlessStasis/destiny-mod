@@ -4,6 +4,7 @@ import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.compat.LDL.FadeOutDynamicLightBehavior;
 import io.github.stainlessstasis.destinymod.compat.LDL.LDLCompat;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.solar.Ignition;
+import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
 import io.github.stainlessstasis.destinymod.task.CancellableRunnable;
 import io.github.stainlessstasis.destinymod.task.ClientTaskScheduler;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
@@ -87,6 +89,39 @@ public class ClientAudioAndVFX {
                 }
             }
         });
+    }
+
+    public static void sunspot(Level level, Vec3 center, RandomSource random) {
+        double x = center.x;
+        double y = center.y;
+        double z = center.z;
+        int particles = 50;
+        for (int i = 0; i < particles; i++) {
+            double angle = (i * 2f * Math.PI) / particles;
+            double dx = Math.cos(angle) * SunspotEntity.RADIUS;
+            double dz = Math.sin(angle) * SunspotEntity.RADIUS;
+
+            double drift = 0.02;
+            double rise = 0.5f + random.nextFloat() * 0.5f;
+            double vx = (dx * 0.005) + (-Math.sin(angle) * drift);
+            double vy = (0.02f + random.nextFloat() * 0.03f) * rise;
+            double vz = (dz * 0.005) + (Math.cos(angle) * drift);
+
+            var particleType = random.nextFloat() < 0.02f ? ParticleTypes.LAVA : ParticleTypes.FLAME;
+            Particle particle = Minecraft.getInstance().particleEngine.createParticle(
+                    particleType,
+                    x+dx, y, z+dz,
+                    vx, vy, vz
+            );
+            if (particle instanceof SingleQuadParticle singleQuadParticle) {
+                DMColor color = random.nextFloat() > 0.7 ? DMColor.SOLAR_DARK : DMColor.SOLAR;
+                singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                singleQuadParticle.scale(1f + (random.nextFloat()/2f));
+            }
+            if (particle != null) {
+                Minecraft.getInstance().particleEngine.add(particle);
+            }
+        }
     }
 
     public static void addFadingLight(Vec3 pos, int radius, int ticks) {
