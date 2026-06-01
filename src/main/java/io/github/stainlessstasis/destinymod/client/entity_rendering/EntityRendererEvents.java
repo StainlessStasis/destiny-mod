@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.entity_rendering.layer.ScorchRenderLayer;
 import io.github.stainlessstasis.destinymod.client.entity_rendering.renderer.BonkHammerRenderer;
+import io.github.stainlessstasis.destinymod.client.entity_rendering.renderer.DummyEntityRenderer;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import net.minecraft.client.model.EntityModel;
@@ -36,6 +37,7 @@ public class EntityRendererEvents {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(DestinyModEntities.HAMMER_OF_SOL.get(), BonkHammerRenderer::new);
+        event.registerEntityRenderer(DestinyModEntities.SUNSPOT.get(), DummyEntityRenderer::new);
     }
 
     @SubscribeEvent
