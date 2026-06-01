@@ -99,7 +99,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
 
     @Override
     public @NonNull EntityDimensions getDimensions(@NonNull Pose pose) {
-        return EntityDimensions.fixed(RADIUS*2, 0.5f);
+        return EntityDimensions.fixed(RADIUS*2, 2.5f);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class DestinyModEntities {
                             SunspotEntity::createDefault,
                             MobCategory.MISC
                     )
-                    .sized(3f, 0.5f)
+                    .sized(3f, 2.5f)
                     .noSave()
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(

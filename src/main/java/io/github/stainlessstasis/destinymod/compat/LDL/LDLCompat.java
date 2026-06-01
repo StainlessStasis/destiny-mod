@@ -19,7 +19,8 @@ public class LDLCompat implements DynamicLightsInitializer {
     public void onInitializeDynamicLights(DynamicLightsContext dynamicLightsContext) {
         BEHAVIOR_MANAGER = dynamicLightsContext.dynamicLightBehaviorManager();
         dynamicLightsContext.entityLightSourceManager().onRegisterEvent().register(context -> {
-            context.register(DestinyModEntities.HAMMER_OF_SOL.get(), 8);
+            context.register(DestinyModEntities.HAMMER_OF_SOL.get(), 7);
+            context.register(DestinyModEntities.SUNSPOT.get(), 11);
         });
     }
 }
