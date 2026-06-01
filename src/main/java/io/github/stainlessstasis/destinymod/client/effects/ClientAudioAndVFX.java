@@ -1,6 +1,8 @@
 package io.github.stainlessstasis.destinymod.client.effects;
 
 import io.github.stainlessstasis.destinymod.DMColor;
+import io.github.stainlessstasis.destinymod.compat.LDL.FadeOutDynamicLightBehavior;
+import io.github.stainlessstasis.destinymod.compat.LDL.LDLCompat;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.solar.Ignition;
 import io.github.stainlessstasis.destinymod.task.CancellableRunnable;
 import io.github.stainlessstasis.destinymod.task.ClientTaskScheduler;
@@ -12,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.ModList;
 
 public class ClientAudioAndVFX {
     // Sound seeds from https://github.com/Owen1212055/mc-sound-seeds/blob/main/sound_seeds.json
@@ -29,6 +32,10 @@ public class ClientAudioAndVFX {
         level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, volume, 0.6f, true);
         level.playLocalSound(center.x, center.y, center.z, SoundEvents.LAVA_EXTINGUISH, SoundSource.AMBIENT, 0.8f*volume, 1.5f, true);
         level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_BURN, SoundSource.AMBIENT, volume, 1.2f, true);
+
+        // LDL COMPAT
+        int lightRadius = (int) (Ignition.RANGE * 2);
+        addFadingLight(center, lightRadius, 20);
 
         // PARTICLES
         var particleEngine = Minecraft.getInstance().particleEngine;
@@ -77,6 +84,25 @@ public class ClientAudioAndVFX {
                             particleEngine.add(explosionParticle);
                         }
                     }
+                }
+            }
+        });
+    }
+
+    public static void addFadingLight(Vec3 pos, int radius, int ticks) {
+        if (!ModList.get().isLoaded("lambdynlights")) {
+            return;
+        }
+
+        FadeOutDynamicLightBehavior light = new FadeOutDynamicLightBehavior(pos, ticks, radius);
+        LDLCompat.BEHAVIOR_MANAGER.add(light);
+        ClientTaskScheduler.INSTANCE.runTaskRepeating(0, 1, new CancellableRunnable() {
+            @Override
+            protected void execute() {
+                light.tick();
+                if (light.isRemoved() || getCurrentIteration() > ticks) {
+                    LDLCompat.BEHAVIOR_MANAGER.remove(light);
+                    cancel();
                 }
             }
         });

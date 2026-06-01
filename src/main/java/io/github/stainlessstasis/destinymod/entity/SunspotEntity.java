@@ -37,15 +37,12 @@ public class SunspotEntity extends Entity implements TraceableEntity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {}
-
     @Override
     public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource damageSource, float v) {return false;}
-
     @Override
     protected void readAdditionalSaveData(@NonNull ValueInput valueInput) {
         discard();
     }
-
     @Override
     protected void addAdditionalSaveData(@NonNull ValueOutput valueOutput) {}
 }

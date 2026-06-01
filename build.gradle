@@ -153,7 +153,6 @@ dependencies {
         }
         exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
-        exclude group: "dev.lambdaurora", module: "spruceui"
         exclude group: "io.github.queerbric", module: "pridelib"
     }
 }
