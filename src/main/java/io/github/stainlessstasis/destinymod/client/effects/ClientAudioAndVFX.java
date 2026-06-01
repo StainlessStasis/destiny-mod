@@ -95,31 +95,53 @@ public class ClientAudioAndVFX {
         double x = center.x;
         double y = center.y;
         double z = center.z;
-        int particles = 50;
-        for (int i = 0; i < particles; i++) {
-            double angle = (i * 2f * Math.PI) / particles;
-            double dx = Math.cos(angle) * SunspotEntity.RADIUS;
-            double dz = Math.sin(angle) * SunspotEntity.RADIUS;
+        var particleEngine = Minecraft.getInstance().particleEngine;
 
-            double drift = 0.02;
+        int ringParticles = 24;
+        for (int i = 0; i < ringParticles; i++) {
+            double angle = (i * 2f * Math.PI) / ringParticles;
+            double fuzz = (random.nextFloat() - 0.5f) * 0.2f;
+            double currentRadius = SunspotEntity.RADIUS + fuzz;
+            double dx = Math.cos(angle) * currentRadius;
+            double dz = Math.sin(angle) * currentRadius;
+            double drift = 0.02f;
             double rise = 0.5f + random.nextFloat() * 0.5f;
-            double vx = (dx * 0.005) + (-Math.sin(angle) * drift);
+            double vx = (dx * 0.005f) + (-Math.sin(angle) * drift);
             double vy = (0.02f + random.nextFloat() * 0.03f) * rise;
-            double vz = (dz * 0.005) + (Math.cos(angle) * drift);
+            double vz = (dz * 0.005f) + (Math.cos(angle) * drift);
 
-            var particleType = random.nextFloat() < 0.02f ? ParticleTypes.LAVA : ParticleTypes.FLAME;
-            Particle particle = Minecraft.getInstance().particleEngine.createParticle(
-                    particleType,
-                    x+dx, y, z+dz,
-                    vx, vy, vz
-            );
+            var particleType = random.nextFloat() < 0.2f ? ParticleTypes.SMALL_FLAME : ParticleTypes.FLAME;
+            Particle particle = particleEngine.createParticle(particleType, x + dx, y, z + dz, vx, vy, vz);
+
             if (particle instanceof SingleQuadParticle singleQuadParticle) {
-                DMColor color = random.nextFloat() > 0.7 ? DMColor.SOLAR_DARK : DMColor.SOLAR;
+                DMColor color = random.nextFloat() > 0.7f ? DMColor.SOLAR_DARK : DMColor.SOLAR;
                 singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
-                singleQuadParticle.scale(1f + (random.nextFloat()/2f));
+                singleQuadParticle.scale(1f + (random.nextFloat() / 2f));
+                particleEngine.add(singleQuadParticle);
             }
-            if (particle != null) {
-                Minecraft.getInstance().particleEngine.add(particle);
+        }
+
+        int coreParticles = 26;
+        for (int i = 0; i < coreParticles; i++) {
+            double angle = random.nextFloat() * 2f * Math.PI;
+            double randomRadius = Math.pow(random.nextFloat(), 1.5f) * SunspotEntity.RADIUS;
+            double dx = Math.cos(angle) * randomRadius;
+            double dz = Math.sin(angle) * randomRadius;
+            double vx = (random.nextFloat() - 0.5f) * 0.02f;
+            double vy = 0.01f + random.nextFloat() * 0.02f;
+            double vz = (random.nextFloat() - 0.5f) * 0.02f;
+
+            var particleType = random.nextFloat() < 0.25f ? ParticleTypes.LAVA : ParticleTypes.FLAME;
+            Particle particle = particleEngine.createParticle(particleType, x + dx, y, z + dz, vx, vy, vz);
+
+            if (particle instanceof SingleQuadParticle singleQuadParticle) {
+                DMColor color = random.nextFloat() > 0.85 ? DMColor.SOLAR_DARK : DMColor.SOLAR;
+                singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+
+                float scale = particleType == ParticleTypes.LAVA ? 1f : 1.3f + random.nextFloat() * 0.5f;
+                singleQuadParticle.scale(scale);
+
+                particleEngine.add(singleQuadParticle);
             }
         }
     }
