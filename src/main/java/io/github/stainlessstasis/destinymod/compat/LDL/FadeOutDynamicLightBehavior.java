@@ -13,7 +13,7 @@ public class FadeOutDynamicLightBehavior implements DynamicLightBehavior {
     private final double z;
     private final BoundingBox box;
     private int remainingTicks;
-    private int maxTicks;
+    private final int maxTicks;
     private int lastLuminance = 15;
     private int luminance = 15;
 

@@ -3,6 +3,8 @@ package io.github.stainlessstasis.destinymod.destiny_classes.ability.solar;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
+import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
+import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -43,6 +45,11 @@ public class Ignition {
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
+        }
+
+        if (causingEntity instanceof LivingEntity owner) {
+            SunspotEntity sunspot = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), level, ignitionPos, owner);
+            level.addFreshEntity(sunspot);
         }
 
         PacketDistributor.sendToPlayersTrackingEntity(entity, new IgnitionEffectsPacket(entity.getEyePosition().toVector3f()));
