@@ -30,6 +30,21 @@ public class DestinyModEntities {
                     ))
     );
 
+    public static final Supplier<EntityType<@NotNull SunspotEntity>> SUNSPOT = ENTITY_TYPES.register(
+            "sunspot",
+            () -> EntityType.Builder.of(
+                            SunspotEntity::createDefault,
+                            MobCategory.MISC
+                    )
+                    .sized(1.5f, 0.25f)
+                    .noSave()
+                    .clientTrackingRange(8)
+                    .build(ResourceKey.create(
+                            Registries.ENTITY_TYPE,
+                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "sunspot")
+                    ))
+    );
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }

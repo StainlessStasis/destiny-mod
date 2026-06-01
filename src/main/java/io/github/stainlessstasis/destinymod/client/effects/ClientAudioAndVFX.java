@@ -20,53 +20,7 @@ public class ClientAudioAndVFX {
     public static final long LIGHTNING_THUNDER_3 = -1383406444080597295L;
 
     public static void ignition(Level level, Vec3 center) {
-        // PARTICLES
-        var particleEngine = Minecraft.getInstance().particleEngine;
-        DMColor solar = DMColor.SOLAR;
-        DMColor solarDark = DMColor.SOLAR_DARK;
-        double x = center.x; double y = center.y; double z = center.z;
         float radius = Ignition.RANGE;
-
-        int particleAmount = 80;
-        for (int i = 0; i < particleAmount; i++) {
-            double u = Math.random();
-            double v = Math.random();
-            double theta = u * 2 * Math.PI;
-            double phi = Math.acos(2 * v - 1);
-
-            double randomRadius = Math.cbrt(Math.random()) * radius;
-            double dx = Math.sin(phi) * Math.cos(theta) * randomRadius;
-            double dy = Math.sin(phi) * Math.sin(theta) * randomRadius;
-            double dz = Math.cos(phi) * randomRadius;
-
-            var particleType = Math.random() < 0.7 ? ParticleTypes.LAVA : ParticleTypes.FLAME;
-            Particle particle = particleEngine.createParticle(
-                    particleType,
-                    x + dx, y + dy, z + dz,
-                    dx * 0.2, dy * 0.2, dz * 0.2
-            );
-            if (particle != null) {
-                if (particle instanceof SingleQuadParticle singleQuadParticle) {
-                    DMColor color = Math.random() < 0.8 ? solar : solarDark;
-                    singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
-                }
-                particleEngine.add(particle);
-            }
-
-            if (i < 10) {
-                Particle explosionParticle = particleEngine.createParticle(
-                        ParticleTypes.EXPLOSION,
-                        x+dx, y+dy, z+dz, 0, 0, 0
-                );
-                if (explosionParticle != null) {
-                    if (explosionParticle instanceof SingleQuadParticle singleQuadParticle) {
-                        DMColor color = i > 3 ? DMColor.SOLAR : DMColor.SOLAR_DARK;
-                        singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
-                    }
-                    particleEngine.add(explosionParticle);
-                }
-            }
-        }
 
         // SOUNDS
         float volume = radius/2f;
@@ -76,12 +30,54 @@ public class ClientAudioAndVFX {
         level.playLocalSound(center.x, center.y, center.z, SoundEvents.LAVA_EXTINGUISH, SoundSource.AMBIENT, 0.8f*volume, 1.5f, true);
         level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_BURN, SoundSource.AMBIENT, volume, 1.2f, true);
 
-        ClientTaskScheduler.INSTANCE.runTaskRepeating(0, 1, new CancellableRunnable() {
+        // PARTICLES
+        var particleEngine = Minecraft.getInstance().particleEngine;
+        DMColor solar = DMColor.SOLAR;
+        DMColor solarDark = DMColor.SOLAR_DARK;
+        double x = center.x; double y = center.y; double z = center.z;
+
+        ClientTaskScheduler.INSTANCE.runTaskMultiple(5, 0, 1, new CancellableRunnable() {
             @Override
             protected void execute() {
-                System.out.println("Iteration: "+this.getCurrentIteration());
-                System.out.println("Player tick count: "+Minecraft.getInstance().player.tickCount);
-                System.out.println();
+                for (int i = 0; i < 20; i++) {
+                    double u = Math.random();
+                    double v = Math.random();
+                    double theta = u * 2 * Math.PI;
+                    double phi = Math.acos(2 * v - 1);
+
+                    double randomRadius = Math.cbrt(Math.random()) * radius;
+                    double dx = Math.sin(phi) * Math.cos(theta) * randomRadius;
+                    double dy = Math.sin(phi) * Math.sin(theta) * randomRadius;
+                    double dz = Math.cos(phi) * randomRadius;
+
+                    var particleType = Math.random() < 0.7 ? ParticleTypes.LAVA : ParticleTypes.FLAME;
+                    Particle particle = particleEngine.createParticle(
+                            particleType,
+                            x + dx, y + dy, z + dz,
+                            dx * 0.2, dy * 0.2, dz * 0.2
+                    );
+                    if (particle != null) {
+                        if (particle instanceof SingleQuadParticle singleQuadParticle) {
+                            DMColor color = Math.random() < 0.8 ? solar : solarDark;
+                            singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                        }
+                        particleEngine.add(particle);
+                    }
+
+                    if (i < 5) {
+                        Particle explosionParticle = particleEngine.createParticle(
+                                ParticleTypes.EXPLOSION,
+                                x+dx, y+dy, z+dz, 0, 0, 0
+                        );
+                        if (explosionParticle != null) {
+                            if (explosionParticle instanceof SingleQuadParticle singleQuadParticle) {
+                                DMColor color = i > 3 ? DMColor.SOLAR : DMColor.SOLAR_DARK;
+                                singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                            }
+                            particleEngine.add(explosionParticle);
+                        }
+                    }
+                }
             }
         });
     }

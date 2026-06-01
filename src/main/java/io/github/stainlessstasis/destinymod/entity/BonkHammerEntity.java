@@ -15,13 +15,10 @@ import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamage
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
-import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -36,8 +33,11 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
@@ -65,8 +65,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         init();
     }
 
-    public BonkHammerEntity(Level level, LivingEntity owner, ItemStack tridentItem) {
-        super(DestinyModEntities.HAMMER_OF_SOL.get(), owner, level, tridentItem, null);
+    public BonkHammerEntity(Level level, LivingEntity owner, ItemStack weaponItem) {
+        super(DestinyModEntities.HAMMER_OF_SOL.get(), owner, level, weaponItem, null);
         init();
     }
 
@@ -455,7 +455,13 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    protected void readAdditionalSaveData(@NonNull ValueInput input) {
+        super.readAdditionalSaveData(input);
+        discard();
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
 
     }
 
