@@ -91,11 +91,40 @@ public class ClientAudioAndVFX {
         });
     }
 
-    public static void sunspot(Level level, Vec3 center, RandomSource random) {
+    public static void sunspot(Level level, Vec3 center, RandomSource random, int tickCount) {
         double x = center.x;
         double y = center.y;
         double z = center.z;
         var particleEngine = Minecraft.getInstance().particleEngine;
+
+        int pillarParticles = 3;
+        for (int i = 0; i < pillarParticles; i++) {
+            double angle = random.nextFloat() * 2f * Math.PI;
+            double pillarRadius = random.nextFloat() * (SunspotEntity.RADIUS * 0.3f);
+            double dx = Math.cos(angle) * pillarRadius;
+            double dy = random.nextFloat();
+            double dz = Math.sin(angle) * pillarRadius;
+            double vx = (random.nextFloat() - 0.5f) * 0.02f;
+            double vy = 0.15f + random.nextFloat() * 0.01f;
+            double vz = (random.nextFloat() - 0.5f) * 0.02f;
+
+            Particle particle = particleEngine.createParticle(
+                    ParticleTypes.FLAME,
+                    x + dx, y + dy, z + dz,
+                    vx, vy, vz
+            );
+            if (particle instanceof SingleQuadParticle singleQuadParticle) {
+                DMColor color = random.nextFloat() > 0.7f ? DMColor.SOLAR_LIGHT : DMColor.SOLAR;
+                singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+
+                float scale = 1.5f + random.nextFloat() * 0.75f;
+                singleQuadParticle.scale(scale);
+
+                particleEngine.add(singleQuadParticle);
+            }
+        }
+
+        if (tickCount%4 != 0) return;
 
         int ringParticles = 30;
         for (int i = 0; i < ringParticles; i++) {

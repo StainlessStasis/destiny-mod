@@ -86,8 +86,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
     }
 
     private void tickClient() {
-        if (tickCount%5 != 0) return;
-        ClientAudioAndVFX.sunspot(level(), position(), random);
+        ClientAudioAndVFX.sunspot(level(), position(), random, tickCount);
     }
 
     public void setOwner(@Nullable LivingEntity owner) {
