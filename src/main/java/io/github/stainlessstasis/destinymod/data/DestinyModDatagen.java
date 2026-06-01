@@ -65,6 +65,14 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
+
+                    bootstrap.register(DestinyModDamageTypes.SUNSPOT, new DamageType(
+                            DestinyMod.MODID+".sunspot",
+                            DamageScaling.NEVER,
+                            0.1f,
+                            DamageEffects.HURT,
+                            DeathMessageType.DEFAULT
+                    ));
                 })
         );
 

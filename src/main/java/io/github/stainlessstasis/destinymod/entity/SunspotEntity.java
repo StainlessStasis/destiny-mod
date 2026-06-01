@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.entity;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,11 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 public class SunspotEntity extends Entity implements TraceableEntity {
-    public static final float RADIUS = 1.5f;
+    public static final float RADIUS = 2f;
     public static final float RADIUS_SQUARED = RADIUS*RADIUS;
+    public static final float DAMAGE = 1f;
     public static final int HIT_INTERVAL = 10;
+    public static final int MAX_LIFETIME = 160;
 
-    private int maxLifetime = 160;
     private final Map<LivingEntity, Integer> attackCooldowns = new HashMap<>();
     private @Nullable EntityReference<LivingEntity> owner;
 
@@ -47,7 +49,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
     public void tick() {
         super.tick();
 
-        if (tickCount >= maxLifetime) {
+        if (tickCount >= MAX_LIFETIME) {
             discard();
             return;
         }
@@ -71,12 +73,11 @@ public class SunspotEntity extends Entity implements TraceableEntity {
             attackCooldowns.put(victim, tickCount + HIT_INTERVAL);
 
             Entity owner = getOwner();
-            // TODO: sunspot damage type
-            DestinyDamageBuilder.create(DestinyModDamageTypes.SCORCH, victim)
+            DestinyDamageBuilder.create(DestinyModDamageTypes.SUNSPOT, victim)
                     .directSource(owner)
                     .attacker(owner)
                     .element(DestinyElement.SOLAR)
-                    .damage(100f)
+                    .damage(DAMAGE)
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
@@ -84,7 +85,23 @@ public class SunspotEntity extends Entity implements TraceableEntity {
     }
 
     private void tickClient() {
+        if (tickCount%3 != 0) return;
 
+        double x = getX();
+        double y = getY();
+        double z = getZ();
+        int particles = 20;
+        for (int i = 0; i < particles; i++) {
+            double angle = (i * 2f * Math.PI) / particles;
+            double dx = Math.cos(angle) * RADIUS;
+            double dz = Math.sin(angle) * RADIUS;
+
+            level().addParticle(
+                    ParticleTypes.SMALL_FLAME,
+                    x+dx, y, z+dz,
+                    0.01, 0.05, 0.01
+            );
+        }
     }
 
     public void setOwner(@Nullable LivingEntity owner) {

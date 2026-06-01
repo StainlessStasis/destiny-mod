@@ -17,6 +17,7 @@ public class DestinyModDamageTypes {
     public static final ResourceKey<DamageType> SUPER = register("super");
     public static final ResourceKey<DamageType> SCORCH = register("scorch");
     public static final ResourceKey<DamageType> IGNITION = register("ignition");
+    public static final ResourceKey<DamageType> SUNSPOT = register("sunspot");
 
     public static class Tags {
         public static final TagKey<DamageType> IS_ABILITY = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_ability"));

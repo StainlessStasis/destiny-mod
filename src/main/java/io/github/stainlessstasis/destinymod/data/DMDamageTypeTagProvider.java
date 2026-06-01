@@ -4,6 +4,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDam
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -13,7 +14,7 @@ public class DMDamageTypeTagProvider extends DamageTypeTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider registries) {
+    protected void addTags(HolderLookup.@NonNull Provider registries) {
         tag(DestinyModDamageTypes.Tags.IS_ABILITY)
                 .add(DestinyModDamageTypes.MELEE_ABILITY)
                 .add(DestinyModDamageTypes.GRENADE_ABILITY)

@@ -48,7 +48,7 @@ public class Ignition {
         }
 
         if (causingEntity instanceof LivingEntity owner) {
-            SunspotEntity sunspot = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), level, ignitionPos, owner);
+            SunspotEntity sunspot = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), level, owner.position(), owner);
             level.addFreshEntity(sunspot);
         }
 
