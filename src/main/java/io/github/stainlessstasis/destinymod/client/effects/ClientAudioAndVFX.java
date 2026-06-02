@@ -42,7 +42,7 @@ public class ClientAudioAndVFX {
         // PARTICLES
         var particleEngine = Minecraft.getInstance().particleEngine;
         DMColor solar = DMColor.SOLAR;
-        DMColor solarDark = DMColor.SOLAR_DARK;
+        DMColor solarLight = DMColor.SOLAR_LIGHT;
         double x = center.x; double y = center.y; double z = center.z;
 
         ClientTaskScheduler.INSTANCE.runTaskMultiple(5, 0, 1, new CancellableRunnable() {
@@ -67,7 +67,7 @@ public class ClientAudioAndVFX {
                     );
                     if (particle != null) {
                         if (particle instanceof SingleQuadParticle singleQuadParticle) {
-                            DMColor color = Math.random() < 0.8 ? solar : solarDark;
+                            DMColor color = Math.random() < 0.8 ? solar : solarLight;
                             singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
                         }
                         particleEngine.add(particle);
