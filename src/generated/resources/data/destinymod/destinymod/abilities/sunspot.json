@@ -1,7 +1,6 @@
 {
   "abilityType": "passive",
   "cooldownTicks": 0,
-  "damage": 0.0,
-  "element": "none",
+  "element": "solar",
   "maxCharges": 0
 }

@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
@@ -22,11 +23,14 @@ public class DestinyModDatagen {
         event.createDatapackRegistryObjects(new RegistrySetBuilder()
                 // ABILITIES
                 .add(DestinyModRegistries.ABILITY_REGISTRY_KEY, bootstrap -> {
-                    bootstrap.register(Abilities.NONE, new Ability(
-                            AbilityType.MELEE, 0, 0
+                    bootstrap.register(Abilities.NONE.resourceKey(), new Ability(
+                            AbilityType.PASSIVE, DestinyElement.NONE, 0, 0, 0f
                     ));
-                    bootstrap.register(Abilities.THROWING_HAMMER, new Ability(
-                            AbilityType.MELEE, 200, 3
+                    bootstrap.register(Abilities.THROWING_HAMMER.resourceKey(), new Ability(
+                            AbilityType.MELEE, DestinyElement.SOLAR, 200, 3, 7f
+                    ));
+                    bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
+                            AbilityType.PASSIVE, DestinyElement.SOLAR, 0, 0, 1f
                     ));
                 })
 

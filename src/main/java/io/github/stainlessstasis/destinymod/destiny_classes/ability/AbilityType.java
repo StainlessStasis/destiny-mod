@@ -10,7 +10,8 @@ public enum AbilityType implements StringRepresentable {
     MELEE("melee"),
     GRENADE("grenade"),
     CLASS_ABILITY("class"),
-    SUPER("super");
+    SUPER("super"),
+    PASSIVE("passive");
 
     public static final Codec<AbilityType> CODEC = StringRepresentable.fromEnum(AbilityType::values);
     public static final StreamCodec<ByteBuf, AbilityType> STREAM_CODEC = ByteBufCodecs.BYTE.map(

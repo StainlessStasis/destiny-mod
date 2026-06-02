@@ -49,11 +49,10 @@ public class SubclassLoadout {
     }
 
     public Ability getAbility(Player player, AbilityType abilityType) {
-        var abilityKey = getAbilityLoadout(abilityType).ability();
-        return Abilities.get(abilityKey, player.level().registryAccess());
+        return getAbilityLoadout(abilityType).ability().get(player);
     }
 
-    void replaceAbility(AbilityType abilityType, ResourceKey<Ability> newAbility) {
+    void replaceAbility(AbilityType abilityType, Abilities.RegisteredAbility newAbility) {
         var currentLoadout = getAbilityLoadout(abilityType);
         AbilityLoadout newLoadout = new AbilityLoadout(newAbility, currentLoadout.aspects());
         putAbilityLoadout(abilityType, newLoadout);

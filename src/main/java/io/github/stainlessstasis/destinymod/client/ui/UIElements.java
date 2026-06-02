@@ -54,6 +54,7 @@ public class UIElements {
                 case MELEE -> meleeIcons;
                 case GRENADE -> grenadeIcons;
                 case CLASS_ABILITY -> classAbilityIcons;
+                default -> List.of();
             };
             if (index >= iconList.size()) return "";
 

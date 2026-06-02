@@ -1,6 +1,9 @@
 package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.CollisionContext;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.collision.ProjectileCollisionUtils;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
@@ -41,8 +44,9 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
-public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
+public class BonkHammerEntity extends AbstractArrow implements GeoEntity, DestinyAbility {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+    private DestinyElement destinyElement = DestinyElement.SOLAR;
     public static final float RESTITUTION = 0.420f;
     public static final float FRICTION = 0.55f;
     public static final float STICK_SPEED_THRESHOLD = 0.2f;
@@ -352,7 +356,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
                 DestinyDamageBuilder builder = DestinyDamageBuilder.create(DestinyModDamageTypes.MELEE_ABILITY, mob)
                         .directSource(this)
                         .attacker(currentOwner != null ? currentOwner : this)
-                        .element(DestinyElement.SOLAR)
+                        .element(destinyElement)
                         .damage(damage)
                         .invulnerabilityTicks(0)
                         .knockback(true);
@@ -395,6 +399,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
         AbilityCooldownManager.reduceCooldownPercent(player, PlayerSubclassData.getMelee(player), 0.5f);
 
         SunspotEntity sunspot = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), player.position(), player);
+        Ability ability = Abilities.SUNSPOT.get(player);
+        sunspot.setDamage(ability.damage());
+        sunspot.setDestinyElement(ability.element());
         player.level().addFreshEntity(sunspot);
 
         this.discard();
@@ -471,5 +478,15 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
     @Override
     public @NotNull AnimatableInstanceCache getAnimatableInstanceCache() {
         return geoCache;
+    }
+
+    @Override
+    public @NotNull DestinyElement getDestinyElement() {
+        return this.destinyElement;
+    }
+
+    @Override
+    public void setDestinyElement(DestinyElement destinyElement) {
+        this.destinyElement = destinyElement;
     }
 }

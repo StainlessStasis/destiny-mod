@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -20,14 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SunspotEntity extends Entity implements TraceableEntity {
+public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbility {
     public static final float RADIUS = 2f;
     public static final float RADIUS_SQUARED = RADIUS*RADIUS;
-    public static final float DAMAGE = 1f;
     public static final int SCORCH_AMOUNT = 5;
     public static final int HIT_INTERVAL = 10;
     public static final int MAX_LIFETIME = 160;
 
+    private DestinyElement destinyElement = DestinyElement.SOLAR;
+    private float damage = 1f;
     private final Map<LivingEntity, Integer> attackCooldowns = new HashMap<>();
     private @Nullable EntityReference<LivingEntity> owner;
 
@@ -78,8 +81,8 @@ public class SunspotEntity extends Entity implements TraceableEntity {
             DestinyDamageBuilder.create(DestinyModDamageTypes.SUNSPOT, victim)
                     .directSource(owner)
                     .attacker(owner)
-                    .element(DestinyElement.SOLAR)
-                    .damage(DAMAGE)
+                    .element(destinyElement)
+                    .damage(damage)
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
@@ -114,4 +117,22 @@ public class SunspotEntity extends Entity implements TraceableEntity {
     }
     @Override
     protected void addAdditionalSaveData(@NonNull ValueOutput valueOutput) {}
+
+    @Override
+    public @NotNull DestinyElement getDestinyElement() {
+        return this.destinyElement;
+    }
+
+    @Override
+    public void setDestinyElement(DestinyElement destinyElement) {
+        this.destinyElement = destinyElement;
+    }
+
+    public float getDamage() {
+        return this.damage;
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
+    }
 }

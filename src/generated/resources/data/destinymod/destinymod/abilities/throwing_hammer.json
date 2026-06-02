@@ -1,5 +1,7 @@
 {
   "abilityType": "melee",
   "cooldownTicks": 200,
+  "damage": 117.0,
+  "element": "solar",
   "maxCharges": 3
 }

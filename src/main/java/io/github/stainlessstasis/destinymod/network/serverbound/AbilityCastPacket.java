@@ -1,5 +1,7 @@
 package io.github.stainlessstasis.destinymod.network.serverbound;
 
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
@@ -45,7 +47,8 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
                         BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
                                 BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
                         );
-                        hammer.setBaseDamage(7f);
+                        Ability bonkAbility = Abilities.THROWING_HAMMER.get(player);
+                        hammer.setBaseDamage(bonkAbility.damage());
                         AbilityCooldownManager.addCooldown(player, ability);
                     }
                 });

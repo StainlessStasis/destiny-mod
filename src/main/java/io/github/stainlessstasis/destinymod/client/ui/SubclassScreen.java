@@ -102,6 +102,7 @@ public class SubclassScreen extends Screen {
                     case MELEE -> subclassIcons.meleeIcons();
                     case GRENADE -> subclassIcons.grenadeIcons();
                     case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
+                    default -> List.of();
                 };
                 if (!abilityNames.isEmpty()) {
                     createAbilityTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY);
@@ -167,6 +168,7 @@ public class SubclassScreen extends Screen {
                                 case MELEE -> subclassIcons.meleeIcons();
                                 case GRENADE -> subclassIcons.grenadeIcons();
                                 case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
+                                default -> List.of();
                             };
                             if (cellIndex + 1 < aspectNames.size()) {
                                 createAbilityTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY);
