@@ -47,11 +47,6 @@ public class Ignition {
                     .execute();
         }
 
-        if (causingEntity instanceof LivingEntity owner) {
-            SunspotEntity sunspot = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), level, owner.position(), owner);
-            level.addFreshEntity(sunspot);
-        }
-
         PacketDistributor.sendToPlayersTrackingEntity(entity, new IgnitionEffectsPacket(entity.getEyePosition().toVector3f()));
     }
 }

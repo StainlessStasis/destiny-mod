@@ -394,6 +394,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
         AbilityCooldownManager.reduceCooldownPercent(player, PlayerSubclassData.getMelee(player), 0.5f);
 
+        SunspotEntity sunspot = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), player.position(), player);
+        player.level().addFreshEntity(sunspot);
+
         this.discard();
     }
 

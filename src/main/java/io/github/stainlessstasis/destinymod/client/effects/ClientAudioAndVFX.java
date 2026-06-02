@@ -97,6 +97,21 @@ public class ClientAudioAndVFX {
         double z = center.z;
         var particleEngine = Minecraft.getInstance().particleEngine;
 
+        // SOUNDS
+        boolean isFirstTick = tickCount == 1;
+        if (isFirstTick) {
+            level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 1f, 1.5f, true);
+            level.playLocalSound(center.x, center.y, center.z, SoundEvents.GENERIC_BURN, SoundSource.AMBIENT, 0.5f, 0.7f, true);
+        }
+        if (isFirstTick || tickCount % 30 == 0) {
+            float randomPitch = random.nextFloat() * 0.1f;
+            level.playLocalSound(center.x, center.y, center.z, SoundEvents.APPLY_EFFECT_RAID_OMEN, SoundSource.AMBIENT, 0.3f, 0.5f+randomPitch, true);
+            randomPitch = random.nextFloat() * 0.2f;
+            level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_BURN, SoundSource.AMBIENT, 0.8f, 0.5f+randomPitch, true);
+            level.playLocalSound(x, y, z, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.AMBIENT, 1f, 0.9f+randomPitch, true);
+        }
+
+        // PARTICLES
         int pillarParticles = 3;
         for (int i = 0; i < pillarParticles; i++) {
             double angle = random.nextFloat() * 2f * Math.PI;
