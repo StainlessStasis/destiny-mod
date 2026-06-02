@@ -69,7 +69,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
         for (LivingEntity victim : victims) {
             if (attackCooldowns.containsKey(victim)) continue;
             if (!victim.isAlive() || victim == getOwner()) continue;
-            if (victim.distanceToSqr(position()) > RADIUS_SQUARED) continue;
+//            if (victim.distanceToSqr(position()) > RADIUS_SQUARED) continue;
 
             attackCooldowns.put(victim, tickCount + HIT_INTERVAL);
 
