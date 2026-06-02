@@ -20,7 +20,7 @@ public record Ability(
                     Codec.INT.fieldOf("cooldownTicks").forGetter(Ability::cooldownTicks),
                     Codec.INT.fieldOf("maxCharges").forGetter(Ability::maxCharges),
                     Codec.FLOAT.fieldOf("damage").forGetter(Ability::damage),
-                    Codec.INT.fieldOf("maxCharges").forGetter(Ability::scorch)
+                    Codec.INT.fieldOf("scorch").forGetter(Ability::scorch)
             ).apply(instance, Ability::new)
     );
 

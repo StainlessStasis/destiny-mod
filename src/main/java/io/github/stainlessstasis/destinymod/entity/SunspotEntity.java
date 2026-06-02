@@ -88,7 +88,7 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
-            DebuffManager.applyScorch(victim, owner, 5);
+            DebuffManager.applyScorch(victim, owner, ability.scorch());
         }
     }
 
