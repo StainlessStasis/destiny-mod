@@ -9,6 +9,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.solar.Ignitio
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.OwnableStatusEffect;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffect;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -105,5 +106,10 @@ public class Scorch extends OwnableStatusEffect {
     @Override
     public Supplier<AttachmentType<Boolean>> getClientStateSyncAttachment() {
         return DestinyModAttachments.IS_SCORCH_ACTIVE;
+    }
+
+    @Override
+    public Supplier<? extends AttachmentType<? extends StatusEffect>> getAttachment() {
+        return DestinyModAttachments.SCORCH;
     }
 }

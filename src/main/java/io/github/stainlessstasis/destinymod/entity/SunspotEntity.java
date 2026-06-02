@@ -74,8 +74,11 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
         List<LivingEntity> victims = level.getEntitiesOfClass(LivingEntity.class, getBoundingBox());
         for (LivingEntity victim : victims) {
             if (attackCooldowns.containsKey(victim)) continue;
-            if (!victim.isAlive() || victim == getOwner()) continue;
-//            if (victim.distanceToSqr(position()) > RADIUS_SQUARED) continue;
+            if (!victim.isAlive()) continue;
+
+            if (victim == owner) {
+                StatusEffectManager.applySolInvictus(owner);
+            }
 
             attackCooldowns.put(victim, tickCount + HIT_INTERVAL);
 

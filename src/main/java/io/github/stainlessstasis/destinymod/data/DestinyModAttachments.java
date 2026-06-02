@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.data;
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -44,11 +45,27 @@ public class DestinyModAttachments {
                     .serialize(Scorch.CODEC)
                     .build()
     );
-
     public static final Supplier<AttachmentType<Boolean>> IS_SCORCH_ACTIVE = ATTACHMENTS.register(
             "is_scorch_active",
             () -> AttachmentType.builder(() -> false)
                     .serialize(Codec.BOOL.fieldOf("is_scorch_active"))
+                    .sync(ByteBufCodecs.BOOL)
+                    .build()
+    );
+
+    /**
+     * NOT synced to clients. Use IS_SOL_INVICTUS_ACTIVE
+     */
+    public static final Supplier<AttachmentType<SolInvictus>> SOL_INVICTUS = ATTACHMENTS.register(
+            "sol_invictus",
+            () -> AttachmentType.builder(SolInvictus::new)
+                    .serialize(SolInvictus.CODEC)
+                    .build()
+    );
+    public static final Supplier<AttachmentType<Boolean>> IS_SOL_INVICTUS_ACTIVE = ATTACHMENTS.register(
+            "is_sol_invictus_active",
+            () -> AttachmentType.builder(() -> false)
+                    .serialize(Codec.BOOL.fieldOf("is_sol_invictus_active"))
                     .sync(ByteBufCodecs.BOOL)
                     .build()
     );

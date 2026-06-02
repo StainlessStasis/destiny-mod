@@ -13,15 +13,19 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber
 public class AbilityCooldowns {
@@ -59,14 +63,25 @@ public class AbilityCooldowns {
         Player player = event.getEntity();
 
         AbilityCooldowns abilityCooldowns = player.getData(DestinyModAttachments.ABILITY_COOLDOWNS);
-        abilityCooldowns.tick();
+        abilityCooldowns.tick(player);
     }
 
-    public void tick() {
-        tick(1f);
+    public float getAbilityRegenSpeed(LivingEntity entity) {
+        float regenSpeed = 1f;
+
+        if (StatusEffectManager.isActive(entity, SolInvictus.class)) {
+            regenSpeed += 10f;
+        }
+
+        return regenSpeed;
     }
 
-    public void tick(float regenSpeed) {
+    private void tick(@Nullable LivingEntity entity) {
+        float regenSpeed = entity == null ? 1f : getAbilityRegenSpeed(entity);
+        tick(regenSpeed);
+    }
+
+    private void tick(float regenSpeed) {
         this.tickCount++;
         if (this.cooldowns.isEmpty()) return;
 
