@@ -15,6 +15,11 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber
 public class StatusEffectManager {
+    private static <T extends StatusEffect> T getAndRegisterEffect(LivingEntity entity, Class<T> effectClass, Supplier<? extends AttachmentType<T>> attachmentSupplier) {
+        StatusEffect.getOrCreateCache(effectClass);
+        return entity.getData(attachmentSupplier.get());
+    }
+
     public static boolean isActive(LivingEntity entity, Class<? extends StatusEffect> statusEffectClass) {
         StatusEffect.EffectAttachmentCache cache = StatusEffect.getOrCreateCache(statusEffectClass);
 
@@ -36,7 +41,7 @@ public class StatusEffectManager {
     }
 
     public static void applyScorch(LivingEntity target, @Nullable LivingEntity attacker, int stacks) {
-        Scorch scorch = target.getData(DestinyModAttachments.SCORCH);
+        Scorch scorch = getAndRegisterEffect(target, Scorch.class, DestinyModAttachments.SCORCH);
         scorch.setOwner(attacker);
         scorch.addStacks(stacks);
     }
@@ -46,7 +51,7 @@ public class StatusEffectManager {
     }
 
     public static void applySolInvictus(LivingEntity entity, int ticks) {
-        SolInvictus sol = entity.getData(DestinyModAttachments.SOL_INVICTUS);
+        SolInvictus sol = getAndRegisterEffect(entity, SolInvictus.class, DestinyModAttachments.SOL_INVICTUS);
         sol.setRemainingTicks(ticks);
     }
 

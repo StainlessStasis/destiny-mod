@@ -27,7 +27,6 @@ public class SolInvictus extends AbstractStatusEffect {
 
     @Override
     public void tick(LivingEntity entity) {
-        System.out.println("TICKING");
         super.tick(entity);
         remainingTicks--;
     }
@@ -42,7 +41,6 @@ public class SolInvictus extends AbstractStatusEffect {
 
     @Override
     public boolean isActive() {
-        System.out.println("REMAINING TICKS: "+remainingTicks);
         return remainingTicks > 0;
     }
 
