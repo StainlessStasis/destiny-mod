@@ -18,10 +18,7 @@
   "subclass.destinymod.warlock": "Warlock Subclass",
   "subclass.destinymod.sunbreaker": "Sunbreaker",
   "death.attack.destinymod.melee_ability": "killed by melee ability",
-  "death.attack.destinymod.scorch": "%1$s was scorched",
-  "death.attack.destinymod.scorch.player": "%1$s was scorched by %2$s",
-  "death.attack.destinymod.ignition": "%1$s was reduced to ash",
-  "death.attack.destinymod.ignition.player": "%1$s was reduced to ash by %2$s",
-  "death.attack.destinymod.sunspot": "%1$s walked too close to the Sun",
-  "death.attack.destinymod.sunspot.player": "%1$s was engulfed in the corona of %2$s"
+  "death.attack.destinymod.scorch": "%1$s was scorched by %2$s",
+  "death.attack.destinymod.ignition": "%1$s was reduced to ash by %2$s",
+  "death.attack.destinymod.sunspot": "%1$s was engulfed in the corona of %2$s"
 }

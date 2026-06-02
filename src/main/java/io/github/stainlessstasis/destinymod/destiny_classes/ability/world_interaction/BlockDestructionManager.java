@@ -60,7 +60,7 @@ public class BlockDestructionManager {
         }
 
         int destroyStage = (int) ((destroyState.damage() / breakSpeed) * 10);
-        destroyStage = Math.min(9, Math.max(0, destroyStage)); // there are 10 visual stages from 0 to 9
+        destroyStage = Math.clamp(destroyStage, 0, 9); // there are 10 visual stages from 0 to 9
 
         level.destroyBlockProgress(breakerID, blockPos, destroyStage);
     }

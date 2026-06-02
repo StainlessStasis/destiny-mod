@@ -36,7 +36,6 @@ public class Ignition {
             falloff = Math.clamp(falloff, 0f, 1f);
             float damage = DAMAGE * falloff;
             if (damage <= 0.01f) continue;
-
             DestinyDamageBuilder.create(DestinyModDamageTypes.IGNITION, victim)
                     .directSource(directEntity)
                     .attacker(causingEntity)
