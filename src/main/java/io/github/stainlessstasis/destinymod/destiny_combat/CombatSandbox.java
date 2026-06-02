@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
@@ -36,7 +37,9 @@ public class CombatSandbox {
         var subclass = PlayerSubclassData.getEquippedSubclass(player);
         final float randomActivationChance = player.getRandom().nextFloat();
 
-        if (randomActivationChance <= 0.3f && subclass == Subclasses.SUNBREAKER && source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT)) {
+        if (randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER
+                && source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT)
+        ) {
             Vec3 spawnPos = findGroundPosition(victim);
             SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
             player.level().addFreshEntity(sunspotEntity);

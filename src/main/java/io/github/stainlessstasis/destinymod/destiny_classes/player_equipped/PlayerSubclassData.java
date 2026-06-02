@@ -6,10 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -84,7 +81,7 @@ public class PlayerSubclassData {
         return instance.getSubclassLoadout(instance.getEquippedSubclass());
     }
 
-    public static void replaceAbility(Player player, AbilityType abilityType, Abilities.RegisteredAbility newAbility) {
+    public static void replaceAbility(Player player, AbilityType abilityType, RegisteredAbility newAbility) {
         var instance = getInstance(player);
         instance.getSubclassLoadout().replaceAbility(abilityType, newAbility);
         instance.sync(player);

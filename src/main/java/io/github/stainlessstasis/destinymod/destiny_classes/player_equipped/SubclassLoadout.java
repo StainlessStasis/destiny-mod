@@ -1,10 +1,7 @@
 package io.github.stainlessstasis.destinymod.destiny_classes.player_equipped;
 
 import com.mojang.serialization.Codec;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -50,7 +47,7 @@ public class SubclassLoadout {
         return getAbilityLoadout(abilityType).ability().get(player);
     }
 
-    void replaceAbility(AbilityType abilityType, Abilities.RegisteredAbility newAbility) {
+    void replaceAbility(AbilityType abilityType, RegisteredAbility newAbility) {
         var currentLoadout = getAbilityLoadout(abilityType);
         AbilityLoadout newLoadout = new AbilityLoadout(newAbility, currentLoadout.aspects());
         putAbilityLoadout(abilityType, newLoadout);
