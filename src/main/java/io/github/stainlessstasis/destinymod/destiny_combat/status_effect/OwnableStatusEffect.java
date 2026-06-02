@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.debuff;
+package io.github.stainlessstasis.destinymod.destiny_combat.status_effect;
 
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
@@ -6,13 +6,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public abstract class OwnableDebuff extends AbstractDebuff {
+public abstract class OwnableStatusEffect extends AbstractStatusEffect {
     @Nullable
     protected EntityReference<LivingEntity> ownerReference = null;
 
-    protected OwnableDebuff() {}
+    protected OwnableStatusEffect() {}
 
-    protected OwnableDebuff(Optional<EntityReference<LivingEntity>> ownerReference) {
+    protected OwnableStatusEffect(Optional<EntityReference<LivingEntity>> ownerReference) {
         this.ownerReference = ownerReference.orElse(null);
     }
 

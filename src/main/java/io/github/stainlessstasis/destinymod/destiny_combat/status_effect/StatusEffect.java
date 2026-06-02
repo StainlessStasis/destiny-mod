@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.debuff;
+package io.github.stainlessstasis.destinymod.destiny_combat.status_effect;
 
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public interface Debuff {
+public interface StatusEffect {
     boolean isActive();
     void tick (LivingEntity entity);
     void clear(LivingEntity entity);

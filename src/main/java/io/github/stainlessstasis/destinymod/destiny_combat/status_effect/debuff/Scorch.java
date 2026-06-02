@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.debuff;
+package io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -8,6 +8,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.solar.Ignition;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.OwnableStatusEffect;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 
 import java.util.function.Supplier;
 
-public class Scorch extends OwnableDebuff {
+public class Scorch extends OwnableStatusEffect {
     public static final int IGNITION_THRESHOLD = 100;
     /*** Damage at 0 stacks, scales up to 3x the amount*/
     public static final float DAMAGE = 0.25f;

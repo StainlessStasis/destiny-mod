@@ -6,7 +6,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
-import io.github.stainlessstasis.destinymod.destiny_combat.debuff.DebuffManager;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -87,7 +87,7 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
-            DebuffManager.applyScorch(victim, owner, ability.scorch());
+            StatusEffectManager.applyScorch(victim, owner, ability.scorch());
         }
     }
 

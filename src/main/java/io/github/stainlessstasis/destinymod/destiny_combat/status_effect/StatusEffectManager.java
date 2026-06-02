@@ -1,6 +1,7 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.debuff;
+package io.github.stainlessstasis.destinymod.destiny_combat.status_effect;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,12 +13,12 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @EventBusSubscriber
-public class DebuffManager {
-    private static final List<Supplier<? extends AttachmentType<? extends Debuff>>> DEBUFFS = List.of(DestinyModAttachments.SCORCH);
+public class StatusEffectManager {
+    private static final List<Supplier<? extends AttachmentType<? extends StatusEffect>>> STATUS_EFFECTS = List.of(DestinyModAttachments.SCORCH);
 
-    public static boolean isActiveOnServer(LivingEntity entity, Supplier<? extends AttachmentType<? extends Debuff>> debuffAttachment) {
-        if (!entity.hasData(debuffAttachment.get())) return false;
-        return entity.getData(debuffAttachment.get()).isActive();
+    public static boolean isActiveOnServer(LivingEntity entity, Supplier<? extends AttachmentType<? extends StatusEffect>> attachment) {
+        if (!entity.hasData(attachment.get())) return false;
+        return entity.getData(attachment.get()).isActive();
     }
 
     public static void applyScorch(LivingEntity target, @Nullable LivingEntity attacker, int stacks) {
@@ -30,15 +31,15 @@ public class DebuffManager {
     public static void onEntityTick(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof LivingEntity entity) || entity.level().isClientSide()) return;
 
-        for (var debuffSupplier : DEBUFFS) {
-            if (entity.hasData(debuffSupplier.get())) {
-                Debuff debuff = entity.getData(debuffSupplier.get());
+        for (var effectSupplier : STATUS_EFFECTS) {
+            if (entity.hasData(effectSupplier.get())) {
+                StatusEffect effect = entity.getData(effectSupplier.get());
 
-                if (debuff.isActive()) {
-                    debuff.tick(entity);
+                if (effect.isActive()) {
+                    effect.tick(entity);
                 } else {
-                    debuff.clear(entity);
-                    entity.removeData(debuffSupplier.get());
+                    effect.clear(entity);
+                    entity.removeData(effectSupplier.get());
                 }
             }
         }

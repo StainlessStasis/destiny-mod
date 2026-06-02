@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown;
 
+import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import com.google.common.collect.Maps;
 
@@ -17,7 +18,12 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
+@EventBusSubscriber
 public class AbilityCooldowns {
     private final Map<RegisteredAbility, CooldownInstance> cooldowns = Maps.newHashMap();
     private int tickCount;
@@ -48,36 +54,12 @@ public class AbilityCooldowns {
 
     public AbilityCooldowns() {}
 
-    public boolean isEmpty() {
-        return cooldowns.isEmpty();
-    }
-    public boolean isOnCooldown(RegisteredAbility registeredAbility) {
-        return !hasCharges(registeredAbility);
-    }
-    public boolean hasCharges(RegisteredAbility registeredAbility) {
-        CooldownInstance cooldown = this.cooldowns.get(registeredAbility);
-        return cooldown == null || cooldown.currentCharges() > 0;
-    }
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
 
-    public Set<RegisteredAbility> getAbilitiesOnCooldown() {
-        return this.cooldowns.keySet();
-    }
-
-    public int getCharges(RegisteredAbility registeredAbility, RegistryAccess registryAccess) {
-        CooldownInstance cooldown = this.cooldowns.get(registeredAbility);
-        if (cooldown == null) {
-            return registeredAbility.get(registryAccess).maxCharges();
-        }
-        return cooldown.currentCharges();
-    }
-
-    public float getCooldownPercent(RegisteredAbility registeredAbility, float partialTicks) {
-        CooldownInstance cooldown = this.cooldowns.get(registeredAbility);
-        if (cooldown != null) {
-            float remaining = (float)cooldown.cooldownTicks() - (cooldown.progress() + partialTicks);
-            return Math.clamp(remaining / (float)cooldown.cooldownTicks(), 0f, 1f);
-        }
-        return 0f;
+        AbilityCooldowns abilityCooldowns = player.getData(DestinyModAttachments.ABILITY_COOLDOWNS);
+        abilityCooldowns.tick();
     }
 
     public void tick() {
@@ -118,6 +100,39 @@ public class AbilityCooldowns {
                 ));
             }
         }
+    }
+
+
+    public boolean isEmpty() {
+        return cooldowns.isEmpty();
+    }
+    public boolean isOnCooldown(RegisteredAbility registeredAbility) {
+        return !hasCharges(registeredAbility);
+    }
+    public boolean hasCharges(RegisteredAbility registeredAbility) {
+        CooldownInstance cooldown = this.cooldowns.get(registeredAbility);
+        return cooldown == null || cooldown.currentCharges() > 0;
+    }
+
+    public Set<RegisteredAbility> getAbilitiesOnCooldown() {
+        return this.cooldowns.keySet();
+    }
+
+    public int getCharges(RegisteredAbility registeredAbility, RegistryAccess registryAccess) {
+        CooldownInstance cooldown = this.cooldowns.get(registeredAbility);
+        if (cooldown == null) {
+            return registeredAbility.get(registryAccess).maxCharges();
+        }
+        return cooldown.currentCharges();
+    }
+
+    public float getCooldownPercent(RegisteredAbility registeredAbility, float partialTicks) {
+        CooldownInstance cooldown = this.cooldowns.get(registeredAbility);
+        if (cooldown != null) {
+            float remaining = (float)cooldown.cooldownTicks() - (cooldown.progress() + partialTicks);
+            return Math.clamp(remaining / (float)cooldown.cooldownTicks(), 0f, 1f);
+        }
+        return 0f;
     }
 
     void consumeCharge(RegisteredAbility registeredAbility, int cooldownTicks, int maxCharges) {

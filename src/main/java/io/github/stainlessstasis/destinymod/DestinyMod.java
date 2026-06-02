@@ -77,14 +77,6 @@ public class DestinyMod {
         }
 
         @SubscribeEvent
-        public static void onPlayerTick(PlayerTickEvent.Post event) {
-            Player player = event.getEntity();
-
-            AbilityCooldowns abilityCooldowns = player.getData(DestinyModAttachments.ABILITY_COOLDOWNS);
-            abilityCooldowns.tick();
-        }
-
-        @SubscribeEvent
         public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
             Player player = event.getEntity();
             PlayerSubclassData.setEquippedSubclass(player, Subclasses.SUNBREAKER);

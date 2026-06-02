@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
-import io.github.stainlessstasis.destinymod.destiny_combat.debuff.DebuffManager;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.BlockPos;
@@ -363,7 +363,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
                 EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
                 LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
-                DebuffManager.applyScorch(mob, owner, ability.scorch());
+                StatusEffectManager.applyScorch(mob, owner, ability.scorch());
             }
 
             this.doPostHurtEffects(mob);

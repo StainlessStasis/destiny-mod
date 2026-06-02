@@ -1,8 +1,8 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.debuff;
+package io.github.stainlessstasis.destinymod.destiny_combat.status_effect;
 
 import net.minecraft.world.entity.LivingEntity;
 
-public abstract class AbstractDebuff implements Debuff {
+public abstract class AbstractStatusEffect implements StatusEffect {
     protected int tickCount = 0;
 
     @Override
