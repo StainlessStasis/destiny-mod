@@ -33,7 +33,7 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
             Player player = context.player();
 
             if (packet.slot == AbilityType.MELEE) {
-                var ability = PlayerSubclassData.getMelee(player);
+                var ability = PlayerSubclassData.getRegisteredMelee(player);
                 if (AbilityCooldownManager.isOnCooldown(player, ability)) {
                     return;
                 }

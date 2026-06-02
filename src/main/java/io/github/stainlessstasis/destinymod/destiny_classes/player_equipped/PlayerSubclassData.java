@@ -91,6 +91,10 @@ public class PlayerSubclassData {
         return getSubclassLoadout(player).getAbilityLoadout(abilityType);
     }
 
+    public static RegisteredAbility getRegisteredAbility(Player player, AbilityType abilityType) {
+        return getSubclassLoadout(player).getRegisteredAbility(abilityType);
+    }
+
     public static Ability getAbility(Player player, AbilityType abilityType) {
         return getSubclassLoadout(player).getAbility(player, abilityType);
     }
@@ -99,18 +103,28 @@ public class PlayerSubclassData {
         return getSubclassLoadout(player).getAspectsForAbility(abilityType);
     }
 
+    public static RegisteredAbility getRegisteredMelee(Player player) {
+        return getSubclassLoadout(player).getRegisteredMelee();
+    }
+    public static RegisteredAbility getRegisteredGrenade(Player player) {
+        return getSubclassLoadout(player).getRegisteredGrenade();
+    }
+    public static RegisteredAbility getRegisteredClassAbility(Player player) {
+        return getSubclassLoadout(player).getRegisteredClassAbility();
+    }
+    public static RegisteredAbility getRegisteredSuper(Player player) {
+        return getSubclassLoadout(player).getRegisteredSuper();
+    }
+
     public static Ability getMelee(Player player) {
         return getSubclassLoadout(player).getMelee(player);
     }
-
     public static Ability getGrenade(Player player) {
         return getSubclassLoadout(player).getGrenade(player);
     }
-
     public static Ability getClassAbility(Player player) {
         return getSubclassLoadout(player).getClassAbility(player);
     }
-
     public static Ability getSuper(Player player) {
         return getSubclassLoadout(player).getSuper(player);
     }

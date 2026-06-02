@@ -43,8 +43,12 @@ public class SubclassLoadout {
         this.abilityLoadouts.put(abilityType, loadout);
     }
 
+    public RegisteredAbility getRegisteredAbility(AbilityType abilityType) {
+        return getAbilityLoadout(abilityType).ability();
+    }
+
     public Ability getAbility(Player player, AbilityType abilityType) {
-        return getAbilityLoadout(abilityType).ability().get(player);
+        return getRegisteredAbility(abilityType).get(player);
     }
 
     void replaceAbility(AbilityType abilityType, RegisteredAbility newAbility) {
@@ -55,6 +59,19 @@ public class SubclassLoadout {
 
     public Set<Aspect> getAspectsForAbility(AbilityType abilityType) {
         return getAbilityLoadout(abilityType).aspects();
+    }
+
+    public RegisteredAbility getRegisteredMelee() {
+        return getRegisteredAbility(AbilityType.MELEE);
+    }
+    public RegisteredAbility getRegisteredGrenade() {
+        return getRegisteredAbility(AbilityType.GRENADE);
+    }
+    public RegisteredAbility getRegisteredClassAbility() {
+        return getRegisteredAbility(AbilityType.CLASS_ABILITY);
+    }
+    public RegisteredAbility getRegisteredSuper() {
+        return getRegisteredAbility(AbilityType.SUPER);
     }
 
     public Ability getMelee(Player player) {

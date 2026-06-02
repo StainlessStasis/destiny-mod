@@ -394,7 +394,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         float pitch = 0.2F / (this.random.nextFloat() * 0.2F + 0.9F);
         this.playSound(SoundEvents.ITEM_PICKUP, 0.3F, pitch);
 
-        AbilityCooldownManager.reduceCooldownPercent(player, PlayerSubclassData.getMelee(player), 0.5f);
+        AbilityCooldownManager.reduceCooldownPercent(player, PlayerSubclassData.getRegisteredMelee(player), 0.5f);
         this.discard();
     }
 

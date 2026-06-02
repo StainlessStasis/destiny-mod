@@ -23,7 +23,7 @@ public class AbilityHUD {
 
         int renderX = ABILITY_ICON_SIZE /2;
         int renderY = mc.getWindow().getGuiScaledHeight() - (int)(ABILITY_ICON_SIZE * 1.5f);
-        var ability = PlayerSubclassData.getMelee(player);
+        var ability = PlayerSubclassData.getRegisteredMelee(player);
         var graphics = event.getGuiGraphics();
 
         // border
