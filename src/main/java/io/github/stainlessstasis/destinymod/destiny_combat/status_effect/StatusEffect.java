@@ -24,7 +24,9 @@ public interface StatusEffect {
         return CACHE.computeIfAbsent(clazz, key -> {
             try {
                 StatusEffect dummy = key.getDeclaredConstructor().newInstance();
-                return new EffectAttachmentCache(dummy.getAttachment(), dummy.getClientStateSyncAttachment());
+                EffectAttachmentCache newCache = new EffectAttachmentCache(dummy.getAttachment(), dummy.getClientStateSyncAttachment());
+                TICKABLE_EFFECTS.add(newCache.serverAttachment());
+                return newCache;
             } catch (Exception e) {
                 throw new RuntimeException("Failed to cache StatusEffect attachments for " + key.getName() + ". Does it have a public no-arg constructor?", e);
             }
