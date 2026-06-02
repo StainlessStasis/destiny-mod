@@ -61,6 +61,10 @@ public class PlayerSubclassData {
         return player.getData(DestinyModAttachments.PLAYER_SUBCLASS_DATA);
     }
 
+    public static Subclass getEquippedSubclass(Player player) {
+        return getInstance(player).getEquippedSubclass();
+    }
+
     public Subclass getEquippedSubclass() {
         return equippedSubclass;
     }

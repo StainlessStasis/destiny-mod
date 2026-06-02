@@ -395,10 +395,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         this.playSound(SoundEvents.ITEM_PICKUP, 0.3F, pitch);
 
         AbilityCooldownManager.reduceCooldownPercent(player, PlayerSubclassData.getMelee(player), 0.5f);
-
-        SunspotEntity sunspot = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), player.position(), player);
-        player.level().addFreshEntity(sunspot);
-
         this.discard();
     }
 

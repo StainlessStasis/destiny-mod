@@ -90,15 +90,5 @@ public class DestinyMod {
             PlayerSubclassData.setEquippedSubclass(player, Subclasses.SUNBREAKER);
             PlayerSubclassData.replaceAbility(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
         }
-
-        @SubscribeEvent
-        public static void onLivingDamage(LivingIncomingDamageEvent event) {
-//            var source = event.getSource();
-//            System.out.println("SOURCE: "+source);
-//            if (source instanceof DestinyModDamageSource destinySource) {
-//                System.out.println("IS DESTINY SOURCE");
-//                System.out.println("ELEMENT: "+destinySource.destinymod$getElement());
-//            }
-        }
     }
 }
