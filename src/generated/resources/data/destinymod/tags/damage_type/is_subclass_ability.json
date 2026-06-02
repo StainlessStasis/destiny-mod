@@ -3,9 +3,6 @@
     "destinymod:melee_ability",
     "destinymod:grenade_ability",
     "destinymod:class_ability",
-    "destinymod:super",
-    "destinymod:scorch",
-    "destinymod:ignition",
-    "destinymod:sunspot"
+    "destinymod:super"
   ]
 }

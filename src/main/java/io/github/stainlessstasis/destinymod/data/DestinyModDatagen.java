@@ -19,8 +19,8 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 public class DestinyModDatagen {
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent.Client event) {
-        // ABILITIES
         event.createDatapackRegistryObjects(new RegistrySetBuilder()
+                // ABILITIES
                 .add(DestinyModRegistries.ABILITY_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Abilities.NONE, new Ability(
                             AbilityType.MELEE, 0, 0
@@ -29,10 +29,8 @@ public class DestinyModDatagen {
                             AbilityType.MELEE, 200, 3
                     ));
                 })
-        );
 
-        // DAMAGE TYPES AND DAMAGE TYPE TAGS
-        event.createDatapackRegistryObjects(new RegistrySetBuilder()
+                // DAMAGE TYPES AND DAMAGE TYPE TAGS
                 .add(Registries.DAMAGE_TYPE, bootstrap -> {
                     bootstrap.register(DestinyModDamageTypes.MELEE_ABILITY, new DamageType(
                             DestinyMod.MODID+".melee_ability",
