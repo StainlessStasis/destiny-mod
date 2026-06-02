@@ -1,8 +1,7 @@
 {
   "abilityType": "passive",
-  "cooldownTicks": 0,
+  "activationChance": 0.3,
   "damage": 1.0,
   "element": "solar",
-  "maxCharges": -1,
   "scorch": 5
 }

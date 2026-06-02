@@ -1,8 +1,4 @@
 {
   "abilityType": "passive",
-  "cooldownTicks": 0,
-  "damage": 0.0,
-  "element": "none",
-  "maxCharges": -1,
-  "scorch": 0
+  "element": "none"
 }

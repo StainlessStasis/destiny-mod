@@ -13,7 +13,7 @@ public record Ability(
                     DestinyElement.CODEC.fieldOf("element").forGetter(Ability::element),
                     Codec.INT.optionalFieldOf("cooldownTicks", -1).forGetter(Ability::cooldownTicks),
                     Codec.INT.optionalFieldOf("maxCharges", -1).forGetter(Ability::maxCharges),
-                    Codec.FLOAT.optionalFieldOf("activationChance", -1f).forGetter(Ability::damage),
+                    Codec.FLOAT.optionalFieldOf("activationChance", -1f).forGetter(Ability::activationChance),
                     Codec.FLOAT.optionalFieldOf("damage", -1f).forGetter(Ability::damage),
                     Codec.INT.optionalFieldOf("scorch", -1).forGetter(Ability::scorch)
             ).apply(instance, Ability::new)
