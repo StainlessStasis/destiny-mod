@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.client.ui;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;

@@ -2,16 +2,11 @@ package io.github.stainlessstasis.destinymod.destiny_classes.player_equipped;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Aspect;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashSet;

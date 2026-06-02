@@ -1,14 +1,13 @@
 package io.github.stainlessstasis.destinymod.network.serverbound;
 
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;

@@ -1,8 +1,8 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.ability.solar;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability.solar;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;

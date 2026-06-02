@@ -1,7 +1,7 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import net.minecraft.world.entity.Entity;
 
 public class AbilityCooldownManager {

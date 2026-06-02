@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.destinymod.data;
 
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;

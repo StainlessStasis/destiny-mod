@@ -2,9 +2,8 @@ package io.github.stainlessstasis.destinymod.data;
 
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldowns;
-import io.github.stainlessstasis.destinymod.destiny_classes.debuff.Scorch;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.destiny_combat.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.Entity;

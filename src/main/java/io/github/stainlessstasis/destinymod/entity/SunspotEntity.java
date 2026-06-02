@@ -1,12 +1,12 @@
 package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.DestinyAbility;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
-import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.debuff.DebuffManager;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;

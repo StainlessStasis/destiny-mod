@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.ability;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;

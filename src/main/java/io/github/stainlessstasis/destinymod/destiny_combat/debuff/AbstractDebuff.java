@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.debuff;
+package io.github.stainlessstasis.destinymod.destiny_combat.debuff;
 
 import net.minecraft.world.entity.LivingEntity;
 

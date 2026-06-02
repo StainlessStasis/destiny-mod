@@ -2,10 +2,10 @@ package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageEffects;

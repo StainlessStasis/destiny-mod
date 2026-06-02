@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.damage;
+package io.github.stainlessstasis.destinymod.destiny_combat.damage;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;

@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.damage;
+package io.github.stainlessstasis.destinymod.destiny_combat.damage;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import net.minecraft.core.registries.Registries;

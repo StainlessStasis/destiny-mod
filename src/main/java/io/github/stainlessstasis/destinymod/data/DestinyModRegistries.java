@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.SubscribeEvent;

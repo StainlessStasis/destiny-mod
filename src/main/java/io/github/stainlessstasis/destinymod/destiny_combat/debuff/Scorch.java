@@ -1,13 +1,13 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.debuff;
+package io.github.stainlessstasis.destinymod.destiny_combat.debuff;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.solar.Ignition;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.solar.Ignition;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

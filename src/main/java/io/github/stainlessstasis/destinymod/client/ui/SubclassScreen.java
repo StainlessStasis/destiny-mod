@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.client.ui;
 import com.mojang.datafixers.util.Either;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.tooltip.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

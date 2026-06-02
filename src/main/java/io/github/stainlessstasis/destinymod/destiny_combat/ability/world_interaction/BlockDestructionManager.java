@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.ability.world_interaction;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability.world_interaction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;

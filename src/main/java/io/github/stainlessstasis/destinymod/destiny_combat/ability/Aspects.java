@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_classes.ability;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

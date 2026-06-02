@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client.ui;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.cooldown.AbilityCooldownManager;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;

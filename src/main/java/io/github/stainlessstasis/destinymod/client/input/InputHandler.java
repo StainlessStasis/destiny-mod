@@ -2,7 +2,7 @@ package io.github.stainlessstasis.destinymod.client.input;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
-import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.client.ui.SubclassScreen;
 import io.github.stainlessstasis.destinymod.network.serverbound.AbilityCastPacket;
 import net.minecraft.client.Minecraft;
