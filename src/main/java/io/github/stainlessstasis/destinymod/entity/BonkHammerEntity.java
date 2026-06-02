@@ -224,9 +224,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity {
 
         if (this.level() instanceof ServerLevel level) {
             double speed = context.sourceVelocity().length();
-            if (speed > STICK_SPEED_THRESHOLD) {
-                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
-            }
+//            if (speed > STICK_SPEED_THRESHOLD) {
+//                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
+//            }
         }
     }
 

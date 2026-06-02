@@ -20,6 +20,7 @@ public class DestinyModDamageTypes {
     public static final ResourceKey<DamageType> SUNSPOT = register("sunspot");
 
     public static class Tags {
+        public static final TagKey<DamageType> IS_SUBCLASS_ABILITY = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_subclass_ability"));
         public static final TagKey<DamageType> IS_ABILITY = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_ability"));
         public static final TagKey<DamageType> IS_DEBUFF = TagKey.create(Registries.DAMAGE_TYPE, DestinyMod.id("is_debuff"));
     }

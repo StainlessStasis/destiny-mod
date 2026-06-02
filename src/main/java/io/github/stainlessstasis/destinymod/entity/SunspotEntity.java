@@ -4,7 +4,7 @@ import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
-import net.minecraft.core.particles.ParticleTypes;
+import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,6 +24,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
     public static final float RADIUS = 2f;
     public static final float RADIUS_SQUARED = RADIUS*RADIUS;
     public static final float DAMAGE = 1f;
+    public static final int SCORCH_AMOUNT = 5;
     public static final int HIT_INTERVAL = 10;
     public static final int MAX_LIFETIME = 160;
 
@@ -64,6 +65,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
 
     private void tickServer(ServerLevel level) {
         attackCooldowns.entrySet().removeIf(entry -> tickCount >= entry.getValue());
+        LivingEntity owner = getOwner();
 
         List<LivingEntity> victims = level.getEntitiesOfClass(LivingEntity.class, getBoundingBox());
         for (LivingEntity victim : victims) {
@@ -73,7 +75,6 @@ public class SunspotEntity extends Entity implements TraceableEntity {
 
             attackCooldowns.put(victim, tickCount + HIT_INTERVAL);
 
-            Entity owner = getOwner();
             DestinyDamageBuilder.create(DestinyModDamageTypes.SUNSPOT, victim)
                     .directSource(owner)
                     .attacker(owner)
@@ -82,6 +83,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
+            DebuffManager.applyScorch(victim, owner, 5);
         }
     }
 
@@ -93,7 +95,7 @@ public class SunspotEntity extends Entity implements TraceableEntity {
         this.owner = EntityReference.of(owner);
     }
     @Override
-    public @Nullable Entity getOwner() {
+    public @Nullable LivingEntity getOwner() {
         return EntityReference.getLivingEntity(owner, level());
     }
 

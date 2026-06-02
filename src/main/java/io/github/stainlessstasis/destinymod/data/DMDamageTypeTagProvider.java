@@ -15,11 +15,20 @@ public class DMDamageTypeTagProvider extends DamageTypeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NonNull Provider registries) {
-        tag(DestinyModDamageTypes.Tags.IS_ABILITY)
+        tag(DestinyModDamageTypes.Tags.IS_SUBCLASS_ABILITY)
                 .add(DestinyModDamageTypes.MELEE_ABILITY)
                 .add(DestinyModDamageTypes.GRENADE_ABILITY)
                 .add(DestinyModDamageTypes.CLASS_ABILITY)
                 .add(DestinyModDamageTypes.SUPER);
+
+        tag(DestinyModDamageTypes.Tags.IS_ABILITY)
+                .add(DestinyModDamageTypes.MELEE_ABILITY)
+                .add(DestinyModDamageTypes.GRENADE_ABILITY)
+                .add(DestinyModDamageTypes.CLASS_ABILITY)
+                .add(DestinyModDamageTypes.SUPER)
+                .add(DestinyModDamageTypes.SCORCH)
+                .add(DestinyModDamageTypes.IGNITION)
+                .add(DestinyModDamageTypes.SUNSPOT);
 
         tag(DestinyModDamageTypes.Tags.IS_DEBUFF)
                 .add(DestinyModDamageTypes.SCORCH);
