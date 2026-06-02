@@ -3,5 +3,5 @@
   "cooldownTicks": 200,
   "damage": 7.0,
   "element": "solar",
-  "maxCharges": 3
+  "maxCharges": 50
 }

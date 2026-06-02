@@ -2,6 +2,8 @@ package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
@@ -29,13 +31,13 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
     public static final int HIT_INTERVAL = 10;
     public static final int MAX_LIFETIME = 160;
 
-    private DestinyElement destinyElement = DestinyElement.SOLAR;
-    private float damage = 1f;
+    private final Ability ability;
     private final Map<LivingEntity, Integer> attackCooldowns = new HashMap<>();
     private @Nullable EntityReference<LivingEntity> owner;
 
     private SunspotEntity(EntityType<? extends Entity> type, Level level) {
         super(type, level);
+        ability = Abilities.SUNSPOT.get(level());
         noPhysics = true;
         refreshDimensions();
     }
@@ -81,8 +83,8 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
             DestinyDamageBuilder.create(DestinyModDamageTypes.SUNSPOT, victim)
                     .directSource(owner)
                     .attacker(owner)
-                    .element(destinyElement)
-                    .damage(damage)
+                    .element(ability.element())
+                    .damage(ability.damage())
                     .invulnerabilityTicks(0)
                     .knockback(false)
                     .execute();
@@ -118,21 +120,9 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
     @Override
     protected void addAdditionalSaveData(@NonNull ValueOutput valueOutput) {}
 
-    @Override
-    public @NotNull DestinyElement getDestinyElement() {
-        return this.destinyElement;
-    }
 
     @Override
-    public void setDestinyElement(DestinyElement destinyElement) {
-        this.destinyElement = destinyElement;
-    }
-
-    public float getDamage() {
-        return this.damage;
-    }
-
-    public void setDamage(float damage) {
-        this.damage = damage;
+    public @NotNull Ability getDestinyAbility() {
+        return ability;
     }
 }

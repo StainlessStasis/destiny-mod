@@ -11,7 +11,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
 public record Ability(
-        AbilityType abilityType, DestinyElement element, int cooldownTicks, int maxCharges, float damage
+        AbilityType abilityType, DestinyElement element, int cooldownTicks, int maxCharges, float damage, int scorch
 ) {
     public static final Codec<Ability> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -19,11 +19,12 @@ public record Ability(
                     DestinyElement.CODEC.fieldOf("element").forGetter(Ability::element),
                     Codec.INT.fieldOf("cooldownTicks").forGetter(Ability::cooldownTicks),
                     Codec.INT.fieldOf("maxCharges").forGetter(Ability::maxCharges),
-                    Codec.FLOAT.fieldOf("damage").forGetter(Ability::damage)
+                    Codec.FLOAT.fieldOf("damage").forGetter(Ability::damage),
+                    Codec.INT.fieldOf("maxCharges").forGetter(Ability::scorch)
             ).apply(instance, Ability::new)
     );
 
-    // wait do i even need this actually
+    // wait do i even need this actually (no)
 //    public static final StreamCodec<ByteBuf, Ability> STREAM_CODEC = StreamCodec.composite(
 //            AbilityType.STREAM_CODEC, Ability::abilityType,
 //            DestinyElement.STREAM_CODEC, Ability::element,

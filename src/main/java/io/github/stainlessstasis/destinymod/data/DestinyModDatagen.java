@@ -24,13 +24,13 @@ public class DestinyModDatagen {
                 // ABILITIES
                 .add(DestinyModRegistries.ABILITY_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Abilities.NONE.resourceKey(), new Ability(
-                            AbilityType.PASSIVE, DestinyElement.NONE, 0, 0, 0f
+                            AbilityType.PASSIVE, DestinyElement.NONE, 0, -1, 0f, 0
                     ));
                     bootstrap.register(Abilities.THROWING_HAMMER.resourceKey(), new Ability(
-                            AbilityType.MELEE, DestinyElement.SOLAR, 200, 3, 7f
+                            AbilityType.MELEE, DestinyElement.SOLAR, 200, 3, 7f, 50
                     ));
                     bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
-                            AbilityType.PASSIVE, DestinyElement.SOLAR, 0, 0, 1f
+                            AbilityType.PASSIVE, DestinyElement.SOLAR, 0, -1, 1f, 5
                     ));
                 })
 
