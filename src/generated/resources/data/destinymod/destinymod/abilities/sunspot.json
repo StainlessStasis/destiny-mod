@@ -3,5 +3,6 @@
   "cooldownTicks": 0,
   "damage": 1.0,
   "element": "solar",
-  "maxCharges": 5
+  "maxCharges": -1,
+  "scorch": 5
 }

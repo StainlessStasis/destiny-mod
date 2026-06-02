@@ -7,7 +7,7 @@ import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.solar.Ignition;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -15,7 +15,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.attachment.AttachmentType;
 
 import java.util.function.Supplier;
@@ -84,7 +83,7 @@ public class Scorch extends OwnableDebuff {
             LivingEntity owner = getOwner(level);
             float damageMultiplier = 1f + (this.stacks*2f/IGNITION_THRESHOLD);
             float damage = DAMAGE * damageMultiplier;
-            DestinyDamageBuilder.create(DestinyModDamageTypes.SCORCH, entity)
+            DestinyDamageBuilder.create(DMDamageTypes.SCORCH, entity)
                     .directSource(owner)
                     .attacker(owner)
                     .element(DestinyElement.SOLAR)

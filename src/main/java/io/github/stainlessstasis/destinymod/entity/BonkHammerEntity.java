@@ -13,7 +13,7 @@ import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -351,7 +351,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         if (entity instanceof LivingEntity mob) {
             Level level = this.level();
             if (level instanceof ServerLevel serverLevel) {
-                DestinyDamageBuilder builder = DestinyDamageBuilder.create(DestinyModDamageTypes.MELEE_ABILITY, mob)
+                DestinyDamageBuilder builder = DestinyDamageBuilder.create(DMDamageTypes.MELEE_ABILITY, mob)
                         .directSource(this)
                         .attacker(currentOwner != null ? currentOwner : this)
                         .element(ability.element())

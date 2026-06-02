@@ -1,12 +1,11 @@
 package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
-import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_classes.debuff.DebuffManager;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -80,7 +79,7 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
 
             attackCooldowns.put(victim, tickCount + HIT_INTERVAL);
 
-            DestinyDamageBuilder.create(DestinyModDamageTypes.SUNSPOT, victim)
+            DestinyDamageBuilder.create(DMDamageTypes.SUNSPOT, victim)
                     .directSource(owner)
                     .attacker(owner)
                     .element(ability.element())

@@ -2,9 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_classes.ability.solar;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
-import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
-import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
+import io.github.stainlessstasis.destinymod.destiny_classes.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -36,7 +34,7 @@ public class Ignition {
             falloff = Math.clamp(falloff, 0f, 1f);
             float damage = DAMAGE * falloff;
             if (damage <= 0.01f) continue;
-            DestinyDamageBuilder.create(DestinyModDamageTypes.IGNITION, victim)
+            DestinyDamageBuilder.create(DMDamageTypes.IGNITION, victim)
                     .directSource(directEntity)
                     .attacker(causingEntity)
                     .element(DestinyElement.SOLAR)
