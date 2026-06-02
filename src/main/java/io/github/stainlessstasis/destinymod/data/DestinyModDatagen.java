@@ -1,6 +1,9 @@
 package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.damage.DestinyModDamageTypes;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +19,19 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 public class DestinyModDatagen {
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent.Client event) {
+        // ABILITIES
+        event.createDatapackRegistryObjects(new RegistrySetBuilder()
+                .add(DestinyModRegistries.ABILITY_REGISTRY_KEY, bootstrap -> {
+                    bootstrap.register(Abilities.NONE, new Ability(
+                            AbilityType.MELEE, 0, 0
+                    ));
+                    bootstrap.register(Abilities.THROWING_HAMMER, new Ability(
+                            AbilityType.MELEE, 200, 3
+                    ));
+                })
+        );
+
+        // DAMAGE TYPES AND DAMAGE TYPE TAGS
         event.createDatapackRegistryObjects(new RegistrySetBuilder()
                 .add(Registries.DAMAGE_TYPE, bootstrap -> {
                     bootstrap.register(DestinyModDamageTypes.MELEE_ABILITY, new DamageType(
@@ -25,7 +41,6 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
-
                     bootstrap.register(DestinyModDamageTypes.GRENADE_ABILITY, new DamageType(
                             DestinyMod.MODID+".grenade",
                             DamageScaling.NEVER,
@@ -33,7 +48,6 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
-
                     bootstrap.register(DestinyModDamageTypes.CLASS_ABILITY, new DamageType(
                             DestinyMod.MODID+".class_ability",
                             DamageScaling.NEVER,
@@ -41,7 +55,6 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
-
                     bootstrap.register(DestinyModDamageTypes.SUPER, new DamageType(
                             DestinyMod.MODID+".super",
                             DamageScaling.NEVER,
@@ -49,7 +62,6 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
-
                     bootstrap.register(DestinyModDamageTypes.SCORCH, new DamageType(
                             DestinyMod.MODID+".scorch",
                             DamageScaling.NEVER,
@@ -57,7 +69,6 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
-
                     bootstrap.register(DestinyModDamageTypes.IGNITION, new DamageType(
                             DestinyMod.MODID+".ignition",
                             DamageScaling.NEVER,
@@ -65,7 +76,6 @@ public class DestinyModDatagen {
                             DamageEffects.HURT,
                             DeathMessageType.DEFAULT
                     ));
-
                     bootstrap.register(DestinyModDamageTypes.SUNSPOT, new DamageType(
                             DestinyMod.MODID+".sunspot",
                             DamageScaling.NEVER,

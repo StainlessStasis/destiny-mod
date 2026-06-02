@@ -1,12 +1,15 @@
 package io.github.stainlessstasis.destinymod.destiny_classes.player_equipped;
 
 import com.mojang.serialization.Codec;
+import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
+import io.github.stainlessstasis.destinymod.destiny_classes.ability.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.ability.Aspect;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -45,11 +48,12 @@ public class SubclassLoadout {
         this.abilityLoadouts.put(abilityType, loadout);
     }
 
-    public Ability getAbility(AbilityType abilityType) {
-        return getAbilityLoadout(abilityType).ability();
+    public Ability getAbility(Player player, AbilityType abilityType) {
+        var abilityKey = getAbilityLoadout(abilityType).ability();
+        return Abilities.get(abilityKey, player.level().registryAccess());
     }
 
-    void replaceAbility(AbilityType abilityType, Ability newAbility) {
+    void replaceAbility(AbilityType abilityType, ResourceKey<Ability> newAbility) {
         var currentLoadout = getAbilityLoadout(abilityType);
         AbilityLoadout newLoadout = new AbilityLoadout(newAbility, currentLoadout.aspects());
         putAbilityLoadout(abilityType, newLoadout);
@@ -59,19 +63,19 @@ public class SubclassLoadout {
         return getAbilityLoadout(abilityType).aspects();
     }
 
-    public Ability getMelee() {
-        return getAbility(AbilityType.MELEE);
+    public Ability getMelee(Player player) {
+        return getAbility(player, AbilityType.MELEE);
     }
 
-    public Ability getGrenade() {
-        return getAbility(AbilityType.GRENADE);
+    public Ability getGrenade(Player player) {
+        return getAbility(player, AbilityType.GRENADE);
     }
 
-    public Ability getClassAbility() {
-        return getAbility(AbilityType.CLASS_ABILITY);
+    public Ability getClassAbility(Player player) {
+        return getAbility(player, AbilityType.CLASS_ABILITY);
     }
 
-    public Ability getSuper() {
-        return getAbility(AbilityType.SUPER);
+    public Ability getSuper(Player player) {
+        return getAbility(player, AbilityType.SUPER);
     }
 }

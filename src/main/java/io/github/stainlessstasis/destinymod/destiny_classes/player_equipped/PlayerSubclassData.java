@@ -12,6 +12,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.ability.Aspect;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class PlayerSubclassData {
         return instance.getSubclassLoadout(instance.getEquippedSubclass());
     }
 
-    public static void replaceAbility(Player player, AbilityType abilityType, Ability newAbility) {
+    public static void replaceAbility(Player player, AbilityType abilityType, ResourceKey<Ability> newAbility) {
         var instance = getInstance(player);
         instance.getSubclassLoadout().replaceAbility(abilityType, newAbility);
         instance.sync(player);
@@ -90,7 +91,7 @@ public class PlayerSubclassData {
     }
 
     public static Ability getAbility(Player player, AbilityType abilityType) {
-        return getSubclassLoadout(player).getAbility(abilityType);
+        return getSubclassLoadout(player).getAbility(player, abilityType);
     }
 
     public static Set<Aspect> getAspectsForAbility(Player player, AbilityType abilityType) {
@@ -98,18 +99,18 @@ public class PlayerSubclassData {
     }
 
     public static Ability getMelee(Player player) {
-        return getSubclassLoadout(player).getMelee();
+        return getSubclassLoadout(player).getMelee(player);
     }
 
     public static Ability getGrenade(Player player) {
-        return getSubclassLoadout(player).getGrenade();
+        return getSubclassLoadout(player).getGrenade(player);
     }
 
     public static Ability getClassAbility(Player player) {
-        return getSubclassLoadout(player).getClassAbility();
+        return getSubclassLoadout(player).getClassAbility(player);
     }
 
     public static Ability getSuper(Player player) {
-        return getSubclassLoadout(player).getSuper();
+        return getSubclassLoadout(player).getSuper(player);
     }
 }

@@ -1,25 +1,30 @@
 package io.github.stainlessstasis.destinymod.destiny_classes.ability;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import net.minecraft.resources.Identifier;
+import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class Abilities {
-    private static final BiMap<Identifier, Ability> ABILITIES = HashBiMap.create();
-    public static final Ability NONE = register(DestinyMod.id("none"), new Ability(AbilityType.MELEE, 0, 0));
-    public static final Ability THROWING_HAMMER = register(DestinyMod.id("throwing_hammer"), new Ability(AbilityType.MELEE, 200, 3));
-
-    public static Ability getByID(Identifier id) {
-        return ABILITIES.get(id);
+    private static ResourceKey<Ability> register(String name) {
+        return ResourceKey.create(DestinyModRegistries.ABILITY_REGISTRY_KEY, DestinyMod.id(name));
     }
 
-    public static Identifier getID(Ability ability) {
-        return ABILITIES.inverse().get(ability);
+    public static @Nullable Ability get(ResourceKey<Ability> key, RegistryAccess access) {
+        Optional<Registry<Ability>> registryOptional = access.lookup(DestinyModRegistries.ABILITY_REGISTRY_KEY);
+        if (registryOptional.isEmpty()) {
+            return null;
+        }
+        var reference = registryOptional.get().get(key);
+        return reference.map(Holder.Reference::value).orElse(null);
+
     }
 
-    public static Ability register(Identifier id, Ability ability) {
-        ABILITIES.put(id, ability);
-        return ability;
-    }
+    public static final ResourceKey<Ability> NONE = register("none");
+    public static final ResourceKey<Ability> THROWING_HAMMER = register("throwing_hammer");
 }
