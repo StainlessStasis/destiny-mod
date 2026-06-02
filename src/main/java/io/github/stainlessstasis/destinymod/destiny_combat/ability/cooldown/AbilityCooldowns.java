@@ -70,7 +70,7 @@ public class AbilityCooldowns {
         float regenSpeed = 1f;
 
         if (StatusEffectManager.isActive(entity, SolInvictus.class)) {
-            regenSpeed += 10f;
+            regenSpeed += 9f;
         }
 
         return regenSpeed;

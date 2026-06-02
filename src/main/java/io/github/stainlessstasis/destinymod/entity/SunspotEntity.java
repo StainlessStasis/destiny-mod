@@ -78,6 +78,7 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
 
             if (victim == owner) {
                 StatusEffectManager.applySolInvictus(owner);
+                continue;
             }
 
             attackCooldowns.put(victim, tickCount + HIT_INTERVAL);
