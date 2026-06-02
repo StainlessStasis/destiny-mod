@@ -6,9 +6,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
 public interface StatusEffect {
@@ -17,6 +16,7 @@ public interface StatusEffect {
     void clear(LivingEntity entity);
 
     Map<Class<? extends StatusEffect>, EffectAttachmentCache> CACHE = new HashMap<>();
+    List<Supplier<? extends AttachmentType<? extends StatusEffect>>> TICKABLE_EFFECTS = new CopyOnWriteArrayList<>();
     Supplier<AttachmentType<Boolean>> getClientStateSyncAttachment();
     Supplier<? extends AttachmentType<? extends StatusEffect>> getAttachment();
 

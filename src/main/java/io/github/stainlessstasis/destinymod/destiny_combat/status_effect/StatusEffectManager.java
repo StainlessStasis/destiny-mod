@@ -15,8 +15,6 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber
 public class StatusEffectManager {
-    private static final List<Supplier<? extends AttachmentType<? extends StatusEffect>>> STATUS_EFFECTS = List.of(DestinyModAttachments.SCORCH);
-
     public static boolean isActive(LivingEntity entity, Class<? extends StatusEffect> statusEffectClass) {
         StatusEffect.EffectAttachmentCache cache = StatusEffect.getOrCreateCache(statusEffectClass);
 
@@ -56,7 +54,7 @@ public class StatusEffectManager {
     public static void onEntityTick(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof LivingEntity entity) || entity.level().isClientSide()) return;
 
-        for (var effectSupplier : STATUS_EFFECTS) {
+        for (var effectSupplier : StatusEffect.TICKABLE_EFFECTS) {
             if (entity.hasData(effectSupplier.get())) {
                 StatusEffect effect = entity.getData(effectSupplier.get());
 
