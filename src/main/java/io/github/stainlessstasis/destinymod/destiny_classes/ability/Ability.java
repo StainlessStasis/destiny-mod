@@ -18,8 +18,8 @@ public record Ability(
                     AbilityType.CODEC.fieldOf("abilityType").forGetter(Ability::abilityType),
                     DestinyElement.CODEC.fieldOf("element").forGetter(Ability::element),
                     Codec.INT.fieldOf("cooldownTicks").forGetter(Ability::cooldownTicks),
-                    Codec.INT.optionalFieldOf("maxCharges", 1).forGetter(Ability::maxCharges),
-                    Codec.FLOAT.optionalFieldOf("damage", 1f).forGetter(Ability::damage)
+                    Codec.INT.fieldOf("maxCharges").forGetter(Ability::maxCharges),
+                    Codec.FLOAT.fieldOf("damage").forGetter(Ability::damage)
             ).apply(instance, Ability::new)
     );
 

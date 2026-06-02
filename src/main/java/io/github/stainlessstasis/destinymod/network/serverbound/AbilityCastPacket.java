@@ -36,10 +36,9 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
             if (packet.slot == AbilityType.MELEE) {
                 var ability = PlayerSubclassData.getMelee(player);
                 if (AbilityCooldownManager.isOnCooldown(player, ability)) {
-                    float percent = AbilityCooldownManager.getCooldownPercent(player, ability);
-                    context.player().sendSystemMessage(Component.literal("Ability is on cooldown, idiot ("+percent+")"));
                     return;
                 }
+
                 context.enqueueWork(() -> {
                     player.swing(InteractionHand.MAIN_HAND);
 
