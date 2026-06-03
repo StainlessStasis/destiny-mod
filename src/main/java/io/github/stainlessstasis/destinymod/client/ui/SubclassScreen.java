@@ -1,8 +1,7 @@
 package io.github.stainlessstasis.destinymod.client.ui;
 
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIScreen;
-import com.lowdragmc.lowdraglib2.gui.texture.ColorBorderTexture;
-import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib2.gui.texture.*;
 import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
 import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
@@ -19,6 +18,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
@@ -68,6 +68,7 @@ public class SubclassScreen extends ModularUIScreen {
                 .heightAuto()
         );
 
+        // header - subclass name
         var titleLabel = new Label()
                 .setText(subclass.title())
                 .textStyle(style -> style
@@ -80,6 +81,7 @@ public class SubclassScreen extends ModularUIScreen {
                 .height(TITLE_SIZE * guiScalar)
         );
 
+        // header - class subtitle
         Component subtitleText = Component.translatable("subclass.destinymod." + subclass.destinyClass().name().toLowerCase());
         var subtitleLabel = new Label()
                 .setText(subtitleText)
@@ -98,6 +100,7 @@ public class SubclassScreen extends ModularUIScreen {
 
         // ABILITY COLUMNS & HOVER GRIDS (right side)
         final float iconSize = ICON_SIZE * guiScalar;
+        final var iconSet = SubclassIcons.SUBCLASS_ICONS.get(subclass);
         final IGuiTexture cellBorder = new ColorBorderTexture(-1, Color.WHITE);
 
         var rightPanel = new UIElement();
@@ -112,7 +115,7 @@ public class SubclassScreen extends ModularUIScreen {
 
         AbilityType[] types = {AbilityType.SUPER, AbilityType.MELEE, AbilityType.GRENADE, AbilityType.CLASS_ABILITY};
         for (AbilityType type : types) {
-
+            var iconTrack = iconSet.getTrack(type);
             var abilityRowTrack = new UIElement();
             abilityRowTrack.layout(layout -> layout
                     .flexDirection(FlexDirection.ROW)
@@ -127,7 +130,10 @@ public class SubclassScreen extends ModularUIScreen {
                     .height(iconSize)
             );
 
-            // TODO: icons
+            Identifier mainIconPath = iconTrack.getMainIcon(false);
+            if (mainIconPath != null) {
+                mainIcon.style(style -> style.background(SpriteTexture.of(mainIconPath)));
+            }
 
             var aspectGrid = new UIElement();
             aspectGrid.layout(layout -> layout
@@ -145,7 +151,7 @@ public class SubclassScreen extends ModularUIScreen {
                 gridRow.layout(layout -> layout.flexDirection(FlexDirection.ROW));
 
                 for (int col = 0; col < ASPECT_GRID_COLS; col++) {
-                    int cellIndex = (row * ASPECT_GRID_COLS) + col + 1;
+                    int cellIndex = (row * ASPECT_GRID_COLS) + col;
 
                     var gridCell = new UIElement()
                             .style(style -> style.background(cellBorder));
@@ -155,7 +161,12 @@ public class SubclassScreen extends ModularUIScreen {
                             .marginRight(ASPECT_GRID_GAP_COLS * guiScalar)
                     );
 
-                    // TODO: icons
+                    if (cellIndex < iconTrack.totalAspects()) {
+                        Identifier aspectPath = iconTrack.getAspectIcon(cellIndex);
+                        if (aspectPath != null) {
+                            gridCell.style(style -> style.background(SpriteTexture.of(aspectPath)));
+                        }
+                    }
 
                     gridRow.addChildren(gridCell);
                 }
