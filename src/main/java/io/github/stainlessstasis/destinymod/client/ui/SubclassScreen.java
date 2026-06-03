@@ -27,6 +27,18 @@ public class SubclassScreen extends ModularUIScreen {
     public static final float TITLE_SIZE = 36f;
     public static final float SUBTITLE_SIZE = 24f;
 
+    public static final float ICON_SIZE = 48f;
+    public static final float ABILITY_PANEL_RIGHT_PERCENT = 20f;
+    public static final float ABILITY_PANEL_TOP_PERCENT = 2.5f;
+    public static final float ABILITY_PANEL_HEIGHT_PERCENT = 80f;
+    public static final float ABILITY_PANEL_ROW_PADDING = 2f;
+    public static final float ASPECT_GRID_OFFSET_LEFT = 24f;
+    public static final float ASPECT_GRID_OFFSET_TOP = 2f;
+    public static final float ASPECT_GRID_GAP_ROWS = 4f;
+    public static final float ASPECT_GRID_GAP_COLS = 4f;
+    public static final int ASPECT_GRID_ROWS = 2;
+    public static final int ASPECT_GRID_COLS = 3;
+
     private final Subclass subclass;
 
     public SubclassScreen(Subclass subclass) {
@@ -84,16 +96,16 @@ public class SubclassScreen extends ModularUIScreen {
         headerContainer.addChildren(titleLabel, subtitleLabel);
         root.addChildren(headerContainer);
 
-        // ABILITIES COLUMN (right side)
-        final float iconSize = 48f * guiScalar;
+        // ABILITY COLUMNS & HOVER GRIDS (right side)
+        final float iconSize = ICON_SIZE * guiScalar;
         final IGuiTexture cellBorder = new ColorBorderTexture(-1, Color.WHITE);
 
         var rightPanel = new UIElement();
         rightPanel.layout(layout -> layout
                 .positionType(TaffyPosition.ABSOLUTE)
-                .rightPercent(20f)
-                .topPercent(2.5f * aspectRatio)
-                .heightPercent(80f)
+                .rightPercent(ABILITY_PANEL_RIGHT_PERCENT)
+                .topPercent(ABILITY_PANEL_TOP_PERCENT * aspectRatio)
+                .heightPercent(ABILITY_PANEL_HEIGHT_PERCENT)
                 .flexDirection(FlexDirection.COLUMN)
                 .justifyContent(AlignContent.SPACE_BETWEEN)
         );
@@ -105,7 +117,7 @@ public class SubclassScreen extends ModularUIScreen {
             abilityRowTrack.layout(layout -> layout
                     .flexDirection(FlexDirection.ROW)
                     .alignItems(AlignItems.START)
-                    .paddingAll(2f * guiScalar)
+                    .paddingAll(ABILITY_PANEL_ROW_PADDING * guiScalar)
             );
 
             var mainIcon = new UIElement()
@@ -114,33 +126,35 @@ public class SubclassScreen extends ModularUIScreen {
                     .width(iconSize)
                     .height(iconSize)
             );
+
             // TODO: icons
 
             var aspectGrid = new UIElement();
             aspectGrid.layout(layout -> layout
                     .positionType(TaffyPosition.ABSOLUTE)
-                    .left(iconSize + (24f * guiScalar))
-                    .top(2f * guiScalar)
+                    .left(iconSize + (ASPECT_GRID_OFFSET_LEFT * guiScalar))
+                    .top(ASPECT_GRID_OFFSET_TOP * guiScalar)
                     .flexDirection(FlexDirection.COLUMN)
-                    .gapRow(4f * guiScalar)
-                    .gapColumn(4f * guiScalar)
+                    .gapRow(ASPECT_GRID_GAP_ROWS * guiScalar)
+                    .gapColumn(ASPECT_GRID_GAP_COLS * guiScalar)
             );
             aspectGrid.setDisplay(false);
 
-            for (int row = 0; row < 2; row++) {
+            for (int row = 0; row < ASPECT_GRID_ROWS; row++) {
                 var gridRow = new UIElement();
                 gridRow.layout(layout -> layout.flexDirection(FlexDirection.ROW));
 
-                for (int col = 0; col < 3; col++) {
-                    int cellIndex = (row * 3) + col + 1;
+                for (int col = 0; col < ASPECT_GRID_COLS; col++) {
+                    int cellIndex = (row * ASPECT_GRID_COLS) + col + 1;
 
                     var gridCell = new UIElement()
                             .style(style -> style.background(cellBorder));
                     gridCell.layout(layout -> layout
                             .width(iconSize)
                             .height(iconSize)
-                            .marginRight(4f * guiScalar)
+                            .marginRight(ASPECT_GRID_GAP_COLS * guiScalar)
                     );
+
                     // TODO: icons
 
                     gridRow.addChildren(gridCell);
