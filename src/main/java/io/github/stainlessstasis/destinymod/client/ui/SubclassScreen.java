@@ -38,6 +38,7 @@ public class SubclassScreen extends ModularUIScreen {
     public static final float ASPECT_GRID_GAP_COLS = 4f;
     public static final int ASPECT_GRID_ROWS = 2;
     public static final int ASPECT_GRID_COLS = 3;
+    public static final int HOVER_PADDING = 8;
 
     private final Subclass subclass;
 
@@ -159,14 +160,19 @@ public class SubclassScreen extends ModularUIScreen {
 
             var aspectGrid = new UIElement();
             aspectGrid.layout(layout -> layout
-                    .positionType(TaffyPosition.ABSOLUTE)
-                    .left(iconSize + (ASPECT_GRID_OFFSET_LEFT * guiScalar))
-                    .top(ASPECT_GRID_OFFSET_TOP * guiScalar)
                     .flexDirection(FlexDirection.COLUMN)
                     .gapRow(ASPECT_GRID_GAP_ROWS * guiScalar)
                     .gapColumn(ASPECT_GRID_GAP_COLS * guiScalar)
             );
-            aspectGrid.setDisplay(false);
+
+            var gridWrapper = new UIElement();
+            gridWrapper.layout(layout -> layout
+                    .positionType(TaffyPosition.ABSOLUTE)
+                    .left(iconSize + (ASPECT_GRID_OFFSET_LEFT * guiScalar))
+                    .top(ASPECT_GRID_OFFSET_TOP * guiScalar)
+                    .flexDirection(FlexDirection.COLUMN)
+            );
+            gridWrapper.setDisplay(false);
 
             for (int row = 0; row < ASPECT_GRID_ROWS; row++) {
                 var gridRow = new UIElement();
@@ -214,17 +220,43 @@ public class SubclassScreen extends ModularUIScreen {
                 aspectGrid.addChildren(gridRow);
             }
 
+            final float totalGridHeight = (iconSize * ASPECT_GRID_ROWS) + (ASPECT_GRID_GAP_ROWS * guiScalar * (ASPECT_GRID_ROWS - 1));
+            final float totalGridWidth = (iconSize * ASPECT_GRID_COLS) + (ASPECT_GRID_GAP_COLS * guiScalar * (ASPECT_GRID_COLS - 1));
+            final float gapToGrid = iconSize + (ASPECT_GRID_OFFSET_LEFT * guiScalar);
+            final float hoverPadding = HOVER_PADDING * guiScalar;
+            final float totalBridgeWidth = gapToGrid + totalGridWidth;
+            var hoverBridge = new UIElement()
+                    .style(style -> style.background(new ColorRectTexture(subclass.destinyElement().getColorDark().withOpacity(0.1f))));
+            hoverBridge.layout(layout -> layout
+                    .positionType(TaffyPosition.ABSOLUTE)
+                    .left(-gapToGrid - hoverPadding)
+                    .top(-hoverPadding)
+                    .width(totalBridgeWidth + (hoverPadding * 2f))
+                    .height(totalGridHeight + (hoverPadding * 2f))
+            );
+            hoverBridge.addChildren(aspectGrid);
+
+            aspectGrid.layout(layout -> layout
+                    .positionType(TaffyPosition.ABSOLUTE)
+                    .left(gapToGrid + hoverPadding)
+                    .top(hoverPadding)
+                    .flexDirection(FlexDirection.COLUMN)
+                    .gapRow(ASPECT_GRID_GAP_ROWS * guiScalar)
+                    .gapColumn(ASPECT_GRID_GAP_COLS * guiScalar)
+            );
+            gridWrapper.addChildren(hoverBridge);
+
             abilityRowTrack.addEventListener(UIEvents.MOUSE_ENTER, event -> {
-                aspectGrid.setDisplay(true);
+                gridWrapper.setDisplay(true);
                 abilityRowTrack.markTaffyStyleDirty();
             }, true);
 
             abilityRowTrack.addEventListener(UIEvents.MOUSE_LEAVE, event -> {
-                aspectGrid.setDisplay(false);
+                gridWrapper.setDisplay(false);
                 abilityRowTrack.markTaffyStyleDirty();
             }, true);
 
-            abilityRowTrack.addChildren(mainIcon, aspectGrid);
+            abilityRowTrack.addChildren(mainIcon, gridWrapper);
             rightPanel.addChildren(abilityRowTrack);
         }
 
