@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Horizontal;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
+import com.lowdragmc.lowdraglib2.gui.ui.event.HoverTooltips;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
 import dev.vfyjxf.taffy.style.AlignContent;
 import dev.vfyjxf.taffy.style.AlignItems;
@@ -15,8 +16,11 @@ import dev.vfyjxf.taffy.style.TaffyPosition;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.tooltip.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.NonNull;
@@ -129,6 +133,12 @@ public class SubclassScreen extends ModularUIScreen {
                     .width(iconSize)
                     .height(iconSize)
             );
+
+            if (iconTrack.mainAbilityName() != null && !iconTrack.mainAbilityName().isEmpty()) {
+                mainIcon.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
+                    event.hoverTooltips = buildHoverTooltips(iconTrack.mainAbilityName(), subclass.destinyElement().getColor());
+                });
+            }
 
             var mainBorderLayer = new UIElement()
                     .style(style -> style.background(cellBorder));
@@ -256,7 +266,7 @@ public class SubclassScreen extends ModularUIScreen {
                 abilityRowTrack.markTaffyStyleDirty();
             }, true);
 
-            abilityRowTrack.addChildren(mainIcon, gridWrapper);
+            abilityRowTrack.addChildren(gridWrapper, mainIcon);
             rightPanel.addChildren(abilityRowTrack);
         }
 
@@ -264,6 +274,25 @@ public class SubclassScreen extends ModularUIScreen {
 
         UI ui = UI.of(root);
         return ModularUI.of(ui);
+    }
+
+    private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor) {
+        TooltipWidthContext widthContext = new TooltipWidthContext();
+
+        String title = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".title");
+        String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".subtitle");
+
+        var header = new HeaderComponent(title, subtitle, widthContext, headerColor.withOpacity(0.95f));
+        var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
+
+        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
+        var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
+
+        return HoverTooltips.create(
+                ClientTooltipComponent.create(header),
+                ClientTooltipComponent.create(bar),
+                ClientTooltipComponent.create(description)
+        );
     }
 
     @Override
