@@ -16,6 +16,9 @@ import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
 
 public class SubclassScreen extends ModularUIScreen {
+    public static final float TITLE_SIZE = 36f;
+    public static final float SUBTITLE_SIZE = 24f;
+
     private final Subclass subclass;
 
     public SubclassScreen(Subclass subclass) {
@@ -39,8 +42,9 @@ public class SubclassScreen extends ModularUIScreen {
                 .positionType(TaffyPosition.ABSOLUTE)
                 .flexDirection(FlexDirection.COLUMN)
                 .leftPercent(1.5f)
-                .topPercent(1.5f/aspectRatio)
-                .gapRowPercent(2f/aspectRatio)
+                .topPercent(1.5f * aspectRatio)
+                .widthAuto()
+                .heightAuto()
         );
 
         var titleLabel = new Label()
@@ -49,8 +53,11 @@ public class SubclassScreen extends ModularUIScreen {
                         .textAlignHorizontal(Horizontal.LEFT)
                         .textColor(subclass.destinyElement().getColor().get())
                         .textShadow(true)
-                        .fontSize(36*guiScalar)
+                        .fontSize(TITLE_SIZE * guiScalar)
                 );
+        titleLabel.layout(layout -> layout
+                .height(TITLE_SIZE * guiScalar)
+        );
 
         Component subtitleText = Component.translatable("subclass.destinymod." + subclass.destinyClass().name().toLowerCase());
         var subtitleLabel = new Label()
@@ -59,9 +66,11 @@ public class SubclassScreen extends ModularUIScreen {
                         .textAlignHorizontal(Horizontal.LEFT)
                         .textColor(DMColor.LIGHT_GRAY.get())
                         .textShadow(true)
-                        .fontSize(18*guiScalar)
+                        .fontSize(SUBTITLE_SIZE * guiScalar)
                 );
-        subtitleLabel.layout(layout -> layout.marginTopPercent(20));
+        subtitleLabel.layout(layout -> layout
+                .height(SUBTITLE_SIZE * guiScalar)
+        );
 
         headerContainer.addChildren(titleLabel, subtitleLabel);
         root.addChildren(headerContainer);
