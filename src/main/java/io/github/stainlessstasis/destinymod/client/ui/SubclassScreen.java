@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.client.ui;
 
 import com.mojang.datafixers.util.Either;
 import io.github.stainlessstasis.destinymod.DMColor;
+import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.tooltip.*;
@@ -47,15 +48,15 @@ public class SubclassScreen extends Screen {
         Minecraft mc = Minecraft.getInstance();
         float guiScalar = GuiScaleUtil.getConsistencyScalar();
         var pose = graphics.pose();
-        final int subclassColor = subclass.destinyElement().getColor().get();
-        final int subclassColorLight = subclass.destinyElement().getColorLight().get();
-        final int subclassColorDark = subclass.destinyElement().getColorDark().get();
+        final DMColor subclassColor = subclass.destinyElement().getColor();
+        final DMColor subclassColorLight = subclass.destinyElement().getColorLight();
+        final DMColor subclassColorDark = subclass.destinyElement().getColorDark();
 
         // Title
         pose.pushMatrix();
         pose.translate(TITLE_X_OFFSET*guiScalar, TITLE_Y_OFFSET*guiScalar);
         pose.scale(TITLE_SCALE*guiScalar);
-        graphics.text(font, subclass.title(), 0, 0, subclassColor, true);
+        graphics.text(font, subclass.title(), 0, 0, subclassColor.get(), true);
         pose.popMatrix();
 
         // Subtitle
@@ -67,18 +68,16 @@ public class SubclassScreen extends Screen {
         pose.popMatrix();
 
         // Ability icon rows
-        int scaledScreenWidth = mc.getWindow().getGuiScaledWidth();
-        int scaledScreenHeight = mc.getWindow().getGuiScaledHeight();
-        int iconSize = (int) (48 * guiScalar); // the icons are 32x32, but they are rendered at 48x48 in this menu
-        int borderSize = iconSize + 2;
+        final int scaledScreenWidth = mc.getWindow().getGuiScaledWidth();
+        final int scaledScreenHeight = mc.getWindow().getGuiScaledHeight();
+        final int iconSize = (int) (48 * guiScalar); // the icons are 32x32, but they are rendered at 48x48 in this menu
+        final int borderSize = iconSize + 2;
         int renderX = (int) (scaledScreenWidth - (iconSize*5f));
         int renderY = (int) (TITLE_Y_OFFSET * guiScalar);
 
         // each of these components is already scaled, so no scalar, or it will break
-        int verticalSpacing = scaledScreenHeight - (renderY*2) - (iconSize*2);
-        verticalSpacing = (int) (verticalSpacing/3f);
+        final int aspectGridVerticalSpacing = (int) ((scaledScreenHeight - (renderY*2) - (iconSize*2)) / 3f);
         for (int i = 0; i < 4; i++) {
-            var subclassIcons = SUBCLASS_ICONS.get(subclass);
             AbilityType abilityType = switch(i) {
                 case 0 -> AbilityType.SUPER;
                 case 1 -> AbilityType.MELEE;
@@ -88,7 +87,7 @@ public class SubclassScreen extends Screen {
             };
 
             // The main 4 icons (super, melee, grenade, class)
-            List<Identifier> abilityIcons = subclassIcons.getIcons(abilityType, 0);
+            List<Identifier> abilityIcons = getAbilityIcons(abilityType, 0);
             for (Identifier texture : abilityIcons) {
                 graphics.blit(
                         RenderPipelines.GUI_TEXTURED, texture,
@@ -101,15 +100,9 @@ public class SubclassScreen extends Screen {
 
             // Ability tooltips
             if (!abilityIcons.isEmpty() && isHovering(mouseX, mouseY, renderX, renderY, iconSize)) {
-                List<String> abilityNames = switch (abilityType) {
-                    case SUPER -> subclassIcons.superIcons();
-                    case MELEE -> subclassIcons.meleeIcons();
-                    case GRENADE -> subclassIcons.grenadeIcons();
-                    case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
-                    default -> List.of();
-                };
+                List<String> abilityNames = getAbilityIconNames(abilityType);
                 if (!abilityNames.isEmpty()) {
-                    createTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY);
+                    createTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY, subclassColorDark);
                 }
             }
 
@@ -119,7 +112,8 @@ public class SubclassScreen extends Screen {
                     renderX-1, renderY-1, 0f, 0f,
                     borderSize, borderSize,
                     borderSize, borderSize,
-                    borderSize, borderSize
+                    borderSize, borderSize,
+                    subclassColor.get()
             );
 
             // Aspect icons grid
@@ -140,7 +134,7 @@ public class SubclassScreen extends Screen {
                 for (int row = 0; row < ASPECT_GRID_ROWS; row++) {
                     for (int col = 0; col < ASPECT_GRID_COLS; col++) {
                         int cellIndex = (row * ASPECT_GRID_COLS) + col;
-                        List<Identifier> aspectIcons = subclassIcons.getIcons(abilityType, cellIndex + 1);
+                        List<Identifier> aspectIcons = getAbilityIcons(abilityType, cellIndex + 1);
                         int gridX = gridStartingX + (col * gridSpacingX);
                         int gridY = renderY + (row * gridSpacingY);
 
@@ -168,33 +162,40 @@ public class SubclassScreen extends Screen {
                         }
 
                         if (isHovering(mouseX, mouseY, gridX, gridY, iconSize)) {
-                            List<String> aspectNames = switch (abilityType) {
-                                case SUPER -> subclassIcons.superIcons();
-                                case MELEE -> subclassIcons.meleeIcons();
-                                case GRENADE -> subclassIcons.grenadeIcons();
-                                case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
-                                default -> List.of();
-                            };
+                            List<String> aspectNames = getAbilityIconNames(abilityType);
                             if (cellIndex + 1 < aspectNames.size()) {
-                                createTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY);
+                                createTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY, subclassColor);
                             }
                         }
                     }
                 }
             }
 
-            renderY += verticalSpacing;
+            renderY += aspectGridVerticalSpacing;
         }
+
+        // Passive ability (bottom left corner)
+        final int passiveBorderSize = (int) (64 * guiScalar);
+        renderX = (int) (TITLE_X_OFFSET*guiScalar);
+        renderY = (int) (scaledScreenHeight-(70*guiScalar));
+        graphics.blit(
+                RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
+                renderX, renderY, 0f, 0f,
+                passiveBorderSize, passiveBorderSize,
+                passiveBorderSize, passiveBorderSize,
+                passiveBorderSize, passiveBorderSize,
+                subclassColor.get()
+        );
     }
 
-    private void createTooltip(GuiGraphicsExtractor graphics, String abilityName, int x, int y) {
+    private void createTooltip(GuiGraphicsExtractor graphics, String abilityName, int x, int y, DMColor headerColor) {
         List<Either<FormattedText, TooltipComponent>> elements = new ArrayList<>();
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
         String title = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".title");
         String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".subtitle");
 
-        var header = new HeaderComponent(title, subtitle, widthContext, DMColor.SOLAR_DARK.withOpacity(0.95f));
+        var header = new HeaderComponent(title, subtitle, widthContext, headerColor.withOpacity(0.95f));
         elements.add(Either.right(header));
 
         var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
@@ -205,6 +206,21 @@ public class SubclassScreen extends Screen {
         elements.add(Either.right(description));
 
         graphics.setComponentTooltipFromElementsForNextFrame(this.font, elements, x, y, ItemStack.EMPTY);
+    }
+
+    private List<String> getAbilityIconNames(AbilityType abilityType) {
+        var subclassIcons = SUBCLASS_ICONS.get(subclass);
+        return switch (abilityType) {
+            case SUPER -> subclassIcons.superIcons();
+            case MELEE -> subclassIcons.meleeIcons();
+            case GRENADE -> subclassIcons.grenadeIcons();
+            case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
+            default -> List.of();
+        };
+    }
+
+    private List<Identifier> getAbilityIcons(AbilityType abilityType, int index) {
+        return SUBCLASS_ICONS.get(subclass).getIcons(abilityType, index);
     }
 
     private boolean isHovering(int mouseX, int mouseY, int x, int y, int scale) {
