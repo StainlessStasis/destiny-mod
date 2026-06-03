@@ -198,6 +198,13 @@ public class SubclassScreen extends ModularUIScreen {
                             .marginRight(ASPECT_GRID_GAP_COLS * guiScalar)
                     );
 
+                    if (iconTrack.totalAspects() > cellIndex) {
+                        String aspectName = iconTrack.aspectNames().get(cellIndex);
+                        gridCell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
+                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark());
+                        });
+                    }
+
                     var gridBorderLayer = new UIElement()
                             .style(style -> style.background(cellBorder));
                     gridBorderLayer.layout(layout -> layout
