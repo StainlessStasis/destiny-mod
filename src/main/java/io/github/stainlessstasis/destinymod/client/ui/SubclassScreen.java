@@ -136,7 +136,7 @@ public class SubclassScreen extends ModularUIScreen {
 
             if (iconTrack.mainAbilityName() != null && !iconTrack.mainAbilityName().isEmpty()) {
                 mainIcon.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                    event.hoverTooltips = buildHoverTooltips(iconTrack.mainAbilityName(), subclass.destinyElement().getColor());
+                    event.hoverTooltips = buildHoverTooltips(iconTrack.mainAbilityName(), subclass.destinyElement().getColor(), subclass.destinyElement().getColorLight());
                 });
             }
 
@@ -201,7 +201,7 @@ public class SubclassScreen extends ModularUIScreen {
                     if (iconTrack.totalAspects() > cellIndex) {
                         String aspectName = iconTrack.aspectNames().get(cellIndex);
                         gridCell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark());
+                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor());
                         });
                     }
 
@@ -283,14 +283,14 @@ public class SubclassScreen extends ModularUIScreen {
         return ModularUI.of(ui);
     }
 
-    private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor) {
+    private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor, DMColor separatorBarColor) {
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
         String title = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".title");
         String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".subtitle");
 
         var header = new HeaderComponent(title, subtitle, widthContext, headerColor.withOpacity(0.95f));
-        var bar = new SeparatorComponent(widthContext, 1, 0xFFF27149);
+        var bar = new SeparatorComponent(widthContext, 1, separatorBarColor.get());
 
         Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
         var description = new DescriptionComponent(desc, widthContext, 0xEE222222);

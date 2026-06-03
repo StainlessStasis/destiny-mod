@@ -16,7 +16,7 @@ public class SubclassIcons {
     static {
         SUBCLASS_ICONS.put(Subclasses.SUNBREAKER, new SubclassIconSet(
                 new AbilityTrack("", List.of()),
-                new AbilityTrack("throwing_hammer", List.of("melting_point")),
+                new AbilityTrack("throwing_hammer", List.of("melting_point", "heatseeker", "anvil_drop")),
                 new AbilityTrack("", List.of()),
                 new AbilityTrack("", List.of()),
                 "sol_invictus"
