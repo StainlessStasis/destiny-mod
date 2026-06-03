@@ -6,7 +6,6 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.*;
 
@@ -23,7 +22,9 @@ public class UIElements {
                 List.of(),
                 List.of("throwing_hammer", "melting_point"),
                 List.of(),
-                List.of())
+                List.of(),
+                "sol_invictus"
+                )
         );
     }
 
@@ -31,29 +32,42 @@ public class UIElements {
      * Should contain only the name of the png located in textures/gui/sprites/destiny_hud.
      * Automatically appends _charged for charged variants of sprites.
      */
-    public record SubclassIcons(List<String> superIcons, List<String> meleeIcons, List<String> grenadeIcons, List<String> classAbilityIcons) {
+    public record SubclassIcons(List<String> superIconNames, List<String> meleeIconNames, List<String> grenadeIconNames, List<String> classAbilityIconNames, String passiveIconName) {
         public List<Identifier> getIcons(AbilityType type, int index) {
             String name = getIconName(type, index);
             if (name.isEmpty()) return List.of();
 
             List<Identifier> textures = new ArrayList<>();
-            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 
-            Identifier baseTexture = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/gui/sprites/destiny_hud/" + name + ".png");
-            textures.add(baseTexture);
-            Identifier chargedTexture = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/gui/sprites/destiny_hud/" + name + "_charged.png");
-            if (resourceManager.getResource(chargedTexture).isPresent()) {
-                textures.add(chargedTexture);
+            Identifier icon = getIcon(name);
+            if (Minecraft.getInstance().getResourceManager().getResource(icon).isPresent()) {
+                textures.add(icon);
+            }
+            Identifier chargedIcon = getChargedIcon(name);
+            if (Minecraft.getInstance().getResourceManager().getResource(chargedIcon).isPresent()) {
+                textures.add(chargedIcon);
             }
             return textures;
         }
 
+        public Identifier getIcon(String iconName) {
+            return Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/gui/sprites/destiny_hud/" + iconName + ".png");
+        }
+
+        public Identifier getChargedIcon(String iconName) {
+            return Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/gui/sprites/destiny_hud/" + iconName + "_charged.png");
+        }
+
+        public Identifier getPassiveIcon() {
+            return getIcon(passiveIconName);
+        }
+
         String getIconName(AbilityType type, int index) {
             List<String> iconList = switch (type) {
-                case SUPER -> superIcons;
-                case MELEE -> meleeIcons;
-                case GRENADE -> grenadeIcons;
-                case CLASS_ABILITY -> classAbilityIcons;
+                case SUPER -> superIconNames;
+                case MELEE -> meleeIconNames;
+                case GRENADE -> grenadeIconNames;
+                case CLASS_ABILITY -> classAbilityIconNames;
                 default -> List.of();
             };
             if (index >= iconList.size()) return "";

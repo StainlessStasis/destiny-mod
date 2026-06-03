@@ -2,7 +2,6 @@ package io.github.stainlessstasis.destinymod.client.ui;
 
 import com.mojang.datafixers.util.Either;
 import io.github.stainlessstasis.destinymod.DMColor;
-import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.tooltip.*;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.stainlessstasis.destinymod.client.ui.UIElements.*;
-import static io.github.stainlessstasis.destinymod.client.ui.UIElements.ABILITY_ICON_SIZE;
 
 public class SubclassScreen extends Screen {
     public static final float TITLE_SCALE = 4f;
@@ -102,7 +100,7 @@ public class SubclassScreen extends Screen {
             if (!abilityIcons.isEmpty() && isHovering(mouseX, mouseY, renderX, renderY, iconSize)) {
                 List<String> abilityNames = getAbilityIconNames(abilityType);
                 if (!abilityNames.isEmpty()) {
-                    createTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY, subclassColorDark);
+                    createTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY, subclassColor);
                 }
             }
 
@@ -164,7 +162,7 @@ public class SubclassScreen extends Screen {
                         if (isHovering(mouseX, mouseY, gridX, gridY, iconSize)) {
                             List<String> aspectNames = getAbilityIconNames(abilityType);
                             if (cellIndex + 1 < aspectNames.size()) {
-                                createTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY, subclassColor);
+                                createTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY, subclassColorDark);
                             }
                         }
                     }
@@ -176,6 +174,7 @@ public class SubclassScreen extends Screen {
 
         // Passive ability (bottom left corner)
         final int passiveBorderSize = (int) (64 * guiScalar);
+        final String passiveName = SUBCLASS_ICONS.get(subclass).passiveIconName();
         renderX = (int) (TITLE_X_OFFSET*guiScalar);
         renderY = (int) (scaledScreenHeight-(70*guiScalar));
         graphics.blit(
@@ -186,6 +185,10 @@ public class SubclassScreen extends Screen {
                 passiveBorderSize, passiveBorderSize,
                 subclassColor.get()
         );
+
+        if (isHovering(mouseX, mouseY, renderX, renderY, passiveBorderSize, 6)) {
+            createTooltip(graphics, passiveName, mouseX, mouseY, subclassColor);
+        }
     }
 
     private void createTooltip(GuiGraphicsExtractor graphics, String abilityName, int x, int y, DMColor headerColor) {
@@ -211,10 +214,10 @@ public class SubclassScreen extends Screen {
     private List<String> getAbilityIconNames(AbilityType abilityType) {
         var subclassIcons = SUBCLASS_ICONS.get(subclass);
         return switch (abilityType) {
-            case SUPER -> subclassIcons.superIcons();
-            case MELEE -> subclassIcons.meleeIcons();
-            case GRENADE -> subclassIcons.grenadeIcons();
-            case CLASS_ABILITY -> subclassIcons.classAbilityIcons();
+            case SUPER -> subclassIcons.superIconNames();
+            case MELEE -> subclassIcons.meleeIconNames();
+            case GRENADE -> subclassIcons.grenadeIconNames();
+            case CLASS_ABILITY -> subclassIcons.classAbilityIconNames();
             default -> List.of();
         };
     }
@@ -224,7 +227,13 @@ public class SubclassScreen extends Screen {
     }
 
     private boolean isHovering(int mouseX, int mouseY, int x, int y, int scale) {
-        return mouseX >= x && mouseX < x + scale && mouseY >= y && mouseY < y + scale;
+        return mouseX >= x && mouseX < x + scale
+                && mouseY >= y && mouseY < y + scale;
+    }
+
+    private boolean isHovering(int mouseX, int mouseY, int x, int y, int scale, int padding) {
+        return mouseX >= (x - padding) && mouseX < (x + scale + padding)
+                && mouseY >= (y - padding) && mouseY < (y + scale + padding);
     }
 
     private boolean isHoveringWithinBounds(int mouseX, int mouseY, int minX, int minY, int width, int height) {
