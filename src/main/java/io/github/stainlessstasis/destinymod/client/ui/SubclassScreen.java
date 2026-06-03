@@ -123,16 +123,38 @@ public class SubclassScreen extends ModularUIScreen {
                     .paddingAll(ABILITY_PANEL_ROW_PADDING * guiScalar)
             );
 
-            var mainIcon = new UIElement()
-                    .style(style -> style.background(cellBorder));
+            var mainIcon = new UIElement();
             mainIcon.layout(layout -> layout
                     .width(iconSize)
                     .height(iconSize)
             );
 
-            Identifier mainIconPath = iconTrack.getMainIcon(false);
-            if (mainIconPath != null) {
-                mainIcon.style(style -> style.background(SpriteTexture.of(mainIconPath)));
+            var mainBorderLayer = new UIElement()
+                    .style(style -> style.background(cellBorder));
+            mainBorderLayer.layout(layout -> layout
+                    .positionType(TaffyPosition.ABSOLUTE)
+                    .left(-1f)
+                    .top(-1f)
+                    .width(iconSize + 2f)
+                    .height(iconSize + 2f)
+            );
+            mainIcon.addChildren(mainBorderLayer);
+
+            for (int i = 0; i < 2; i++) {
+                boolean isBaseIcon = i == 1; // the base icon and the background are separate for abilities, since they can be charged or uncharged.
+                Identifier iconPath = iconTrack.getMainIcon(isBaseIcon);
+                if (iconPath != null) {
+                    var chargedLayer = new UIElement()
+                            .style(style -> style.background(SpriteTexture.of(iconPath)));
+                    chargedLayer.layout(layout -> layout
+                            .positionType(TaffyPosition.ABSOLUTE)
+                            .widthPercent(100f)
+                            .heightPercent(100f)
+                            .left(0f)
+                            .top(0f)
+                    );
+                    mainIcon.addChildren(chargedLayer);
+                }
             }
 
             var aspectGrid = new UIElement();
@@ -161,10 +183,30 @@ public class SubclassScreen extends ModularUIScreen {
                             .marginRight(ASPECT_GRID_GAP_COLS * guiScalar)
                     );
 
+                    var gridBorderLayer = new UIElement()
+                            .style(style -> style.background(cellBorder));
+                    gridBorderLayer.layout(layout -> layout
+                            .positionType(TaffyPosition.ABSOLUTE)
+                            .left(-1f)
+                            .top(-1f)
+                            .width(iconSize + 2f)
+                            .height(iconSize + 2f)
+                    );
+                    gridCell.addChildren(gridBorderLayer);
+
                     if (cellIndex < iconTrack.totalAspects()) {
-                        Identifier aspectPath = iconTrack.getAspectIcon(cellIndex);
-                        if (aspectPath != null) {
-                            gridCell.style(style -> style.background(SpriteTexture.of(aspectPath)));
+                        Identifier iconPath = iconTrack.getAspectIcon(cellIndex);
+                        if (iconPath != null) {
+                            var aspectIconLayer = new UIElement()
+                                    .style(style -> style.background(SpriteTexture.of(iconPath)));
+                            aspectIconLayer.layout(layout -> layout
+                                    .positionType(TaffyPosition.ABSOLUTE)
+                                    .widthPercent(100f)
+                                    .heightPercent(100f)
+                                    .left(0f)
+                                    .top(0f)
+                            );
+                            gridCell.addChildren(aspectIconLayer);
                         }
                     }
 
