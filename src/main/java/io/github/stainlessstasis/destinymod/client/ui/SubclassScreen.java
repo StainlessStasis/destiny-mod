@@ -1,19 +1,27 @@
 package io.github.stainlessstasis.destinymod.client.ui;
 
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIScreen;
+import com.lowdragmc.lowdraglib2.gui.texture.ColorBorderTexture;
+import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
 import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Horizontal;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
+import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
+import dev.vfyjxf.taffy.style.AlignContent;
+import dev.vfyjxf.taffy.style.AlignItems;
 import dev.vfyjxf.taffy.style.FlexDirection;
 import dev.vfyjxf.taffy.style.TaffyPosition;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
+
+import java.awt.*;
 
 public class SubclassScreen extends ModularUIScreen {
     public static final float TITLE_SIZE = 36f;
@@ -32,11 +40,12 @@ public class SubclassScreen extends ModularUIScreen {
 
         var root = new UIElement();
         root.layout(layout -> layout
-                .widthPercent(100)
-                .heightPercent(100)
+                .widthPercent(100f)
+                .heightPercent(100f)
                 .flexDirection(FlexDirection.COLUMN)
         );
 
+        // HEADER (top left)
         var headerContainer = new UIElement();
         headerContainer.layout(layout -> layout
                 .positionType(TaffyPosition.ABSOLUTE)
@@ -74,6 +83,86 @@ public class SubclassScreen extends ModularUIScreen {
 
         headerContainer.addChildren(titleLabel, subtitleLabel);
         root.addChildren(headerContainer);
+
+        // ABILITIES COLUMN (right side)
+        final float iconSize = 48f * guiScalar;
+        final IGuiTexture cellBorder = new ColorBorderTexture(-1, Color.WHITE);
+
+        var rightPanel = new UIElement();
+        rightPanel.layout(layout -> layout
+                .positionType(TaffyPosition.ABSOLUTE)
+                .rightPercent(20f)
+                .topPercent(2.5f * aspectRatio)
+                .heightPercent(80f)
+                .flexDirection(FlexDirection.COLUMN)
+                .justifyContent(AlignContent.SPACE_BETWEEN)
+        );
+
+        AbilityType[] types = {AbilityType.SUPER, AbilityType.MELEE, AbilityType.GRENADE, AbilityType.CLASS_ABILITY};
+        for (AbilityType type : types) {
+
+            var abilityRowTrack = new UIElement();
+            abilityRowTrack.layout(layout -> layout
+                    .flexDirection(FlexDirection.ROW)
+                    .alignItems(AlignItems.START)
+                    .paddingAll(2f * guiScalar)
+            );
+
+            var mainIcon = new UIElement()
+                    .style(style -> style.background(cellBorder));
+            mainIcon.layout(layout -> layout
+                    .width(iconSize)
+                    .height(iconSize)
+            );
+            // TODO: icons
+
+            var aspectGrid = new UIElement();
+            aspectGrid.layout(layout -> layout
+                    .positionType(TaffyPosition.ABSOLUTE)
+                    .left(iconSize + (24f * guiScalar))
+                    .top(2f * guiScalar)
+                    .flexDirection(FlexDirection.COLUMN)
+                    .gapRow(4f * guiScalar)
+                    .gapColumn(4f * guiScalar)
+            );
+            aspectGrid.setDisplay(false);
+
+            for (int row = 0; row < 2; row++) {
+                var gridRow = new UIElement();
+                gridRow.layout(layout -> layout.flexDirection(FlexDirection.ROW));
+
+                for (int col = 0; col < 3; col++) {
+                    int cellIndex = (row * 3) + col + 1;
+
+                    var gridCell = new UIElement()
+                            .style(style -> style.background(cellBorder));
+                    gridCell.layout(layout -> layout
+                            .width(iconSize)
+                            .height(iconSize)
+                            .marginRight(4f * guiScalar)
+                    );
+                    // TODO: icons
+
+                    gridRow.addChildren(gridCell);
+                }
+                aspectGrid.addChildren(gridRow);
+            }
+
+            abilityRowTrack.addEventListener(UIEvents.MOUSE_ENTER, event -> {
+                aspectGrid.setDisplay(true);
+                abilityRowTrack.markTaffyStyleDirty();
+            }, true);
+
+            abilityRowTrack.addEventListener(UIEvents.MOUSE_LEAVE, event -> {
+                aspectGrid.setDisplay(false);
+                abilityRowTrack.markTaffyStyleDirty();
+            }, true);
+
+            abilityRowTrack.addChildren(mainIcon, aspectGrid);
+            rightPanel.addChildren(abilityRowTrack);
+        }
+
+        root.addChildren(rightPanel);
 
         UI ui = UI.of(root);
         return ModularUI.of(ui);
