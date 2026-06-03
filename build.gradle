@@ -40,6 +40,9 @@ repositories {
         name = "Gegy"
         url = uri("https://maven.gegy.dev")
     }
+    maven {
+        url = "https://maven.firstdark.dev/snapshots"
+    }
 }
 
 base {
@@ -155,6 +158,8 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
         exclude group: "io.github.queerbric", module: "pridelib"
     }
+
+    implementation("com.lowdragmc.ldlib2:ldlib2-neoforge-26.1:${ldlib2_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
