@@ -15,6 +15,7 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class SubclassScreen extends Screen {
     public static final int ASPECT_GRID_ROWS = 2;
     public static final int ASPECT_GRID_COLS = 3;
     /*** The amount of padding to add to the bounds in which the mouse is checked for whether it's hovering over the aspect grid*/
-    public static final int ASPECT_GRID_HOVER_PADDING = 24;
+    public static final int ASPECT_GRID_HOVER_PADDING = 12;
     private final Subclass subclass;
 
     public SubclassScreen(Subclass subclass) {
@@ -41,17 +42,20 @@ public class SubclassScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractRenderState(graphics, mouseX, mouseY, a);
         Minecraft mc = Minecraft.getInstance();
         float guiScalar = GuiScaleUtil.getConsistencyScalar();
         var pose = graphics.pose();
+        final int subclassColor = subclass.destinyElement().getColor().get();
+        final int subclassColorLight = subclass.destinyElement().getColorLight().get();
+        final int subclassColorDark = subclass.destinyElement().getColorDark().get();
 
         // Title
         pose.pushMatrix();
         pose.translate(TITLE_X_OFFSET*guiScalar, TITLE_Y_OFFSET*guiScalar);
         pose.scale(TITLE_SCALE*guiScalar);
-        graphics.text(font, subclass.title(), 0, 0, subclass.destinyElement().getColor(), true);
+        graphics.text(font, subclass.title(), 0, 0, subclassColor, true);
         pose.popMatrix();
 
         // Subtitle
@@ -65,14 +69,14 @@ public class SubclassScreen extends Screen {
         // Ability icon rows
         int scaledScreenWidth = mc.getWindow().getGuiScaledWidth();
         int scaledScreenHeight = mc.getWindow().getGuiScaledHeight();
-        int renderX = (int) (scaledScreenWidth - (ABILITY_ICON_SIZE*6f*guiScalar));
-        int renderY = (int) (TITLE_Y_OFFSET * guiScalar);
-        int iconSize = (int) (ABILITY_ICON_SIZE * guiScalar);
+        int iconSize = (int) (48 * guiScalar); // the icons are 32x32, but they are rendered at 48x48 in this menu
         int borderSize = iconSize + 2;
+        int renderX = (int) (scaledScreenWidth - (iconSize*5f));
+        int renderY = (int) (TITLE_Y_OFFSET * guiScalar);
 
         // each of these components is already scaled, so no scalar, or it will break
         int verticalSpacing = scaledScreenHeight - (renderY*2) - (iconSize*2);
-        verticalSpacing = (int) (verticalSpacing/3.5f);
+        verticalSpacing = (int) (verticalSpacing/3f);
         for (int i = 0; i < 4; i++) {
             var subclassIcons = SUBCLASS_ICONS.get(subclass);
             AbilityType abilityType = switch(i) {
@@ -105,10 +109,11 @@ public class SubclassScreen extends Screen {
                     default -> List.of();
                 };
                 if (!abilityNames.isEmpty()) {
-                    createAbilityTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY);
+                    createTooltip(graphics, abilityNames.getFirst(), mouseX, mouseY);
                 }
             }
 
+            // Ability border
             graphics.blit(
                     RenderPipelines.GUI_TEXTURED, ABILITY_BORDER,
                     renderX-1, renderY-1, 0f, 0f,
@@ -171,7 +176,7 @@ public class SubclassScreen extends Screen {
                                 default -> List.of();
                             };
                             if (cellIndex + 1 < aspectNames.size()) {
-                                createAbilityTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY);
+                                createTooltip(graphics, aspectNames.get(cellIndex + 1), mouseX, mouseY);
                             }
                         }
                     }
@@ -182,7 +187,7 @@ public class SubclassScreen extends Screen {
         }
     }
 
-    private void createAbilityTooltip(GuiGraphicsExtractor graphics, String abilityName, int x, int y) {
+    private void createTooltip(GuiGraphicsExtractor graphics, String abilityName, int x, int y) {
         List<Either<FormattedText, TooltipComponent>> elements = new ArrayList<>();
         TooltipWidthContext widthContext = new TooltipWidthContext();
 

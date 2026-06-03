@@ -14,11 +14,11 @@ public class GuiScaleUtil {
         };
     }
 
-    public static float getConsistentScale(float currentScale) {
-        return currentScale * getConsistencyScalar();
+    public static float getConsistentScale(float value) {
+        return value * getConsistencyScalar();
     }
 
-    public static int getConsistentScale(int currentScale) {
-        return (int) (currentScale * getConsistencyScalar());
+    public static int getConsistentScale(int value) {
+        return (int) (value * getConsistencyScalar());
     }
 }

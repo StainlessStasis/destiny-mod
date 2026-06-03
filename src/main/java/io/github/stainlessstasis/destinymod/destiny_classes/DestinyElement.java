@@ -9,27 +9,37 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 
 public enum DestinyElement implements StringRepresentable {
-    SOLAR("solar", DMColor.SOLAR.get()),
-    ARC("arc", DMColor.LIGHT_GRAY.get()),
-    VOID("void", DMColor.LIGHT_GRAY.get()),
-    STASIS("stasis", DMColor.LIGHT_GRAY.get()),
-    STRAND("strand", DMColor.LIGHT_GRAY.get()),
-    NONE("none", DMColor.LIGHT_GRAY.get());
+    SOLAR("solar", DMColor.SOLAR_LIGHT, DMColor.SOLAR, DMColor.SOLAR_DARK),
+    ARC("arc", DMColor.WHITE, DMColor.LIGHT_GRAY, DMColor.BLACK),
+    VOID("void", DMColor.WHITE, DMColor.LIGHT_GRAY, DMColor.BLACK),
+    STASIS("stasis", DMColor.WHITE, DMColor.LIGHT_GRAY, DMColor.BLACK),
+    STRAND("strand", DMColor.WHITE, DMColor.LIGHT_GRAY, DMColor.BLACK),
+    NONE("none", DMColor.WHITE, DMColor.LIGHT_GRAY, DMColor.BLACK);
 
     public static final Codec<DestinyElement> CODEC = StringRepresentable.fromEnum(DestinyElement::values);
     public static final MapCodec<DestinyElement> MAP_CODEC = CODEC.fieldOf("element");
     public static final StreamCodec<ByteBuf, DestinyElement> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     private final String name;
-    private final int color;
+    private final DMColor lightColor;
+    private final DMColor baseColor;
+    private final DMColor darkColor;
 
-    DestinyElement(String name, int color) {
+    DestinyElement(String name, DMColor lightColor, DMColor baseColor, DMColor darkColor) {
         this.name = name;
-        this.color = color;
+        this.lightColor = lightColor;
+        this.baseColor = baseColor;
+        this.darkColor = darkColor;
     }
 
-    public int getColor() {
-        return this.color;
+    public DMColor getColor() {
+        return this.baseColor;
+    }
+    public DMColor getColorLight() {
+        return this.lightColor;
+    }
+    public DMColor getColorDark() {
+        return this.darkColor;
     }
 
     @Override
