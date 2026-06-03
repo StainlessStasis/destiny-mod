@@ -175,8 +175,7 @@ public class SubclassScreen extends ModularUIScreen {
                 for (int col = 0; col < ASPECT_GRID_COLS; col++) {
                     int cellIndex = (row * ASPECT_GRID_COLS) + col;
 
-                    var gridCell = new UIElement()
-                            .style(style -> style.background(cellBorder));
+                    var gridCell = new UIElement();
                     gridCell.layout(layout -> layout
                             .width(iconSize)
                             .height(iconSize)
