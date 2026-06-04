@@ -8,12 +8,14 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -100,8 +102,12 @@ public class PlayerSubclassData {
         return getSubclassLoadout(player).getAbility(player, abilityType);
     }
 
-    public static Set<Aspect> getAspectsForAbility(Player player, AbilityType abilityType) {
-        return getSubclassLoadout(player).getAspectsForAbility(abilityType);
+    public static List<RegisteredAspect> getRegisteredAspectsForAbility(Player player, AbilityType abilityType) {
+        return getSubclassLoadout(player).getRegisteredAspectsForAbility(abilityType);
+    }
+
+    public static List<Aspect> getAspectsForAbility(Player player, AbilityType abilityType) {
+        return getSubclassLoadout(player).getAspectsForAbility(player, abilityType);
     }
 
     public static RegisteredAbility getRegisteredMelee(Player player) {

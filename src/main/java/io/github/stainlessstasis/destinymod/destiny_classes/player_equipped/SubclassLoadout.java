@@ -3,14 +3,17 @@ package io.github.stainlessstasis.destinymod.destiny_classes.player_equipped;
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SubclassLoadout {
     public static final SubclassLoadout NONE;
@@ -58,8 +61,14 @@ public class SubclassLoadout {
         putAbilityLoadout(abilityType, newLoadout);
     }
 
-    public Set<Aspect> getAspectsForAbility(AbilityType abilityType) {
+    public List<RegisteredAspect> getRegisteredAspectsForAbility(AbilityType abilityType) {
         return getAbilityLoadout(abilityType).aspects();
+    }
+
+    public List<Aspect> getAspectsForAbility(Player player, AbilityType abilityType) {
+        return getRegisteredAspectsForAbility(abilityType).stream()
+                .map(registeredAspect -> registeredAspect.get(player))
+                .collect(Collectors.toList());
     }
 
     public RegisteredAbility getRegisteredMelee() {

@@ -7,6 +7,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
 import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
@@ -30,8 +31,8 @@ public class SubclassIcons {
         return ability.resourceKey().identifier().getPath();
     }
 
-    private static String getAspectName(Aspect aspect) {
-        return Aspects.getID(aspect).getPath();
+    private static String getAspectName(RegisteredAspect aspect) {
+        return aspect.resourceKey().identifier().getPath();
     }
 
     public static Identifier getHudTexture(String name) {
