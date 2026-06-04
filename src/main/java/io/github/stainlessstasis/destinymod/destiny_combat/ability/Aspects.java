@@ -9,6 +9,8 @@ public class Aspects {
     private static final BiMap<Identifier, Aspect> ASPECTS = HashBiMap.create();
     public static final Aspect NONE = register(DestinyMod.id("none"), new Aspect(0));
     public static final Aspect MELTING_POINT = register(DestinyMod.id("melting_point"), new Aspect(0));
+    public static final Aspect HEATSEEKER = register(DestinyMod.id("heatseeker"), new Aspect(0));
+    public static final Aspect ANVIL_DROP = register(DestinyMod.id("anvil_drop"), new Aspect(0));
 
     public static Aspect getByID(Identifier id) {
         return ASPECTS.get(id);

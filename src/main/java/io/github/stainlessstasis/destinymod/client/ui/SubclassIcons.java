@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.client.ui;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
 import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
@@ -16,11 +16,19 @@ public class SubclassIcons {
     static {
         SUBCLASS_ICONS.put(Subclasses.SUNBREAKER, new SubclassIconSet(
                 new AbilityTrack("", List.of()),
-                new AbilityTrack("throwing_hammer", List.of("melting_point", "heatseeker", "anvil_drop")),
+                new AbilityTrack(getAbilityName(Abilities.THROWING_HAMMER), List.of(getAspectName(Aspects.MELTING_POINT), getAspectName(Aspects.HEATSEEKER), getAspectName(Aspects.ANVIL_DROP))),
                 new AbilityTrack("", List.of()),
                 new AbilityTrack("", List.of()),
                 "sol_invictus"
         ));
+    }
+
+    private static String getAbilityName(RegisteredAbility ability) {
+        return ability.resourceKey().identifier().getPath();
+    }
+
+    private static String getAspectName(Aspect aspect) {
+        return Aspects.getID(aspect).getPath();
     }
 
     public static Identifier getHudTexture(String name) {
