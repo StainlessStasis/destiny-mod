@@ -184,12 +184,16 @@ public class SubclassScreen extends ModularUIScreen {
             );
             gridWrapper.setDisplay(false);
 
+            int cellIndex = -1;
             for (int row = 0; row < ASPECT_GRID_ROWS; row++) {
                 var gridRow = new UIElement();
                 gridRow.layout(layout -> layout.flexDirection(FlexDirection.ROW));
 
                 for (int col = 0; col < ASPECT_GRID_COLS; col++) {
-                    int cellIndex = (row * ASPECT_GRID_COLS) + col;
+                    cellIndex++;
+                    if (cellIndex >= iconTrack.totalAspects()) {
+                        break;
+                    }
 
                     var gridCell = new UIElement();
                     gridCell.layout(layout -> layout

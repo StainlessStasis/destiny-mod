@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.data;
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
@@ -13,6 +14,10 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class DestinyModAttachments {
@@ -33,6 +38,21 @@ public class DestinyModAttachments {
                     .serialize(PlayerSubclassData.CODEC)
                     .copyOnDeath()
                     .sync(PlayerSubclassData.STREAM_CODEC)
+                    .build()
+    );
+
+    public static final Supplier<AttachmentType<Set<RegisteredAspect>>> PLAYER_UNLOCKED_ASPECTS = ATTACHMENTS.register(
+            "player_unlocked_aspects",
+            () -> AttachmentType.builder(() -> (Set<RegisteredAspect>) new HashSet<RegisteredAspect>())
+                    .serialize(Codec.list(RegisteredAspect.CODEC)
+                            .<Set<RegisteredAspect>>xmap(
+                                    HashSet::new,
+                                    ArrayList::new
+                            )
+                            .fieldOf("aspects")
+                    )
+                    .copyOnDeath()
+                    .sync(ByteBufCodecs.collection(HashSet::new, RegisteredAspect.STREAM_CODEC))
                     .build()
     );
 
