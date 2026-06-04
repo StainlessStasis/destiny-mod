@@ -1,12 +1,13 @@
 package io.github.stainlessstasis.destinymod.destiny_combat.ability;
 
 import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record Aspect(int cooldownTicks) {
-    public static final Codec<Aspect> CODEC = Identifier.CODEC.xmap(Aspects::getByID, Aspects::getID);
-    public static final StreamCodec<ByteBuf, Aspect> STREAM_CODEC = Identifier.STREAM_CODEC.map(Aspects::getByID, Aspects::getID);
+    public static final Codec<Aspect> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.INT.optionalFieldOf("cooldownTicks", -1).forGetter(Aspect::cooldownTicks)
+            ).apply(instance, Aspect::new)
+    );
 }
 

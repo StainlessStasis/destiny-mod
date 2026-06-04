@@ -2,9 +2,11 @@ package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -32,6 +34,14 @@ public class DestinyModDatagen {
                     bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.SOLAR, -1, -1, 0.3f, 1f, 5
                     ));
+                })
+
+                // ASPECTS
+                .add(DestinyModRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
+                    bootstrap.register(Aspects.NONE.resourceKey(), new Aspect(-1));
+                    bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(-1));
+                    bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(-1));
+                    bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(-1));
                 })
 
                 // DAMAGE TYPES AND DAMAGE TYPE TAGS

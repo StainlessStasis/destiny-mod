@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_classes.player_equipped;
 
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAbility;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -11,12 +12,18 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 @EventBusSubscriber
 public class DestinyModRegistries {
     public static final ResourceKey<Registry<Ability>> ABILITY_REGISTRY_KEY = ResourceKey.createRegistryKey(DestinyMod.id("abilities"));
+    public static final ResourceKey<Registry<Aspect>> ASPECT_REGISTRY_KEY = ResourceKey.createRegistryKey(DestinyMod.id("aspects"));
 
     @SubscribeEvent
     public static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(
                 ABILITY_REGISTRY_KEY,
                 Ability.CODEC, Ability.CODEC,
+                builder -> builder.maxId(256)
+        );
+        event.dataPackRegistry(
+                ASPECT_REGISTRY_KEY,
+                Aspect.CODEC, Aspect.CODEC,
                 builder -> builder.maxId(256)
         );
     }

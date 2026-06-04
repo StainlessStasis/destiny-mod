@@ -2,7 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;

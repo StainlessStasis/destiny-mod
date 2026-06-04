@@ -18,14 +18,4 @@ public record Ability(
                     Codec.INT.optionalFieldOf("scorch", -1).forGetter(Ability::scorch)
             ).apply(instance, Ability::new)
     );
-
-    // wait do i even need this actually (no)
-//    public static final StreamCodec<ByteBuf, Ability> STREAM_CODEC = StreamCodec.composite(
-//            AbilityType.STREAM_CODEC, Ability::abilityType,
-//            DestinyElement.STREAM_CODEC, Ability::element,
-//            ByteBufCodecs.VAR_INT, Ability::cooldownTicks,
-//            ByteBufCodecs.VAR_INT, Ability::maxCharges,
-//            ByteBufCodecs.FLOAT, Ability::damage,
-//            Ability::new
-//    );
 }

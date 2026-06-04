@@ -1,7 +1,8 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.ability;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability.registry;
 
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.StreamCodec;

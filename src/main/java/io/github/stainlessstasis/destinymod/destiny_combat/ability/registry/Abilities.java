@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.ability;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability.registry;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;

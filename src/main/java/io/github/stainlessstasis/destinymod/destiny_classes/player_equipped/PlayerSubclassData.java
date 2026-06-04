@@ -7,6 +7,7 @@ import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAbility;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
