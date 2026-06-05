@@ -9,10 +9,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.data.Horizontal;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
 import com.lowdragmc.lowdraglib2.gui.ui.event.HoverTooltips;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
-import dev.vfyjxf.taffy.style.AlignContent;
-import dev.vfyjxf.taffy.style.AlignItems;
-import dev.vfyjxf.taffy.style.FlexDirection;
-import dev.vfyjxf.taffy.style.TaffyPosition;
+import dev.vfyjxf.taffy.style.*;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
@@ -26,18 +23,16 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubclassScreen extends ModularUIScreen {
     public static final float TITLE_SIZE = 36f;
     public static final float SUBTITLE_SIZE = 24f;
-
     public static final float ICON_SIZE = 48f;
     public static final float ABILITY_PANEL_RIGHT_PERCENT = 20f;
     public static final float ABILITY_PANEL_TOP_PERCENT = 2.5f;
@@ -50,9 +45,11 @@ public class SubclassScreen extends ModularUIScreen {
     public static final int ASPECT_GRID_ROWS = 2;
     public static final int ASPECT_GRID_COLS = 3;
     public static final int HOVER_PADDING = 8;
+    public static final float EQUIPPED_PANEL_BOTTOM_PERCENT = 5f;
+    public static final float EQUIPPED_PANEL_GAP = 6f;
 
     private final Subclass subclass;
-    private AspectsHolder equippedAspects;
+    private final AspectsHolder equippedAspects;
 
     public SubclassScreen(Subclass subclass) {
         this(subclass, new AspectsHolder());
@@ -65,13 +62,14 @@ public class SubclassScreen extends ModularUIScreen {
     }
 
     private static class AspectsHolder {
-        Set<RegisteredAspect> set = new HashSet<>();
+        List<RegisteredAspect> list = new ArrayList<>();
+        UIElement bottomBarContainer;
     }
 
     private static ModularUI createModularUI(Subclass subclass, AspectsHolder equippedAspects) {
         final float guiScalar = GuiScaleUtil.getConsistencyScalar();
         final float aspectRatio = (float) Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getScreenHeight();
-        equippedAspects.set.addAll(PlayerSubclassData.getAllEquippedRegisteredAspects(Minecraft.getInstance().player));
+        equippedAspects.list.addAll(PlayerSubclassData.getAllEquippedRegisteredAspects(Minecraft.getInstance().player));
 
         var root = new UIElement();
         root.layout(layout -> layout
@@ -80,7 +78,7 @@ public class SubclassScreen extends ModularUIScreen {
                 .flexDirection(FlexDirection.COLUMN)
         );
 
-        // HEADER (top left)
+        // HEADER
         var headerContainer = new UIElement();
         headerContainer.layout(layout -> layout
                 .positionType(TaffyPosition.ABSOLUTE)
@@ -100,9 +98,7 @@ public class SubclassScreen extends ModularUIScreen {
                         .textShadow(true)
                         .fontSize(TITLE_SIZE * guiScalar)
                 );
-        titleLabel.layout(layout -> layout
-                .height(TITLE_SIZE * guiScalar)
-        );
+        titleLabel.layout(layout -> layout.height(TITLE_SIZE * guiScalar));
 
         // header - class subtitle
         Component subtitleText = Component.translatable("subclass.destinymod." + subclass.destinyClass().name().toLowerCase());
@@ -114,14 +110,40 @@ public class SubclassScreen extends ModularUIScreen {
                         .textShadow(true)
                         .fontSize(SUBTITLE_SIZE * guiScalar)
                 );
-        subtitleLabel.layout(layout -> layout
-                .height(SUBTITLE_SIZE * guiScalar)
-        );
+        subtitleLabel.layout(layout -> layout.height(SUBTITLE_SIZE * guiScalar));
 
         headerContainer.addChildren(titleLabel, subtitleLabel);
         root.addChildren(headerContainer);
 
-        // ABILITY COLUMNS & HOVER GRIDS (right side)
+        // EQUIPPED ASPECTS TRACK
+        var bottomContainer = new UIElement();
+        bottomContainer.layout(layout -> layout
+                .positionType(TaffyPosition.ABSOLUTE)
+                .leftPercent(0f)
+                .rightPercent(0f)
+                .bottomPercent(EQUIPPED_PANEL_BOTTOM_PERCENT * aspectRatio)
+                .flexDirection(FlexDirection.COLUMN)
+                .alignItems(AlignItems.CENTER)
+                .justifyContent(AlignContent.CENTER)
+                .widthPercent(100f)
+                .heightAuto()
+        );
+
+        var equippedRow = new UIElement();
+        equippedRow.layout(layout -> layout
+                .flexDirection(FlexDirection.ROW)
+                .justifyContent(AlignContent.CENTER)
+                .gapColumn(EQUIPPED_PANEL_GAP * guiScalar)
+                .widthAuto()
+                .heightAuto()
+        );
+        bottomContainer.addChild(equippedRow);
+        equippedAspects.bottomBarContainer = equippedRow;
+
+        rebuildBottomBar(subclass, equippedAspects, guiScalar);
+        root.addChild(bottomContainer);
+
+        // ABILITY COLUMNS & ASPECT GRIDS
         final float iconSize = ICON_SIZE * guiScalar;
         final var iconSet = SubclassIcons.SUBCLASS_ICONS.get(subclass);
         final IGuiTexture cellBorder = new ColorBorderTexture(-1, Color.WHITE);
@@ -146,12 +168,14 @@ public class SubclassScreen extends ModularUIScreen {
                     .paddingAll(ABILITY_PANEL_ROW_PADDING * guiScalar)
             );
 
+            // main ability icon (super, melee, grenade, class)
             var mainIcon = new UIElement();
             mainIcon.layout(layout -> layout
                     .width(iconSize)
                     .height(iconSize)
             );
 
+            // main ability tooltip
             if (iconTrack.mainAbility() != null) {
                 String name = iconTrack.mainAbility().getName();
                 if (!name.isEmpty()) {
@@ -161,6 +185,7 @@ public class SubclassScreen extends ModularUIScreen {
                 }
             }
 
+            // main ability border
             var mainBorderLayer = new UIElement()
                     .style(style -> style.background(cellBorder));
             mainBorderLayer.layout(layout -> layout
@@ -189,6 +214,7 @@ public class SubclassScreen extends ModularUIScreen {
                 }
             }
 
+            // aspect grid stuff (shows up when hovering over main ability icon)
             var aspectGrid = new UIElement();
             aspectGrid.layout(layout -> layout
                     .flexDirection(FlexDirection.COLUMN)
@@ -223,6 +249,7 @@ public class SubclassScreen extends ModularUIScreen {
                             .marginRight(ASPECT_GRID_GAP_COLS * guiScalar)
                     );
 
+                    // aspect tooltip & click event
                     if (iconTrack.totalAspects() > cellIndex) {
                         RegisteredAspect aspect = iconTrack.aspects().get(cellIndex);
                         String aspectName = aspect.getName();
@@ -230,11 +257,11 @@ public class SubclassScreen extends ModularUIScreen {
                             event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor(), equippedAspects, aspect);
                         });
                         gridCell.addEventListener(UIEvents.CLICK, event -> {
-                            onClickAspect(equippedAspects, aspect);
-                            System.out.println("EQUIPPED ASPECTS: "+equippedAspects.set);
+                            onClickAspect(subclass, equippedAspects, aspect, guiScalar);
                         });
                     }
 
+                    // aspect border
                     var gridBorderLayer = new UIElement()
                             .style(style -> style.background(cellBorder));
                     gridBorderLayer.layout(layout -> layout
@@ -246,6 +273,7 @@ public class SubclassScreen extends ModularUIScreen {
                     );
                     gridCell.addChildren(gridBorderLayer);
 
+                    // aspect icon
                     if (cellIndex < iconTrack.totalAspects()) {
                         Identifier iconPath = iconTrack.getAspectIcon(cellIndex);
                         if (iconPath != null) {
@@ -272,6 +300,8 @@ public class SubclassScreen extends ModularUIScreen {
             final float gapToGrid = iconSize + (ASPECT_GRID_OFFSET_LEFT * guiScalar);
             final float hoverPadding = HOVER_PADDING * guiScalar;
             final float totalBridgeWidth = gapToGrid + totalGridWidth;
+            // the initial hover is only when the main ability icon is hovered over, but then this is added to expand the hoverable area
+            // to cover the entirety of the grid, with a bit of padding
             var hoverBridge = new UIElement()
                     .style(style -> style.background(new ColorRectTexture(subclass.destinyElement().getColorDark().withOpacity(0.1f))));
             hoverBridge.layout(layout -> layout
@@ -293,6 +323,7 @@ public class SubclassScreen extends ModularUIScreen {
             );
             gridWrapper.addChildren(hoverBridge);
 
+            // makes hover control visibility of grid
             abilityRowTrack.addEventListener(UIEvents.MOUSE_ENTER, event -> {
                 gridWrapper.setDisplay(true);
                 abilityRowTrack.markTaffyStyleDirty();
@@ -313,17 +344,70 @@ public class SubclassScreen extends ModularUIScreen {
         return ModularUI.of(ui);
     }
 
-    private static void onClickAspect(AspectsHolder aspects, RegisteredAspect aspect) {
-        if (aspects.set.contains(aspect)) {
-            aspects.set.remove(aspect);
-            return;
+    private static UIElement buildAspectCell(Subclass subclass, AspectsHolder aspects, @Nullable RegisteredAspect aspect, float iconSize, float guiScalar) {
+        var cell = new UIElement();
+        cell.layout(layout -> layout.width(iconSize).height(iconSize));
+
+        final IGuiTexture cellBorder = new ColorBorderTexture(-1, Color.WHITE);
+        var borderLayer = new UIElement().style(style -> style.background(cellBorder));
+        borderLayer.layout(layout -> layout
+                .positionType(TaffyPosition.ABSOLUTE)
+                .left(-1f).top(-1f)
+                .width(iconSize + 2f).height(iconSize + 2f)
+        );
+        cell.addChild(borderLayer);
+
+        if (aspect != null) {
+            Identifier iconPath = SubclassIcons.getHudTexture(aspect.getName());
+            if (iconPath != null) {
+                var iconLayer = new UIElement().style(style -> style.background(SpriteTexture.of(iconPath)));
+                iconLayer.layout(layout -> layout
+                        .positionType(TaffyPosition.ABSOLUTE)
+                        .widthPercent(100f).heightPercent(100f)
+                );
+                cell.addChild(iconLayer);
+            }
+
+            cell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
+                event.hoverTooltips = buildHoverTooltips(aspect.getName(), subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor(), aspects, aspect);
+            });
+            cell.addEventListener(UIEvents.CLICK, event -> {
+                onClickAspect(subclass, aspects, aspect, guiScalar);
+            });
+        } else {
+            cell.style(style -> style.background(new ColorBorderTexture(-1, DMColor.WHITE.withOpacity(0.2f))));
         }
 
-        if (aspects.set.size() < PlayerSubclassData.getMaxAspectsEquippable(Minecraft.getInstance().player)
-                && PlayerSubclassData.hasUnlockedAspect(Minecraft.getInstance().player, aspect)
-        ) {
-            aspects.set.add(aspect);
+        return cell;
+    }
+
+    private static void rebuildBottomBar(Subclass subclass, AspectsHolder aspects, float guiScalar) {
+        if (aspects.bottomBarContainer == null) return;
+
+        aspects.bottomBarContainer.clearAllChildren();
+
+        int maxSlots = PlayerSubclassData.getMaxAspectsEquippable(Minecraft.getInstance().player);
+        List<RegisteredAspect> currentlyEquipped = new ArrayList<>(aspects.list);
+        float iconSize = ICON_SIZE * guiScalar;
+
+        for (int i = 0; i < maxSlots; i++) {
+            RegisteredAspect aspectAtSlot = (i < currentlyEquipped.size()) ? currentlyEquipped.get(i) : null;
+            UIElement card = buildAspectCell(subclass, aspects, aspectAtSlot, iconSize, guiScalar);
+            aspects.bottomBarContainer.addChild(card);
         }
+
+        aspects.bottomBarContainer.markTaffyStyleDirty();
+    }
+
+    private static void onClickAspect(Subclass subclass, AspectsHolder aspects, RegisteredAspect aspect, float guiScalar) {
+        if (aspects.list.contains(aspect)) {
+            aspects.list.remove(aspect);
+        } else if (aspects.list.size() < PlayerSubclassData.getMaxAspectsEquippable(Minecraft.getInstance().player)
+                && PlayerSubclassData.hasUnlockedAspect(Minecraft.getInstance().player, aspect)) {
+            aspects.list.add(aspect);
+        }
+
+        rebuildBottomBar(subclass, aspects, guiScalar);
     }
 
     private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor, DMColor separatorBarColor) {
@@ -344,8 +428,8 @@ public class SubclassScreen extends ModularUIScreen {
 
         String hintText = "";
         if (aspects != null && aspect != null) {
-            String equipped = aspects.set.contains(aspect) ? "unequip" : "equip";
-            hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_"+equipped);
+            String equipped = aspects.list.contains(aspect) ? "unequip" : "equip";
+            hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_" + equipped);
         }
         var actionHint = new ActionHintComponent(hintText, widthContext);
 
