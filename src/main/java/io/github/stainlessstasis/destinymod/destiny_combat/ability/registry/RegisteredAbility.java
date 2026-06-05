@@ -6,6 +6,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -21,6 +22,10 @@ public record RegisteredAbility(ResourceKey<Ability> resourceKey) {
 
     public Ability get(Entity entity) {
         return get(entity.level().registryAccess());
+    }
+
+    public String getName() {
+        return resourceKey.identifier().getPath();
     }
 
     public static Codec<RegisteredAbility> CODEC = ResourceKey.codec(DestinyModRegistries.ABILITY_REGISTRY_KEY)

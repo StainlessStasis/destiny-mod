@@ -23,6 +23,10 @@ public record RegisteredAspect(ResourceKey<Aspect> resourceKey) {
         return get(entity.level().registryAccess());
     }
 
+    public String getName() {
+        return resourceKey.identifier().getPath();
+    }
+
     public static Codec<RegisteredAspect> CODEC = ResourceKey.codec(DestinyModRegistries.ASPECT_REGISTRY_KEY)
             .xmap(RegisteredAspect::new, RegisteredAspect::resourceKey);
     public static StreamCodec<ByteBuf, RegisteredAspect> STREAM_CODEC = ResourceKey.streamCodec(DestinyModRegistries.ASPECT_REGISTRY_KEY)

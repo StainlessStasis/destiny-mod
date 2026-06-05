@@ -5,6 +5,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import io.github.stainlessstasis.destinymod.network.serverbound.AbilityCastPacket;
@@ -26,6 +27,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
+
+import java.util.List;
+import java.util.Set;
 
 @Mod(DestinyMod.MODID)
 public class DestinyMod {
@@ -78,6 +82,7 @@ public class DestinyMod {
             Player player = event.getEntity();
             PlayerSubclassData.setEquippedSubclass(player, Subclasses.SUNBREAKER);
             PlayerSubclassData.replaceAbility(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
+            player.setData(DestinyModAttachments.PLAYER_UNLOCKED_ASPECTS, Set.of(Aspects.MELTING_POINT, Aspects.HEATSEEKER, Aspects.ANVIL_DROP));
         }
     }
 }

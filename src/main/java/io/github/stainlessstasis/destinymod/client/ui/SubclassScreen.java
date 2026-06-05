@@ -15,7 +15,9 @@ import dev.vfyjxf.taffy.style.FlexDirection;
 import dev.vfyjxf.taffy.style.TaffyPosition;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
+import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.tooltip.*;
 import io.github.stainlessstasis.destinymod.tooltip.component.*;
 import net.minecraft.client.Minecraft;
@@ -24,9 +26,12 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SubclassScreen extends ModularUIScreen {
     public static final float TITLE_SIZE = 36f;
@@ -46,15 +51,20 @@ public class SubclassScreen extends ModularUIScreen {
     public static final int HOVER_PADDING = 8;
 
     private final Subclass subclass;
+    private Set<RegisteredAspect> equippedAspects;
 
     public SubclassScreen(Subclass subclass) {
-        super(createModularUI(subclass), subclass.title());
+        Set<RegisteredAspect> equippedAspects = new HashSet<>();
+        super(createModularUI(subclass, equippedAspects), subclass.title());
         this.subclass = subclass;
+        this.equippedAspects = equippedAspects;
     }
 
-    private static ModularUI createModularUI(Subclass subclass) {
+
+    private static ModularUI createModularUI(Subclass subclass, Set<RegisteredAspect> equippedAspects) {
         final float guiScalar = GuiScaleUtil.getConsistencyScalar();
         final float aspectRatio = (float) Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getScreenHeight();
+        equippedAspects.addAll(PlayerSubclassData.getAllEquippedRegisteredAspects(Minecraft.getInstance().player));
 
         var root = new UIElement();
         root.layout(layout -> layout
@@ -135,10 +145,13 @@ public class SubclassScreen extends ModularUIScreen {
                     .height(iconSize)
             );
 
-            if (iconTrack.mainAbilityName() != null && !iconTrack.mainAbilityName().isEmpty()) {
-                mainIcon.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                    event.hoverTooltips = buildHoverTooltips(iconTrack.mainAbilityName(), subclass.destinyElement().getColor(), subclass.destinyElement().getColorLight());
-                });
+            if (iconTrack.mainAbility() != null) {
+                String name = iconTrack.mainAbility().getName();
+                if (!name.isEmpty()) {
+                    mainIcon.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
+                        event.hoverTooltips = buildHoverTooltips(name, subclass.destinyElement().getColor(), subclass.destinyElement().getColorLight());
+                    });
+                }
             }
 
             var mainBorderLayer = new UIElement()
@@ -204,9 +217,13 @@ public class SubclassScreen extends ModularUIScreen {
                     );
 
                     if (iconTrack.totalAspects() > cellIndex) {
-                        String aspectName = iconTrack.aspectNames().get(cellIndex);
+                        RegisteredAspect aspect = iconTrack.aspects().get(cellIndex);
+                        String aspectName = aspect.getName();
                         gridCell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
                             event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor());
+                        });
+                        gridCell.addEventListener(UIEvents.CLICK, event -> {
+                            onClickAspect(equippedAspects, aspect);
                         });
                     }
 
@@ -286,6 +303,10 @@ public class SubclassScreen extends ModularUIScreen {
 
         UI ui = UI.of(root);
         return ModularUI.of(ui);
+    }
+
+    private static void onClickAspect(Set<RegisteredAspect> equippedAspects, RegisteredAspect aspect) {
+        boolean isEquipped = PlayerSubclassData.isAspectEquipped(Minecraft.getInstance().player, aspect);
     }
 
     private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor, DMColor separatorBarColor) {

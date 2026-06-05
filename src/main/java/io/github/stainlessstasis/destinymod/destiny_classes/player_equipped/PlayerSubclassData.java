@@ -14,10 +14,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerSubclassData {
     private Subclass equippedSubclass = Subclasses.SUNBREAKER; // default value cus you cant really *not* have a subclass equipped
@@ -108,6 +106,37 @@ public class PlayerSubclassData {
 
     public static List<Aspect> getAspectsForAbility(Player player, AbilityType abilityType) {
         return getSubclassLoadout(player).getAspectsForAbility(player, abilityType);
+    }
+
+    public static List<RegisteredAspect> getAllEquippedRegisteredAspects(Player player) {
+        List<RegisteredAspect> allAspects = new ArrayList<>();
+        for (AbilityType abilityType : AbilityType.values()) {
+            allAspects.addAll(getRegisteredAspectsForAbility(player, abilityType));
+        }
+        return allAspects;
+    }
+
+    public static List<Aspect> getAllEquippedAspects(Player player) {
+        return getAllEquippedRegisteredAspects(player).stream()
+                .map(registeredAspect -> registeredAspect.get(player))
+                .toList();
+    }
+
+    public static int getMaxAspectsEquippable(Player player) {
+        return getSubclassLoadout(player).getMaxAspectsEquippable();
+    }
+
+    public static boolean isAspectEquipped(Player player, RegisteredAspect aspect) {
+        return getAllEquippedRegisteredAspects(player).contains(aspect);
+    }
+
+    public static boolean hasUnlockedAspect(Player player, RegisteredAspect aspect) {
+        return player.getData(DestinyModAttachments.PLAYER_UNLOCKED_ASPECTS).contains(aspect);
+    }
+
+    public static boolean canEquipAspect(Player player, RegisteredAspect aspect) {
+        if (!hasUnlockedAspect(player, aspect)) return false;
+        return getAllEquippedRegisteredAspects(player).size() < getMaxAspectsEquippable(player);
     }
 
     public static RegisteredAbility getRegisteredMelee(Player player) {

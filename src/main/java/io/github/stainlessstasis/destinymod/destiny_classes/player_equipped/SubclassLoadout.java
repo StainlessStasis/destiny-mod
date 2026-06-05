@@ -22,25 +22,38 @@ public class SubclassLoadout {
         for (AbilityType type : AbilityType.values()) {
             none.put(type, AbilityLoadout.NONE);
         }
-        NONE = new SubclassLoadout(none);
+        NONE = new SubclassLoadout(none, 0);
     }
+
     private final HashMap<AbilityType, AbilityLoadout> abilityLoadouts = new HashMap<>();
+    private int maxAspectsEquippable = 4;
 
-    public static final Codec<SubclassLoadout> CODEC = Codec.unboundedMap(AbilityType.CODEC, AbilityLoadout.CODEC)
-            .xmap(SubclassLoadout::new, loadout -> loadout.abilityLoadouts);
+    public static final Codec<SubclassLoadout> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.create(instance -> instance.group(
+            Codec.unboundedMap(AbilityType.CODEC, AbilityLoadout.CODEC).fieldOf("abilityLoadouts").forGetter(loadout -> loadout.abilityLoadouts),
+            Codec.INT.fieldOf("maxAspects").orElse(4).forGetter(loadout -> loadout.maxAspectsEquippable)
+    ).apply(instance, SubclassLoadout::new));
 
-    public static final StreamCodec<ByteBuf, SubclassLoadout> STREAM_CODEC =
-            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.fromCodec(AbilityType.CODEC), AbilityLoadout.STREAM_CODEC)
-                    .map(SubclassLoadout::new, loadout -> loadout.abilityLoadouts);
+    public static final StreamCodec<ByteBuf, SubclassLoadout> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.fromCodec(AbilityType.CODEC), AbilityLoadout.STREAM_CODEC),
+            loadout -> loadout.abilityLoadouts,
+            ByteBufCodecs.VAR_INT,
+            loadout -> loadout.maxAspectsEquippable,
+            SubclassLoadout::new
+    );
 
-    private SubclassLoadout(Map<AbilityType, AbilityLoadout> abilityLoadouts) {
+    private SubclassLoadout(Map<AbilityType, AbilityLoadout> abilityLoadouts, int maxAspectsEquippable) {
         this.abilityLoadouts.putAll(abilityLoadouts);
+        this.maxAspectsEquippable = maxAspectsEquippable;
     }
 
     public SubclassLoadout() {}
 
     public AbilityLoadout getAbilityLoadout(AbilityType abilityType) {
         return this.abilityLoadouts.get(abilityType);
+    }
+
+    public int getMaxAspectsEquippable() {
+        return this.maxAspectsEquippable;
     }
 
     void putAbilityLoadout(AbilityType abilityType, AbilityLoadout loadout) {

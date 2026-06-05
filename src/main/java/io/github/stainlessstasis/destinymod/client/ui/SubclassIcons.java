@@ -19,11 +19,11 @@ public class SubclassIcons {
 
     static {
         SUBCLASS_ICONS.put(Subclasses.SUNBREAKER, new SubclassIconSet(
-                new AbilityTrack("", List.of()),
-                new AbilityTrack(getAbilityName(Abilities.THROWING_HAMMER), List.of(getAspectName(Aspects.MELTING_POINT), getAspectName(Aspects.HEATSEEKER), getAspectName(Aspects.ANVIL_DROP))),
-                new AbilityTrack("", List.of()),
-                new AbilityTrack("", List.of()),
-                "sol_invictus"
+                new AbilityTrack(Abilities.NONE, List.of()),
+                new AbilityTrack(Abilities.THROWING_HAMMER, List.of(Aspects.MELTING_POINT, Aspects.HEATSEEKER, Aspects.ANVIL_DROP)),
+                new AbilityTrack(Abilities.NONE, List.of()),
+                new AbilityTrack(Abilities.NONE, List.of()),
+                Abilities.NONE
         ));
     }
 
@@ -40,20 +40,20 @@ public class SubclassIcons {
         return DestinyMod.id("textures/gui/sprites/destiny_hud/" + name + ".png");
     }
 
-    public record AbilityTrack(String mainAbilityName, List<String> aspectNames) {
+    public record AbilityTrack(RegisteredAbility mainAbility, List<RegisteredAspect> aspects) {
         public Identifier getMainIcon(boolean charged) {
-            if (mainAbilityName == null || mainAbilityName.isEmpty()) return null;
+            if (mainAbility == null || mainAbility == Abilities.NONE) return null;
             String suffix = charged ? "_charged" : "";
-            return getHudTexture(mainAbilityName + suffix);
+            return getHudTexture(getAbilityName(mainAbility) + suffix);
         }
 
         public Identifier getAspectIcon(int aspectIndex) {
-            if (aspectIndex < 0 || aspectIndex >= aspectNames.size()) return null;
-            return getHudTexture(aspectNames.get(aspectIndex));
+            if (aspectIndex < 0 || aspectIndex >= aspects.size()) return null;
+            return getHudTexture(getAspectName(aspects.get(aspectIndex)));
         }
 
         public int totalAspects() {
-            return aspectNames.size();
+            return aspects.size();
         }
     }
 
@@ -62,7 +62,7 @@ public class SubclassIcons {
             AbilityTrack meleeTrack,
             AbilityTrack grenadeTrack,
             AbilityTrack classTrack,
-            String passiveName
+            RegisteredAbility passiveAbility
     ) {
         public AbilityTrack getTrack(AbilityType type) {
             return switch (type) {
@@ -70,12 +70,12 @@ public class SubclassIcons {
                 case MELEE -> meleeTrack;
                 case GRENADE -> grenadeTrack;
                 case CLASS_ABILITY -> classTrack;
-                default -> new AbilityTrack("", List.of());
+                default -> new AbilityTrack(Abilities.NONE, List.of());
             };
         }
 
         public Identifier getPassiveIcon() {
-            return getHudTexture(passiveName);
+            return getHudTexture(getAbilityName(passiveAbility));
         }
     }
 }
