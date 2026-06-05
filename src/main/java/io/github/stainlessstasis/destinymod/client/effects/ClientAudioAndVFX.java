@@ -23,6 +23,10 @@ public class ClientAudioAndVFX {
     public static final long LIGHTNING_THUNDER_1 = -3143421179731086385L;
     public static final long LIGHTNING_THUNDER_2 = 4923755067258430535L;
     public static final long LIGHTNING_THUNDER_3 = -1383406444080597295L;
+    public static final long AMETHYST_RESONATE_1 = 49309479271869866L;
+    public static final long AMETHYST_RESONATE_2 = -1197613418293443803L;
+    public static final long AMETHYST_RESONATE_3 = -2672010492342827392L;
+    public static final long AMETHYST_RESONATE_4 = 186042584424253856L;
 
     public static void ignition(Level level, Vec3 center) {
         float radius = Ignition.RANGE;

@@ -11,6 +11,8 @@ import com.lowdragmc.lowdraglib2.gui.ui.event.HoverTooltips;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
 import dev.vfyjxf.taffy.style.*;
 import io.github.stainlessstasis.destinymod.DMColor;
+import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -23,6 +25,9 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
@@ -400,11 +405,26 @@ public class SubclassScreen extends ModularUIScreen {
     }
 
     private static void onClickAspect(Subclass subclass, AspectsHolder aspects, RegisteredAspect aspect, float guiScalar) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            DestinyMod.LOGGER.error("Somehow the player was null when attempting to click an aspect in the subclass screen. This shouldn't be possible so your guess is as good as mine.");
+            return;
+        }
+        double x = player.getX();
+        double y = player.getY();
+        double z = player.getZ();
+
         if (aspects.list.contains(aspect)) {
             aspects.list.remove(aspect);
-        } else if (aspects.list.size() < PlayerSubclassData.getMaxAspectsEquippable(Minecraft.getInstance().player)
-                && PlayerSubclassData.hasUnlockedAspect(Minecraft.getInstance().player, aspect)) {
-            aspects.list.add(aspect);
+            player.level().playSeededSound(player, x, y, z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.UI, 1f, 1f, ClientAudioAndVFX.AMETHYST_RESONATE_2);
+        } else {
+            boolean canEquip = aspects.list.size() < PlayerSubclassData.getMaxAspectsEquippable(player) && PlayerSubclassData.hasUnlockedAspect(player, aspect);
+            if (canEquip) {
+                aspects.list.add(aspect);
+                player.level().playSeededSound(player, x, y, z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.UI, 1f, 1f, ClientAudioAndVFX.AMETHYST_RESONATE_4);
+            } else {
+                player.level().playSeededSound(player, x, y, z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.UI, 0.7f, 1f, ClientAudioAndVFX.AMETHYST_RESONATE_3);
+            }
         }
 
         rebuildBottomBar(subclass, aspects, guiScalar);
