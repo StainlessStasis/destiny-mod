@@ -342,17 +342,11 @@ public class SubclassScreen extends ModularUIScreen {
         Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
         var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
 
-
-        if (aspects == null || aspect == null) {
-            return HoverTooltips.create(
-                    ClientTooltipComponent.create(header),
-                    ClientTooltipComponent.create(bar),
-                    ClientTooltipComponent.create(description)
-            );
+        String hintText = "";
+        if (aspects != null && aspect != null) {
+            String equipped = aspects.set.contains(aspect) ? "unequip" : "equip";
+            hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_"+equipped);
         }
-
-        String equipped = aspects.set.contains(aspect) ? "unequip" : "equip";
-        String hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_"+equipped);
         var actionHint = new ActionHintComponent(hintText, widthContext);
 
         return HoverTooltips.create(
