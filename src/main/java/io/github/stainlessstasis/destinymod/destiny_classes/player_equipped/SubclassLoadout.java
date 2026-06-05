@@ -56,6 +56,10 @@ public class SubclassLoadout {
         return this.maxAspectsEquippable;
     }
 
+    public void setMaxAspectsEquippable(int newMax) {
+        this.maxAspectsEquippable = newMax;
+    }
+
     void putAbilityLoadout(AbilityType abilityType, AbilityLoadout loadout) {
         this.abilityLoadouts.put(abilityType, loadout);
     }

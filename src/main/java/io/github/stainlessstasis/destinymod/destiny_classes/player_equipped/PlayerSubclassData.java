@@ -126,6 +126,12 @@ public class PlayerSubclassData {
         return getSubclassLoadout(player).getMaxAspectsEquippable();
     }
 
+    public static void setMaxAspectsEquippable(Player player, int newMax) {
+        var instance = getInstance(player);
+        instance.getSubclassLoadout().setMaxAspectsEquippable(newMax);
+        instance.sync(player);
+    }
+
     public static boolean isAspectEquipped(Player player, RegisteredAspect aspect) {
         return getAllEquippedRegisteredAspects(player).contains(aspect);
     }

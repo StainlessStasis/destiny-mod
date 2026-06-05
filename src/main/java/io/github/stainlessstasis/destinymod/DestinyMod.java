@@ -82,6 +82,7 @@ public class DestinyMod {
             PlayerSubclassData.setEquippedSubclass(player, Subclasses.SUNBREAKER);
             PlayerSubclassData.replaceAbility(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
             player.setData(DestinyModAttachments.PLAYER_UNLOCKED_ASPECTS, Set.of(Aspects.MELTING_POINT, Aspects.HEATSEEKER, Aspects.ANVIL_DROP));
+            PlayerSubclassData.setMaxAspectsEquippable(player, 2);
         }
     }
 }

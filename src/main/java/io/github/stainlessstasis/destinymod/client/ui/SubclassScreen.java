@@ -26,8 +26,10 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -225,11 +227,11 @@ public class SubclassScreen extends ModularUIScreen {
                         RegisteredAspect aspect = iconTrack.aspects().get(cellIndex);
                         String aspectName = aspect.getName();
                         gridCell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor());
+                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor(), equippedAspects, aspect);
                         });
                         gridCell.addEventListener(UIEvents.CLICK, event -> {
                             onClickAspect(equippedAspects, aspect);
-                            System.out.println("EQUIPPED ASPECTS: "+equippedAspects);
+                            System.out.println("EQUIPPED ASPECTS: "+equippedAspects.set);
                         });
                     }
 
@@ -312,19 +314,23 @@ public class SubclassScreen extends ModularUIScreen {
     }
 
     private static void onClickAspect(AspectsHolder aspects, RegisteredAspect aspect) {
-        boolean isEquipped = PlayerSubclassData.isAspectEquipped(Minecraft.getInstance().player, aspect);
-        if (isEquipped) {
+        if (aspects.set.contains(aspect)) {
             aspects.set.remove(aspect);
             return;
         }
 
-        boolean canEquip = PlayerSubclassData.canEquipAspect(Minecraft.getInstance().player, aspect);
-        if (canEquip) {
+        if (aspects.set.size() < PlayerSubclassData.getMaxAspectsEquippable(Minecraft.getInstance().player)
+                && PlayerSubclassData.hasUnlockedAspect(Minecraft.getInstance().player, aspect)
+        ) {
             aspects.set.add(aspect);
         }
     }
 
     private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor, DMColor separatorBarColor) {
+        return buildHoverTooltips(abilityName, headerColor, separatorBarColor, null, null);
+    }
+
+    private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor, DMColor separatorBarColor, @Nullable AspectsHolder aspects, @Nullable RegisteredAspect aspect) {
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
         String title = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".title");
@@ -336,7 +342,17 @@ public class SubclassScreen extends ModularUIScreen {
         Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
         var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
 
-        String hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_equip");
+
+        if (aspects == null || aspect == null) {
+            return HoverTooltips.create(
+                    ClientTooltipComponent.create(header),
+                    ClientTooltipComponent.create(bar),
+                    ClientTooltipComponent.create(description)
+            );
+        }
+
+        String equipped = aspects.set.contains(aspect) ? "unequip" : "equip";
+        String hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_"+equipped);
         var actionHint = new ActionHintComponent(hintText, widthContext);
 
         return HoverTooltips.create(
