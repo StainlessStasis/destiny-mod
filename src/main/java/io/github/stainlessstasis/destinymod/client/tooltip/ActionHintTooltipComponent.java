@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 public class ActionHintTooltipComponent implements ClientTooltipComponent {
     private static final int BAR_HEIGHT = 18;
     private static final int HALF_BAR_HEIGHT = BAR_HEIGHT/2;
-    private static final int TEXT_RIGHT_PADDING = 2;
+    private static final int TEXT_RIGHT_PADDING = 1;
     private static final int BACKGROUND_COLOR = 0xCC0b0d12;
 
     private final String hint;
@@ -38,7 +38,7 @@ public class ActionHintTooltipComponent implements ClientTooltipComponent {
         graphics.fill(renderX, y, renderX + renderWidth, y + BAR_HEIGHT, BACKGROUND_COLOR);
 
         int alignedX = (x + totalWidth) - textWidth - TEXT_RIGHT_PADDING;
-        int centerY = y + (HALF_BAR_HEIGHT / 2);
-        graphics.text(font, this.hint, alignedX, centerY, 0xFFFFFFFF, true);
+        int alignedY = y + (HALF_BAR_HEIGHT / 2) + 1;
+        graphics.text(font, this.hint, alignedX, alignedY, 0xFFFFFFFF, true);
     }
 }
