@@ -1,10 +1,14 @@
 package io.github.stainlessstasis.destinymod.client;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.client.tooltip.ActionHintTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.HeaderTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.SeparatorTooltipComponent;
-import io.github.stainlessstasis.destinymod.tooltip.*;
+import io.github.stainlessstasis.destinymod.tooltip.component.ActionHintComponent;
+import io.github.stainlessstasis.destinymod.tooltip.component.DescriptionComponent;
+import io.github.stainlessstasis.destinymod.tooltip.component.HeaderComponent;
+import io.github.stainlessstasis.destinymod.tooltip.component.SeparatorComponent;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -28,6 +32,7 @@ public class DestinyModClient {
         event.register(SeparatorComponent.class, component -> new SeparatorTooltipComponent(component.widthContext(), component.height(), component.color()));
         event.register(HeaderComponent.class, component -> new HeaderTooltipComponent(component.title(), component.subtitle(), component.widthContext(), component.color()));
         event.register(DescriptionComponent.class, component -> new DescriptionTooltipComponent(component.description(), component.widthContext(), component.color()));
+        event.register(ActionHintComponent.class, component -> new ActionHintTooltipComponent(component.hint(), component.widthContext()));
     }
 
     @SubscribeEvent

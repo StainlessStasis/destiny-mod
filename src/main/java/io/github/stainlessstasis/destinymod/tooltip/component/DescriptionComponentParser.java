@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.tooltip;
+package io.github.stainlessstasis.destinymod.tooltip.component;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;

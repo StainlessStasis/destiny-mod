@@ -17,6 +17,7 @@ import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.tooltip.*;
+import io.github.stainlessstasis.destinymod.tooltip.component.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -299,10 +300,14 @@ public class SubclassScreen extends ModularUIScreen {
         Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
         var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
 
+        String hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_equip");
+        var actionHint = new ActionHintComponent(hintText, widthContext);
+
         return HoverTooltips.create(
                 ClientTooltipComponent.create(header),
                 ClientTooltipComponent.create(bar),
-                ClientTooltipComponent.create(description)
+                ClientTooltipComponent.create(description),
+                ClientTooltipComponent.create(actionHint)
         );
     }
 

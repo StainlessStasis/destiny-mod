@@ -7,6 +7,10 @@
   "destinymod.configuration.magicNumberIntroduction": "Magic Number Text",
   "destinymod.configuration.magicNumber": "Magic Number",
 
+  "tooltip.destinymod.action.click_to_equip": "Click to equip",
+  "tooltip.destinymod.action.click_to_unequip": "Click to unequip",
+  "tooltip.destinymod.action.already_equipped": "Equipped",
+
   "tooltip.destinymod.melting_point.title": "MELTING POINT",
   "tooltip.destinymod.melting_point.subtitle": "Sunbreaker Aspect",
   "tooltip.destinymod.melting_point.desc": "While standing in a <keyword:Sunspot>, <ability:Throwing Hammer> inflicts targets with <keyword:Melting Point>.\n\nTargets affected by <keyword:Melting Point> take more damage from all sources, and the threshold to trigger an <keyword:Ignition> is reduced.",
