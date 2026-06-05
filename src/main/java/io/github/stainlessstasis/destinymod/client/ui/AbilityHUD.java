@@ -16,9 +16,9 @@ import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 public class AbilityHUD {
     public static final int ABILITY_ICON_SIZE = 32;
     public static final int ABILITY_BORDER_SIZE = ABILITY_ICON_SIZE+2;
-        public static final Identifier ABILITY_BORDER = DestinyMod.id("textures/gui/sprites/destiny_hud/ability_border.png");
-    public static final Identifier THROWING_HAMMER = DestinyMod.id("textures/gui/sprites/destiny_hud/throwing_hammer.png");
-    public static final Identifier THROWING_HAMMER_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_hud/throwing_hammer_charged.png");
+        public static final Identifier ABILITY_BORDER = DestinyMod.id("textures/gui/sprites/destiny_ui/ability_border.png");
+    public static final Identifier THROWING_HAMMER = DestinyMod.id("textures/gui/sprites/destiny_ui/throwing_hammer.png");
+    public static final Identifier THROWING_HAMMER_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_ui/throwing_hammer_charged.png");
 
     @SubscribeEvent
     public static void onRenderGuiLayers(RenderGuiLayerEvent.Post event) {

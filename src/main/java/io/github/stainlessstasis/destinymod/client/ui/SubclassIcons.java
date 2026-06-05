@@ -37,7 +37,7 @@ public class SubclassIcons {
 
     public static Identifier getHudTexture(String name) {
         if (name == null || name.isEmpty()) return null;
-        return DestinyMod.id("textures/gui/sprites/destiny_hud/" + name + ".png");
+        return DestinyMod.id("textures/gui/sprites/destiny_ui/" + name + ".png");
     }
 
     public record AbilityTrack(RegisteredAbility mainAbility, List<RegisteredAspect> aspects) {
