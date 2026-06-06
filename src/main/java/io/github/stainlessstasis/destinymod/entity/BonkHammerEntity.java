@@ -21,6 +21,9 @@ import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.So
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -44,6 +47,12 @@ import org.jspecify.annotations.NonNull;
 import java.util.*;
 
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity, DestinyAbility {
+    private static final EntityDataAccessor<Boolean> HAS_MELTING_POINT = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_HEATSEEKER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_ANVIL_DROP = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final float AIR_SPIN_SPEED = 30f;
+    private static final float LIQUID_SPIN_SPEED = 10f;
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private final Ability ability;
     public static final float RESTITUTION = 0.420f;
@@ -51,8 +60,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     public static final float STICK_SPEED_THRESHOLD = 0.2f;
     private final Set<UUID> collidedThisTick = new HashSet<>();
     private float visualSpinDegrees = 0f;
-    private static final float AIR_SPIN_SPEED = 30f;
-    private static final float LIQUID_SPIN_SPEED = 10f;
     private boolean hitCeiling = false;
     private boolean hasEverCollided = false;
     /**
@@ -111,6 +118,12 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         if (this.firstTick && this.level() instanceof ServerLevel level) {
             level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.TRIDENT_THROW, SoundSource.AMBIENT, 0.8f, 0.7f);
             level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 0.5f, 1.5f);
+
+            if (getOwner() instanceof Player player) {
+                setHasMeltingPoint(PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class));
+                setHasHeatseeker(PlayerSubclassData.isAspectEquipped(player, Aspects.HEATSEEKER));
+                setHasAnvilDrop(PlayerSubclassData.isAspectEquipped(player, Aspects.ANVIL_DROP));
+            }
         }
 
         // Custom collision and stuff
@@ -363,7 +376,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                 DamageSource damageSource = builder.buildDamageSource();
                 builder.execute();
 
-                if (currentOwner instanceof Player player && PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class)) {
+                if (hasMeltingPoint()) {
                     StatusEffectManager.applyMeltingPoint(mob);
                 }
 
@@ -459,6 +472,38 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                 (this.random.nextDouble() - 0.5) * 0.025
         );
         this.setDeltaMovement(nudge);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.@NonNull Builder entityData) {
+        super.defineSynchedData(entityData);
+        entityData.define(HAS_MELTING_POINT, false);
+        entityData.define(HAS_HEATSEEKER, false);
+        entityData.define(HAS_ANVIL_DROP, false);
+    }
+
+    public boolean hasMeltingPoint() {
+        return this.entityData.get(HAS_MELTING_POINT);
+    }
+
+    public void setHasMeltingPoint(boolean meltingPoint) {
+        this.entityData.set(HAS_MELTING_POINT, meltingPoint);
+    }
+
+    public boolean hasHeatseeker() {
+        return this.entityData.get(HAS_HEATSEEKER);
+    }
+
+    public void setHasHeatseeker(boolean heatseeker) {
+        this.entityData.set(HAS_HEATSEEKER, heatseeker);
+    }
+
+    public boolean hasAnvilDrop() {
+        return this.entityData.get(HAS_ANVIL_DROP);
+    }
+
+    public void setHasAnvilDrop(boolean anvilDrop) {
+        this.entityData.set(HAS_ANVIL_DROP, anvilDrop);
     }
 
     @Override
