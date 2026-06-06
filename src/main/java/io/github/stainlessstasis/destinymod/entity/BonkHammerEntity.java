@@ -17,6 +17,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageB
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -362,7 +363,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                 DamageSource damageSource = builder.buildDamageSource();
                 builder.execute();
 
-                if (currentOwner instanceof Player player && PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT)) {
+                if (currentOwner instanceof Player player && PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class)) {
                     StatusEffectManager.applyMeltingPoint(mob);
                 }
 
