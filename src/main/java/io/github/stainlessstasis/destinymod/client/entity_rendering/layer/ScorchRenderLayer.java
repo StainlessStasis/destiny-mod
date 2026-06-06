@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.NonNull;
 
 public class ScorchRenderLayer<S extends LivingEntityRenderState, M extends EntityModel<? super S>> extends RenderLayer<S, M> {
     private static final Identifier TEXTURE = DestinyMod.id("textures/entity/hammer_of_sol.png");
@@ -21,7 +22,7 @@ public class ScorchRenderLayer<S extends LivingEntityRenderState, M extends Enti
     }
 
     @Override
-    public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, S state, float yRot, float xRot) {
+    public void submit(@NonNull PoseStack poseStack, @NonNull SubmitNodeCollector collector, int light, S state, float yRot, float xRot) {
         EntityRendererEvents.DebuffData debuffData = state.getRenderData(EntityRendererEvents.DEBUFF_CONTEXT_KEY);
         if (debuffData == null || !debuffData.isScorched()) return;
 

@@ -1,8 +1,11 @@
 package io.github.stainlessstasis.destinymod.destiny_combat;
 
+import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
+import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
@@ -22,27 +25,38 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 public class CombatSandbox {
     @SubscribeEvent
     public static void onLivingDamage(LivingIncomingDamageEvent event) {
+        DamageSource source = event.getSource();
+        LivingEntity victim = event.getEntity();
+        float randomActivationChance = victim.getRandom().nextFloat();
+        float damageMultiplier = 1f;
+
+        if (source.getEntity() instanceof Player player) {
+            final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
+
+            if (victim.getData(DestinyModAttachments.IS_MELTING_POINT_ACTIVE)) {
+                damageMultiplier += 0.2f;
+            }
+        }
+
+        event.setAmount(event.getAmount() * damageMultiplier);
     }
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
         DamageSource source = event.getSource();
         LivingEntity victim = event.getEntity();
+        float randomActivationChance = victim.getRandom().nextFloat();
+
         if (source.getEntity() instanceof Player player) {
-            handlePlayerKillEffects(player, victim, source);
-        }
-    }
+            final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
 
-    private static void handlePlayerKillEffects(Player player, LivingEntity victim, DamageSource source) {
-        var subclass = PlayerSubclassData.getEquippedSubclass(player);
-        final float randomActivationChance = player.getRandom().nextFloat();
-
-        if (randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER
-                && source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT)
-        ) {
-            Vec3 spawnPos = findGroundPosition(victim);
-            SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
-            player.level().addFreshEntity(sunspotEntity);
+            if (randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER
+                    && source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT)
+            ) {
+                Vec3 spawnPos = findGroundPosition(victim);
+                SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
+                player.level().addFreshEntity(sunspotEntity);
+            }
         }
     }
 

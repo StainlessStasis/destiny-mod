@@ -12,6 +12,7 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
@@ -360,6 +361,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                         .knockback(true);
                 DamageSource damageSource = builder.buildDamageSource();
                 builder.execute();
+
+                if (currentOwner instanceof Player player && PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT)) {
+                    StatusEffectManager.applyMeltingPoint(mob);
+                }
 
                 EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
                 LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;

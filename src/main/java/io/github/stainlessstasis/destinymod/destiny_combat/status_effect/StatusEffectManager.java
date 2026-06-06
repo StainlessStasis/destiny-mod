@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.status_effect;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -53,6 +54,15 @@ public class StatusEffectManager {
     public static void applySolInvictus(LivingEntity entity, int ticks) {
         SolInvictus sol = getAndRegisterEffect(entity, SolInvictus.class, DestinyModAttachments.SOL_INVICTUS);
         sol.setRemainingTicks(ticks);
+    }
+
+    public static void applyMeltingPoint(LivingEntity entity) {
+        applyMeltingPoint(entity, MeltingPoint.DEFAULT_TICKS);
+    }
+
+    public static void applyMeltingPoint(LivingEntity entity, int ticks) {
+        MeltingPoint mp = getAndRegisterEffect(entity, MeltingPoint.class, DestinyModAttachments.MELTING_POINT);
+        mp.setRemainingTicks(ticks);
     }
 
     @SubscribeEvent

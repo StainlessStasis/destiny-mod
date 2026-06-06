@@ -5,6 +5,7 @@ import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldowns;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -86,6 +87,23 @@ public class DestinyModAttachments {
             "is_sol_invictus_active",
             () -> AttachmentType.builder(() -> false)
                     .serialize(Codec.BOOL.fieldOf("is_sol_invictus_active"))
+                    .sync(ByteBufCodecs.BOOL)
+                    .build()
+    );
+
+    /**
+     * NOT synced to clients. Use IS_MELTING_POINT_ACTIVE
+     */
+    public static final Supplier<AttachmentType<MeltingPoint>> MELTING_POINT = ATTACHMENTS.register(
+            "melting_point",
+            () -> AttachmentType.builder(MeltingPoint::new)
+                    .serialize(MeltingPoint.CODEC)
+                    .build()
+    );
+    public static final Supplier<AttachmentType<Boolean>> IS_MELTING_POINT_ACTIVE = ATTACHMENTS.register(
+            "is_melting_point_active",
+            () -> AttachmentType.builder(() -> false)
+                    .serialize(Codec.BOOL.fieldOf("is_melting_point_active"))
                     .sync(ByteBufCodecs.BOOL)
                     .build()
     );
