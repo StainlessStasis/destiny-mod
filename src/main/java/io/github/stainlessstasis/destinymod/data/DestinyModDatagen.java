@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.data;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
+import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
@@ -38,10 +39,9 @@ public class DestinyModDatagen {
 
                 // ASPECTS
                 .add(DestinyModRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
-                    bootstrap.register(Aspects.NONE.resourceKey(), new Aspect(-1));
-                    bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(-1));
-                    bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(-1));
-                    bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(-1));
+                    bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
+                    bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
+                    bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                 })
 
                 // DAMAGE TYPES AND DAMAGE TYPE TAGS

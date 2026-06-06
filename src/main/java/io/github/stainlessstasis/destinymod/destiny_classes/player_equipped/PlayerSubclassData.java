@@ -15,10 +15,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PlayerSubclassData {
-    private Subclass equippedSubclass = Subclasses.SUNBREAKER; // default value cus you cant really *not* have a subclass equipped
+    private Subclass equippedSubclass = Subclasses.SUNBREAKER; // default value cus you cant really *not* have a subclassID equipped
     private Map<Subclass, SubclassLoadout> subclassLoadouts = new HashMap<>();
 
     public static final MapCodec<PlayerSubclassData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -129,6 +128,12 @@ public class PlayerSubclassData {
     public static void setMaxAspectsEquippable(Player player, int newMax) {
         var instance = getInstance(player);
         instance.getSubclassLoadout().setMaxAspectsEquippable(newMax);
+        instance.sync(player);
+    }
+
+    public static void equipAllAspects(Player player, List<RegisteredAspect> aspects) {
+        var instance = getInstance(player);
+        instance.getSubclassLoadout().equipAllAspects(player, aspects);
         instance.sync(player);
     }
 

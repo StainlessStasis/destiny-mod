@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SubclassLoadout {
@@ -72,7 +71,7 @@ public class SubclassLoadout {
         return getRegisteredAbility(abilityType).get(player);
     }
 
-    void replaceAbility(AbilityType abilityType, RegisteredAbility newAbility) {
+    public void replaceAbility(AbilityType abilityType, RegisteredAbility newAbility) {
         var currentLoadout = getAbilityLoadout(abilityType);
         AbilityLoadout newLoadout = new AbilityLoadout(newAbility, currentLoadout.aspects());
         putAbilityLoadout(abilityType, newLoadout);
@@ -86,6 +85,21 @@ public class SubclassLoadout {
         return getRegisteredAspectsForAbility(abilityType).stream()
                 .map(registeredAspect -> registeredAspect.get(player))
                 .collect(Collectors.toList());
+    }
+
+    public void equipAllAspects(Player player, List<RegisteredAspect> aspects) {
+        Map<AbilityType, List<RegisteredAspect>> groupedAspects = aspects.stream()
+                .collect(Collectors.groupingBy(registeredAspect -> registeredAspect.get(player).abilityType()));
+
+        for (AbilityType type : AbilityType.values()) {
+            List<RegisteredAspect> aspectsForType = groupedAspects.getOrDefault(type, List.of());
+
+            AbilityLoadout currentLoadout = this.getAbilityLoadout(type);
+            if (currentLoadout != null) {
+                AbilityLoadout updatedLoadout = new AbilityLoadout(currentLoadout.ability(), aspectsForType);
+                this.putAbilityLoadout(type, updatedLoadout);
+            }
+        }
     }
 
     public RegisteredAbility getRegisteredMelee() {

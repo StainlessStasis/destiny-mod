@@ -49,7 +49,7 @@ public class DestinyModAttachments {
                                     HashSet::new,
                                     ArrayList::new
                             )
-                            .fieldOf("aspects")
+                            .fieldOf("aspects_to_equip")
                     )
                     .copyOnDeath()
                     .sync(ByteBufCodecs.collection(HashSet::new, RegisteredAspect.STREAM_CODEC))

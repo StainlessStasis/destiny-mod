@@ -10,6 +10,7 @@ import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import io.github.stainlessstasis.destinymod.network.serverbound.AbilityCastPacket;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.world_interaction.BlockDestructionManager;
+import io.github.stainlessstasis.destinymod.network.serverbound.EquipAspectsPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -55,6 +56,11 @@ public class DestinyMod {
                     AbilityCastPacket.TYPE,
                     AbilityCastPacket.STREAM_CODEC,
                     AbilityCastPacket.Handler::handle
+            );
+            registrar.playToServer(
+                    EquipAspectsPacket.TYPE,
+                    EquipAspectsPacket.STREAM_CODEC,
+                    EquipAspectsPacket.Handler::handle
             );
             registrar.playToClient(
                     IgnitionEffectsPacket.TYPE,
