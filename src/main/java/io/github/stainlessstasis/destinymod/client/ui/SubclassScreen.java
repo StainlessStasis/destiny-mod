@@ -17,6 +17,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.network.serverbound.EquipAspectsPacket;
 import io.github.stainlessstasis.destinymod.tooltip.*;
 import io.github.stainlessstasis.destinymod.tooltip.component.*;
 import net.minecraft.client.Minecraft;
@@ -28,6 +29,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
@@ -465,6 +467,7 @@ public class SubclassScreen extends ModularUIScreen {
     public void onClose() {
         super.onClose();
         System.out.println("EQUIPPED ASPECTS: "+this.equippedAspects.list);
+        ClientPacketDistributor.sendToServer(new EquipAspectsPacket(this.equippedAspects.list));
     }
 
     @Override
