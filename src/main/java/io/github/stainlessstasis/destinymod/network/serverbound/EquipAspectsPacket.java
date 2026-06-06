@@ -39,7 +39,7 @@ public record EquipAspectsPacket(List<RegisteredAspect> aspectsToEquip) implemen
                     if (equipped.size() >= maxEquippable) break;
 
                     Aspect aspect = registeredAspect.get(player);
-                    boolean isCorrectSubclass = aspect.subclassID() == subclassID;
+                    boolean isCorrectSubclass = aspect.subclassID().equals(subclassID);
                     boolean isUnlocked = PlayerSubclassData.hasUnlockedAspect(player, registeredAspect);
                     if (isCorrectSubclass && isUnlocked) {
                         equipped.add(registeredAspect);

@@ -108,7 +108,7 @@ public class SubclassScreen extends ModularUIScreen {
         titleLabel.layout(layout -> layout.height(TITLE_SIZE * guiScalar));
 
         // header - class subtitle
-        Component subtitleText = Component.translatable("subclassID.destinymod." + subclass.destinyClass().name().toLowerCase());
+        Component subtitleText = Component.translatable("subclass.destinymod." + subclass.destinyClass().name().toLowerCase());
         var subtitleLabel = new Label()
                 .setText(subtitleText)
                 .textStyle(style -> style
@@ -409,7 +409,7 @@ public class SubclassScreen extends ModularUIScreen {
     private static void onClickAspect(Subclass subclass, AspectsHolder aspects, RegisteredAspect aspect, float guiScalar) {
         Player player = Minecraft.getInstance().player;
         if (player == null) {
-            DestinyMod.LOGGER.error("Somehow the player was null when attempting to click an aspect in the subclassID screen. This shouldn't be possible so your guess is as good as mine.");
+            DestinyMod.LOGGER.error("Somehow the player was null when attempting to click an aspect in the subclass screen. This shouldn't be possible so your guess is as good as mine.");
             return;
         }
         double x = player.getX();
@@ -466,7 +466,6 @@ public class SubclassScreen extends ModularUIScreen {
     @Override
     public void onClose() {
         super.onClose();
-        System.out.println("EQUIPPED ASPECTS: "+this.equippedAspects.list);
         ClientPacketDistributor.sendToServer(new EquipAspectsPacket(this.equippedAspects.list));
     }
 
