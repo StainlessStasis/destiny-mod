@@ -42,7 +42,7 @@ public class DestinyModDatagen {
                 .add(DestinyModRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                     bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1,
-                                    new HeatseekerProperty(0.1f, 20)));
+                                    new HeatseekerProperty(0.1f, 12f, 90f, 20)));
                     bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                 })
 

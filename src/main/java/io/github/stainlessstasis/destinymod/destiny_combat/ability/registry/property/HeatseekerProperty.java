@@ -4,10 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public record HeatseekerProperty(float homingStrength, int bonusScorch) implements AbilityProperty {
+public record HeatseekerProperty(float homingStrength, float homingRange, float homingConeAngle, int bonusScorch) implements AbilityProperty {
     public static final MapCodec<HeatseekerProperty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.FLOAT.fieldOf("homing_strength").forGetter(HeatseekerProperty::homingStrength),
-            Codec.INT.fieldOf("bonus_scorch").forGetter(HeatseekerProperty::bonusScorch)
+            Codec.FLOAT.fieldOf("homingStrength").forGetter(HeatseekerProperty::homingStrength),
+            Codec.FLOAT.fieldOf("homingRange").forGetter(HeatseekerProperty::homingRange),
+            Codec.FLOAT.fieldOf("homingConeAngle").forGetter(HeatseekerProperty::homingConeAngle),
+            Codec.INT.fieldOf("bonusScorch").forGetter(HeatseekerProperty::bonusScorch)
     ).apply(instance, HeatseekerProperty::new));
 
     @Override

@@ -3,8 +3,10 @@
   "properties": [
     {
       "type": "heatseeker",
-      "bonus_scorch": 20,
-      "homing_strength": 0.1
+      "bonusScorch": 20,
+      "homingConeAngle": 90.0,
+      "homingRange": 12.0,
+      "homingStrength": 0.1
     }
   ],
   "subclassID": "destinymod:sunbreaker"

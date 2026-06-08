@@ -53,6 +53,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     private static final EntityDataAccessor<Boolean> HAS_MELTING_POINT = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_HEATSEEKER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> HOMING_STRENGTH = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> HOMING_RANGE = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> HOMING_CONE_ANGLE = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> BONUS_SCORCH = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> HAS_ANVIL_DROP = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     public static final float AIR_SPIN_SPEED = 30f;
@@ -100,6 +102,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         setHasHeatseeker(PlayerSubclassData.isAspectEquipped(player, Aspects.HEATSEEKER));
         PlayerSubclassData.getEquippedProperty(player, HeatseekerProperty.class).ifPresent(heatseeker -> {
             setHomingStrength(heatseeker.homingStrength());
+            setHomingRange(heatseeker.homingRange());
+            setHomingConeAngle(heatseeker.homingConeAngle());
             setBonusScorch(heatseeker.bonusScorch());
         });
         setHasAnvilDrop(PlayerSubclassData.isAspectEquipped(player, Aspects.ANVIL_DROP));
@@ -396,7 +400,12 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
                 EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
                 LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
-                StatusEffectManager.applyScorch(mob, owner, ability.scorch());
+
+                int scorchToApply = ability.scorch();
+                if (hasHeatseeker()) {
+                    scorchToApply += getBonusScorch();
+                }
+                StatusEffectManager.applyScorch(mob, owner, scorchToApply);
             }
 
             this.doPostHurtEffects(mob);
@@ -443,7 +452,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         Vec3 velocity = this.getDeltaMovement();
         if (velocity.lengthSqr() <= Constants.EPSILON) return null;
 
-        AABB searchArea = this.getBoundingBox().inflate(12.0);
+        AABB searchArea = this.getBoundingBox().inflate(getHomingRange());
         List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, searchArea, entity -> {
             if (entity == this.getOwner() || !entity.isAlive()) return false;
             if (this.collidedThisTick.contains(entity.getUUID())) return false;
@@ -470,8 +479,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             Vec3 forwardNormal = velocity.normalize();
             Vec3 toTargetNormal = toTarget.normalize();
             double dotProduct = forwardNormal.dot(toTargetNormal);
-            // 90 degree cone
-            if (dotProduct < 0.707) continue;
+            double angleThreshold = Math.cos(Math.toRadians(getHomingConeAngle() / 2));
+            if (dotProduct < angleThreshold) continue;
 
             // check line of sight
             BlockHitResult raycast = this.level().clip(new ClipContext(
@@ -570,7 +579,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         super.defineSynchedData(entityData);
         entityData.define(HAS_MELTING_POINT, false);
         entityData.define(HAS_HEATSEEKER, false);
-        entityData.define(HOMING_STRENGTH, 0.075f);
+        entityData.define(HOMING_STRENGTH, 0.1f);
+        entityData.define(HOMING_RANGE, 12f);
+        entityData.define(HOMING_CONE_ANGLE, 90f);
         entityData.define(BONUS_SCORCH, 20);
         entityData.define(HAS_ANVIL_DROP, false);
     }
@@ -597,6 +608,22 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     public void setHomingStrength(float homingStrength) {
         this.entityData.set(HOMING_STRENGTH, homingStrength);
+    }
+
+    public float getHomingRange() {
+        return this.entityData.get(HOMING_RANGE);
+    }
+
+    public void setHomingRange(float homingRange) {
+        this.entityData.set(HOMING_RANGE, homingRange);
+    }
+
+    public float getHomingConeAngle() {
+        return this.entityData.get(HOMING_CONE_ANGLE);
+    }
+
+    public void setHomingConeAngle(float homingConeAngle) {
+        this.entityData.set(HOMING_CONE_ANGLE, homingConeAngle);
     }
 
     public int getBonusScorch() {
