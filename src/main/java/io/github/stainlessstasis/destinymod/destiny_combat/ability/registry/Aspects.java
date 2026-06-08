@@ -1,11 +1,7 @@
 package io.github.stainlessstasis.destinymod.destiny_combat.ability.registry;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 
 public class Aspects {

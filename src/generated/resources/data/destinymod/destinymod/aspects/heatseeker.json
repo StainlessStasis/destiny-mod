@@ -1,4 +1,11 @@
 {
   "abilityType": "melee",
+  "properties": [
+    {
+      "type": "heatseeker",
+      "bonus_scorch": 20,
+      "homing_strength": 0.1
+    }
+  ],
   "subclassID": "destinymod:sunbreaker"
 }

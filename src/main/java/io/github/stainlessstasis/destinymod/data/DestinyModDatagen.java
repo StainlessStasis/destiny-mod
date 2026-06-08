@@ -8,6 +8,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abil
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -40,7 +41,8 @@ public class DestinyModDatagen {
                 // ASPECTS
                 .add(DestinyModRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
-                    bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
+                    bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1,
+                                    new HeatseekerProperty(0.1f, 20)));
                     bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                 })
 
