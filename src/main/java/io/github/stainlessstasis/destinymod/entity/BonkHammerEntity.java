@@ -29,19 +29,19 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
@@ -50,14 +50,15 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     private static final EntityDataAccessor<Boolean> HAS_MELTING_POINT = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_HEATSEEKER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_ANVIL_DROP = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final float AIR_SPIN_SPEED = 30f;
-    private static final float LIQUID_SPIN_SPEED = 10f;
-
-    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
-    private final Ability ability;
+    public static final float AIR_SPIN_SPEED = 30f;
+    public static final float LIQUID_SPIN_SPEED = 10f;
     public static final float RESTITUTION = 0.420f;
     public static final float FRICTION = 0.55f;
     public static final float STICK_SPEED_THRESHOLD = 0.2f;
+    public static final float HOMING_STRENGTH = 0.075f;
+
+    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+    private final Ability ability;
     private final Set<UUID> collidedThisTick = new HashSet<>();
     private float visualSpinDegrees = 0f;
     private boolean hitCeiling = false;
@@ -129,6 +130,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         // Custom collision and stuff
         this.hitCeiling = false;
         if (physicsEnabled && !this.isGrounded()) {
+            applyHoming();
             moveAndCollide();
             updateVisualSpin();
         }
@@ -240,12 +242,12 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
         vanillaHitBlock(result);
 
-        if (this.level() instanceof ServerLevel level) {
-            double speed = context.sourceVelocity().length();
+//        if (this.level() instanceof ServerLevel level) {
+//            double speed = context.sourceVelocity().length();
 //            if (speed > STICK_SPEED_THRESHOLD) {
 //                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
 //            }
-        }
+//        }
     }
 
     protected void handleEntityCollision(CollisionContext context) {
@@ -402,6 +404,83 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         }
 
         this.playHitSound(false);
+    }
+
+    protected void applyHoming() {
+        if (!this.hasHeatseeker()) return;
+
+        LivingEntity target = findHomingTarget();
+        if (target == null) return;
+
+        Vec3 targetPos = target.position().add(0, target.getBbHeight() * 0.5, 0);
+        Vec3 currentPos = this.position();
+        Vec3 toTarget = targetPos.subtract(currentPos).normalize();
+
+        Vec3 velocity = this.getDeltaMovement();
+        double speed = velocity.length();
+        Vec3 newVelocity = velocity.normalize().lerp(toTarget, HOMING_STRENGTH).normalize().scale(speed);
+        this.setDeltaMovement(newVelocity);
+
+        float yRot = (float) (Mth.atan2(newVelocity.x, newVelocity.z) * (180 / Math.PI));
+        float xRot = (float) (Mth.atan2(newVelocity.y, newVelocity.horizontalDistance()) * (180 / Math.PI));
+        this.setYRot(lerpRotation(this.getYRot(), yRot));
+        this.setXRot(lerpRotation(this.getXRot(), xRot));
+    }
+
+    protected @Nullable LivingEntity findHomingTarget() {
+        Vec3 velocity = this.getDeltaMovement();
+        if (velocity.lengthSqr() <= Constants.EPSILON) return null;
+
+        AABB searchArea = this.getBoundingBox().inflate(12.0);
+        List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, searchArea, entity -> {
+            if (entity == this.getOwner() || !entity.isAlive()) return false;
+            if (this.collidedThisTick.contains(entity.getUUID())) return false;
+
+            boolean isOwned = false;
+            if (this.getOwner() instanceof Entity _owner) {
+                if (entity instanceof TraceableEntity traceable && traceable.getOwner() == _owner) {
+                    isOwned = true;
+                }
+                if (entity instanceof OwnableEntity ownable && ownable.getOwner() == _owner) {
+                    isOwned = true;
+                }
+            }
+            return !isOwned;
+        });
+
+        LivingEntity bestTarget = null;
+        double bestScore = -1;
+        for (LivingEntity target : targets) {
+            Vec3 toTarget = target.position().add(0, target.getBbHeight() * 0.5, 0).subtract(this.position());
+            double distance = toTarget.length();
+            if (distance <= Constants.EPSILON) continue;
+
+            Vec3 forwardNormal = velocity.normalize();
+            Vec3 toTargetNormal = toTarget.normalize();
+            double dotProduct = forwardNormal.dot(toTargetNormal);
+            // 90 degree cone
+            if (dotProduct < 0.707) continue;
+
+            // check line of sight
+            BlockHitResult raycast = this.level().clip(new ClipContext(
+                    this.position(),
+                    target.position().add(0, target.getBbHeight() * 0.5, 0),
+                    ClipContext.Block.COLLIDER,
+                    ClipContext.Fluid.NONE,
+                    this
+            ));
+            if (raycast.getType() == HitResult.Type.BLOCK) continue;
+
+            // weigh in favor of tighter angles so hammer doesnt prioritize targets that are out of the way
+            double angleWeight = Math.pow(dotProduct, 3);
+            double score = angleWeight / (1 + (distance * 0.1));
+            if (score > bestScore) {
+                bestScore = score;
+                bestTarget = target;
+            }
+        }
+
+        return bestTarget;
     }
 
     protected void tryCollectHammer() {
