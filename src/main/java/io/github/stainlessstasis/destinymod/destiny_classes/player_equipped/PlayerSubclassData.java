@@ -9,6 +9,8 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperties;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperty;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -148,6 +150,26 @@ public class PlayerSubclassData {
     public static boolean canEquipAspect(Player player, RegisteredAspect aspect) {
         if (!hasUnlockedAspect(player, aspect)) return false;
         return getAllEquippedRegisteredAspects(player).size() < getMaxAspectsEquippable(player);
+    }
+
+    public static <T extends AbilityProperty> Optional<T> getEquippedProperty(Player player, Class<T> propertyClass) {
+        String targetTypeId = AbilityProperties.getPropertyId(propertyClass);
+        if (targetTypeId == null) return Optional.empty();
+
+        return getAllProperties(player).stream()
+                .filter(prop -> prop.type().equals(targetTypeId))
+                .map(propertyClass::cast)
+                .findFirst();
+    }
+
+    public static List<AbilityProperty> getAllProperties(Player player) {
+        List<AbilityProperty> activeProperties = new ArrayList<>();
+
+        for (Aspect aspect : getAllEquippedAspects(player)) {
+            activeProperties.addAll(Arrays.asList(aspect.properties()));
+        }
+
+        return activeProperties;
     }
 
     public static RegisteredAbility getRegisteredMelee(Player player) {

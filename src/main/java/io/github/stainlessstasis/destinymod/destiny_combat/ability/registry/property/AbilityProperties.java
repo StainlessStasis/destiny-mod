@@ -6,7 +6,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbilityPropertyTypes {
+public class AbilityProperties {
     private static final Map<String, MapCodec<? extends AbilityProperty>> BY_NAME = new HashMap<>();
     private static final Map<Class<? extends AbilityProperty>, String> BY_CLASS = new HashMap<>();
 
@@ -21,6 +21,10 @@ public class AbilityPropertyTypes {
         }
         BY_NAME.put(typeName, codec);
         BY_CLASS.put(clazz, typeName);
+    }
+
+    public static String getPropertyId(Class<? extends AbilityProperty> clazz) {
+        return BY_CLASS.get(clazz);
     }
 
     static {

@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.ability;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityPropertyTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperties;
 import net.minecraft.resources.Identifier;
 
 import java.util.Arrays;
@@ -17,7 +17,7 @@ public record Aspect(Identifier subclassID, AbilityType abilityType, int cooldow
                     Identifier.CODEC.fieldOf("subclassID").forGetter(Aspect::subclassID),
                     AbilityType.CODEC.fieldOf("abilityType").forGetter(Aspect::abilityType),
                     Codec.INT.optionalFieldOf("cooldownTicks", -1).forGetter(Aspect::cooldownTicks),
-                    Codec.list(AbilityPropertyTypes.DISPATCH_CODEC)
+                    Codec.list(AbilityProperties.DISPATCH_CODEC)
                             .optionalFieldOf("properties", List.of())
                             .xmap(list -> list.toArray(new AbilityProperty[0]), List::of)
                             .forGetter(Aspect::properties)
@@ -25,8 +25,11 @@ public record Aspect(Identifier subclassID, AbilityType abilityType, int cooldow
     );
 
     public <T extends AbilityProperty> Optional<T> getProperty(Class<T> propertyClass) {
+        String targetTypeId = AbilityProperties.getPropertyId(propertyClass);
+        if (targetTypeId == null) return Optional.empty();
+
         return Arrays.stream(this.properties)
-                .filter(property -> propertyClass.isAssignableFrom(property.getClass()))
+                .filter(property -> property.type().equals(targetTypeId))
                 .map(propertyClass::cast)
                 .findFirst();
     }

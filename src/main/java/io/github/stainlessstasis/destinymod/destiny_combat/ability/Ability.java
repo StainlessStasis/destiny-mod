@@ -4,8 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityPropertyTypes;
-import net.minecraft.resources.Identifier;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperties;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +23,7 @@ public record Ability(
                     Codec.FLOAT.optionalFieldOf("activationChance", -1f).forGetter(Ability::activationChance),
                     Codec.FLOAT.optionalFieldOf("damage", -1f).forGetter(Ability::damage),
                     Codec.INT.optionalFieldOf("scorch", -1).forGetter(Ability::scorch),
-                    Codec.list(AbilityPropertyTypes.DISPATCH_CODEC)
+                    Codec.list(AbilityProperties.DISPATCH_CODEC)
                             .optionalFieldOf("properties", List.of())
                             .xmap(list -> list.toArray(new AbilityProperty[0]), List::of)
                             .forGetter(Ability::properties)
@@ -32,8 +31,11 @@ public record Ability(
     );
 
     public <T extends AbilityProperty> Optional<T> getProperty(Class<T> propertyClass) {
+        String targetTypeId = AbilityProperties.getPropertyId(propertyClass);
+        if (targetTypeId == null) return Optional.empty();
+
         return Arrays.stream(this.properties)
-                .filter(property -> propertyClass.isAssignableFrom(property.getClass()))
+                .filter(property -> property.type().equals(targetTypeId))
                 .map(propertyClass::cast)
                 .findFirst();
     }

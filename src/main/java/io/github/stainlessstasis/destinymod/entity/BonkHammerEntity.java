@@ -13,6 +13,9 @@ import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperties;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperty;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
@@ -49,13 +52,14 @@ import java.util.*;
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity, DestinyAbility {
     private static final EntityDataAccessor<Boolean> HAS_MELTING_POINT = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_HEATSEEKER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> HOMING_STRENGTH = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> BONUS_SCORCH = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> HAS_ANVIL_DROP = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     public static final float AIR_SPIN_SPEED = 30f;
     public static final float LIQUID_SPIN_SPEED = 10f;
     public static final float RESTITUTION = 0.420f;
     public static final float FRICTION = 0.55f;
     public static final float STICK_SPEED_THRESHOLD = 0.2f;
-    public static final float HOMING_STRENGTH = 0.075f;
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private final Ability ability;
@@ -91,6 +95,16 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         this.setSoundEvent(SoundEvents.IRON_FALL);
     }
 
+    private void initAspects(Player player) {
+        setHasMeltingPoint(PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class));
+        setHasHeatseeker(PlayerSubclassData.isAspectEquipped(player, Aspects.HEATSEEKER));
+        PlayerSubclassData.getEquippedProperty(player, HeatseekerProperty.class).ifPresent(heatseeker -> {
+            setHomingStrength(heatseeker.homingStrength());
+            setBonusScorch(heatseeker.bonusScorch());
+        });
+        setHasAnvilDrop(PlayerSubclassData.isAspectEquipped(player, Aspects.ANVIL_DROP));
+    }
+
     private void updateVisualSpin() {
         if (!this.isInGround()) {
             this.visualSpinDegrees += getVisualSpinSpeed();
@@ -121,9 +135,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 0.5f, 1.5f);
 
             if (getOwner() instanceof Player player) {
-                setHasMeltingPoint(PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class));
-                setHasHeatseeker(PlayerSubclassData.isAspectEquipped(player, Aspects.HEATSEEKER));
-                setHasAnvilDrop(PlayerSubclassData.isAspectEquipped(player, Aspects.ANVIL_DROP));
+                initAspects(player);
             }
         }
 
@@ -418,7 +430,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
         Vec3 velocity = this.getDeltaMovement();
         double speed = velocity.length();
-        Vec3 newVelocity = velocity.normalize().lerp(toTarget, HOMING_STRENGTH).normalize().scale(speed);
+        Vec3 newVelocity = velocity.normalize().lerp(toTarget, getHomingStrength()).normalize().scale(speed);
         this.setDeltaMovement(newVelocity);
 
         float yRot = (float) (Mth.atan2(newVelocity.x, newVelocity.z) * (180 / Math.PI));
@@ -558,6 +570,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         super.defineSynchedData(entityData);
         entityData.define(HAS_MELTING_POINT, false);
         entityData.define(HAS_HEATSEEKER, false);
+        entityData.define(HOMING_STRENGTH, 0.075f);
+        entityData.define(BONUS_SCORCH, 20);
         entityData.define(HAS_ANVIL_DROP, false);
     }
 
@@ -575,6 +589,22 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     public void setHasHeatseeker(boolean heatseeker) {
         this.entityData.set(HAS_HEATSEEKER, heatseeker);
+    }
+
+    public float getHomingStrength() {
+        return this.entityData.get(HOMING_STRENGTH);
+    }
+
+    public void setHomingStrength(float homingStrength) {
+        this.entityData.set(HOMING_STRENGTH, homingStrength);
+    }
+
+    public int getBonusScorch() {
+        return this.entityData.get(BONUS_SCORCH);
+    }
+
+    public void setBonusScorch(int bonusScorch) {
+        this.entityData.set(BONUS_SCORCH, bonusScorch);
     }
 
     public boolean hasAnvilDrop() {
