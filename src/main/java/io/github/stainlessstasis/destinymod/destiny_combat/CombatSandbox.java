@@ -37,7 +37,6 @@ public class CombatSandbox {
             if (victim.getData(DestinyModAttachments.IS_MELTING_POINT_ACTIVE)) {
                 var instance = StatusEffectManager.getInstance(victim, MeltingPoint.class);
                 if (instance != null) {
-                    System.out.println("DAMAGE MULTIPLIER: " +instance.getProperty(victim.level()).additionalDamagePercent());
                     damageMultiplier += instance.getProperty(victim.level()).additionalDamagePercent();
                 }
             }

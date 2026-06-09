@@ -1,0 +1,10 @@
+{
+  "isBuff": true,
+  "properties": [
+    {
+      "type": "sol_invictus",
+      "additionalAbilityRegenPercent": 1.0,
+      "durationTicks": 60
+    }
+  ]
+}

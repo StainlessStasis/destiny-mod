@@ -15,6 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -69,7 +70,10 @@ public class AbilityCooldowns {
         float regenSpeed = 1f;
 
         if (StatusEffectManager.isActive(entity, SolInvictus.class)) {
-            regenSpeed += 1f;
+            var instance = StatusEffectManager.getInstance(entity, SolInvictus.class);
+            if (instance != null) {
+                regenSpeed += instance.getProperty(entity.level()).additionalAbilityRegenPercent();
+            }
         }
 
         return regenSpeed;

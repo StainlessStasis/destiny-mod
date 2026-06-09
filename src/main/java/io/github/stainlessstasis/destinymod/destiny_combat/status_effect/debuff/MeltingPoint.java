@@ -35,7 +35,6 @@ public class MeltingPoint extends AbstractStatusEffect {
         return StatusEffects.MELTING_POINT.get(level).getProperty(MeltingPointProperty.class).orElse(getDefaultProperty());
     }
 
-
     @Override
     public void tick(LivingEntity entity) {
         super.tick(entity);

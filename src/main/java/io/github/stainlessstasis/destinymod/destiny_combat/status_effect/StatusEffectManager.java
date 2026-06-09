@@ -54,7 +54,7 @@ public class StatusEffectManager {
     }
 
     public static void applySolInvictus(LivingEntity entity) {
-        applySolInvictus(entity, SolInvictus.DEFAULT_TICKS);
+        getAndRegisterEffect(entity, SolInvictus.class, DestinyModAttachments.SOL_INVICTUS);
     }
 
     public static void applySolInvictus(LivingEntity entity, int ticks) {

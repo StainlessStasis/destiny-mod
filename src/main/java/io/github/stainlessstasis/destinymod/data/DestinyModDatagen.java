@@ -12,6 +12,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.registry.StatusEffect
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffect;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import net.minecraft.core.RegistrySetBuilder;
@@ -54,6 +55,7 @@ public class DestinyModDatagen {
                 .add(DestinyModRegistries.STATUS_EFFECT_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(StatusEffects.SCORCH.resourceKey(), new StatusEffect(false, Scorch.getDefaultProperty()));
                     bootstrap.register(StatusEffects.MELTING_POINT.resourceKey(), new StatusEffect(false, MeltingPoint.getDefaultProperty()));
+                    bootstrap.register(StatusEffects.SOL_INVICTUS.resourceKey(), new StatusEffect(true, SolInvictus.getDefaultProperty()));
                 })
 
                 // DAMAGE TYPES AND DAMAGE TYPE TAGS
