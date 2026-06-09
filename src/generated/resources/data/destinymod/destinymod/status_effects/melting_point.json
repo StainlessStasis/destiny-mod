@@ -1,0 +1,10 @@
+{
+  "isBuff": false,
+  "properties": [
+    {
+      "type": "melting_point",
+      "additionalDamagePercent": 200.0,
+      "durationTicks": 160
+    }
+  ]
+}

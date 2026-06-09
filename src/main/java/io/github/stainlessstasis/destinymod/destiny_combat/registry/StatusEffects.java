@@ -11,4 +11,5 @@ public class StatusEffects {
 
     public static final RegisteredStatusEffect NONE = register("none");
     public static final RegisteredStatusEffect SCORCH = register("scorch");
+    public static final RegisteredStatusEffect MELTING_POINT = register("melting_point");
 }

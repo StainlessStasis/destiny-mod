@@ -6,6 +6,8 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,7 +35,11 @@ public class CombatSandbox {
             final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
 
             if (victim.getData(DestinyModAttachments.IS_MELTING_POINT_ACTIVE)) {
-                damageMultiplier += 0.2f;
+                var instance = StatusEffectManager.getInstance(victim, MeltingPoint.class);
+                if (instance != null) {
+                    System.out.println("DAMAGE MULTIPLIER: " +instance.getProperty(victim.level()).additionalDamagePercent());
+                    damageMultiplier += instance.getProperty(victim.level()).additionalDamagePercent();
+                }
             }
         }
 

@@ -42,7 +42,7 @@ public class Scorch extends OwnableStatusEffect {
         return new ScorchProperty(0.25f, 40, 100);
     }
 
-    private ScorchProperty getProperty(Level level) {
+    public ScorchProperty getProperty(Level level) {
         return StatusEffects.SCORCH.get(level).getProperty(ScorchProperty.class).orElse(getDefaultProperty());
     }
 

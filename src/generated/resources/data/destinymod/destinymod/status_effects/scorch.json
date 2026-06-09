@@ -1,5 +1,5 @@
 {
-  "isBeneficial": false,
+  "isBuff": false,
   "properties": [
     {
       "type": "scorch",

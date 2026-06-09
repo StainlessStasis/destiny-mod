@@ -11,10 +11,5 @@ public record ScorchProperty(float damage, int decayDelayTicks, int ignitionThre
             Codec.INT.fieldOf("decayDelayTicks").forGetter(ScorchProperty::decayDelayTicks),
             Codec.INT.fieldOf("ignitionThreshold").forGetter(ScorchProperty::ignitionThreshold)
     ).apply(instance, ScorchProperty::new));
-
-    @Override
-    public String type() {
-        return "scorch";
-    }
 }
 

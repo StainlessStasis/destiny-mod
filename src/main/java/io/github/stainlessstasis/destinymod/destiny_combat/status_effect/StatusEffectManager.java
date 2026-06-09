@@ -40,6 +40,13 @@ public class StatusEffectManager {
         return entity.getData(attachment.get());
     }
 
+    public static @Nullable <T extends IStatusEffect> T getInstance(LivingEntity entity, Class<T> statusEffectClass) {
+        if (entity.level().isClientSide()) return null;
+        var attachment = IStatusEffect.getOrCreateCache(statusEffectClass).serverAttachment().get();
+        if (!entity.hasData(attachment)) return null;
+        return (T) entity.getData(attachment);
+    }
+
     public static void applyScorch(LivingEntity target, @Nullable LivingEntity attacker, int stacks) {
         Scorch scorch = getAndRegisterEffect(target, Scorch.class, DestinyModAttachments.SCORCH);
         scorch.setOwner(attacker);
@@ -56,7 +63,7 @@ public class StatusEffectManager {
     }
 
     public static void applyMeltingPoint(LivingEntity entity) {
-        applyMeltingPoint(entity, MeltingPoint.DEFAULT_TICKS);
+        getAndRegisterEffect(entity, MeltingPoint.class, DestinyModAttachments.MELTING_POINT);
     }
 
     public static void applyMeltingPoint(LivingEntity entity, int ticks) {

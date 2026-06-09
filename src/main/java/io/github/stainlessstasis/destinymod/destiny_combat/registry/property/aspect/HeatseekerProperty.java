@@ -12,9 +12,4 @@ public record HeatseekerProperty(float homingStrength, float homingRange, float 
             Codec.FLOAT.fieldOf("homingConeAngle").forGetter(HeatseekerProperty::homingConeAngle),
             Codec.INT.fieldOf("bonusScorch").forGetter(HeatseekerProperty::bonusScorch)
     ).apply(instance, HeatseekerProperty::new));
-
-    @Override
-    public String type() {
-        return "heatseeker";
-    }
 }
