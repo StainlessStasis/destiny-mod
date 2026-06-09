@@ -4,11 +4,11 @@ import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.HeatseekerProperty;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.Aspects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -31,7 +31,7 @@ public class DestinyModDatagen {
                             AbilityType.PASSIVE, DestinyElement.NONE, -1, -1, -1f, -1f, -1
                     ));
                     bootstrap.register(Abilities.THROWING_HAMMER.resourceKey(), new Ability(
-                            AbilityType.MELEE, DestinyElement.SOLAR, 200, 3, -1f, 7f, 50
+                            AbilityType.MELEE, DestinyElement.SOLAR, 200, 3, -1f, 7f, 25
                     ));
                     bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.SOLAR, -1, -1, 0.3f, 1f, 5
@@ -42,7 +42,7 @@ public class DestinyModDatagen {
                 .add(DestinyModRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                     bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1,
-                                    new HeatseekerProperty(0.1f, 12f, 90f, 20)));
+                                    new HeatseekerProperty(0.1f, 12f, 90f, 35)));
                     bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                 })
 

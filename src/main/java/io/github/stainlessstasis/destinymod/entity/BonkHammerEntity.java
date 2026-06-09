@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.destinymod.entity;
 
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.CollisionContext;
@@ -12,10 +12,8 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperties;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.HeatseekerProperty;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.Aspects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;

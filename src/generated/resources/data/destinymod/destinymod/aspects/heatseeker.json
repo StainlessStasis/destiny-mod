@@ -3,7 +3,7 @@
   "properties": [
     {
       "type": "heatseeker",
-      "bonusScorch": 20,
+      "bonusScorch": 35,
       "homingConeAngle": 90.0,
       "homingRange": 12.0,
       "homingStrength": 0.1

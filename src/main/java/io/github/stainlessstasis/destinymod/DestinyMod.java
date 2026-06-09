@@ -2,10 +2,10 @@ package io.github.stainlessstasis.destinymod;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.Aspects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.Aspects;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import io.github.stainlessstasis.destinymod.network.serverbound.AbilityCastPacket;

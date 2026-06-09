@@ -1,7 +1,8 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property;
+package io.github.stainlessstasis.destinymod.destiny_combat.registry.property;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 
 import java.util.HashMap;
 import java.util.Map;

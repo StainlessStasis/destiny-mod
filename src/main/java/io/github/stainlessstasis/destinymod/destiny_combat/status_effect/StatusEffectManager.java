@@ -11,18 +11,17 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 @EventBusSubscriber
 public class StatusEffectManager {
-    private static <T extends StatusEffect> T getAndRegisterEffect(LivingEntity entity, Class<T> effectClass, Supplier<? extends AttachmentType<T>> attachmentSupplier) {
-        StatusEffect.getOrCreateCache(effectClass);
+    private static <T extends IStatusEffect> T getAndRegisterEffect(LivingEntity entity, Class<T> effectClass, Supplier<? extends AttachmentType<T>> attachmentSupplier) {
+        IStatusEffect.getOrCreateCache(effectClass);
         return entity.getData(attachmentSupplier.get());
     }
 
-    public static boolean isActive(LivingEntity entity, Class<? extends StatusEffect> statusEffectClass) {
-        StatusEffect.EffectAttachmentCache cache = StatusEffect.getOrCreateCache(statusEffectClass);
+    public static boolean isActive(LivingEntity entity, Class<? extends IStatusEffect> statusEffectClass) {
+        IStatusEffect.EffectAttachmentCache cache = IStatusEffect.getOrCreateCache(statusEffectClass);
 
         if (entity.level().isClientSide()) {
             return isActiveOnClient(entity, cache.clientAttachment());
@@ -31,7 +30,7 @@ public class StatusEffectManager {
         }
     }
 
-    private static boolean isActiveOnServer(LivingEntity entity, Supplier<? extends AttachmentType<? extends StatusEffect>> attachment) {
+    private static boolean isActiveOnServer(LivingEntity entity, Supplier<? extends AttachmentType<? extends IStatusEffect>> attachment) {
         if (!entity.hasData(attachment.get())) return false;
         return entity.getData(attachment.get()).isActive();
     }
@@ -69,9 +68,9 @@ public class StatusEffectManager {
     public static void onEntityTick(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof LivingEntity entity) || entity.level().isClientSide()) return;
 
-        for (var effectSupplier : StatusEffect.TICKABLE_EFFECTS) {
+        for (var effectSupplier : IStatusEffect.TICKABLE_EFFECTS) {
             if (entity.hasData(effectSupplier.get())) {
-                StatusEffect effect = entity.getData(effectSupplier.get());
+                IStatusEffect effect = entity.getData(effectSupplier.get());
 
                 if (effect.isActive()) {
                     effect.tick(entity);

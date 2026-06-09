@@ -4,5 +4,5 @@
   "damage": 7.0,
   "element": "solar",
   "maxCharges": 3,
-  "scorch": 50
+  "scorch": 25
 }

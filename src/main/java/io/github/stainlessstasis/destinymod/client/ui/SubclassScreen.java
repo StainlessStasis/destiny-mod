@@ -16,7 +16,7 @@ import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.network.serverbound.EquipAspectsPacket;
 import io.github.stainlessstasis.destinymod.tooltip.*;
 import io.github.stainlessstasis.destinymod.tooltip.component.*;

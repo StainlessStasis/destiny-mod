@@ -2,7 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.status_effect;
 
 import net.minecraft.world.entity.LivingEntity;
 
-public abstract class AbstractStatusEffect implements StatusEffect {
+public abstract class AbstractStatusEffect implements IStatusEffect {
     protected int tickCount = 0;
 
     @Override

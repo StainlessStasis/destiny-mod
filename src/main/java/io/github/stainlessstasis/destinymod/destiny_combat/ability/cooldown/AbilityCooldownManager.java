@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.RegisteredAbility;
 import net.minecraft.world.entity.Entity;
 
 public class AbilityCooldownManager {

@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.AbstractStatusEffect;
-import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffect;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.IStatusEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.attachment.AttachmentType;
 
@@ -50,7 +50,7 @@ public class MeltingPoint extends AbstractStatusEffect {
     }
 
     @Override
-    public Supplier<? extends AttachmentType<? extends StatusEffect>> getAttachment() {
+    public Supplier<? extends AttachmentType<? extends IStatusEffect>> getAttachment() {
         return DestinyModAttachments.MELTING_POINT;
     }
 }

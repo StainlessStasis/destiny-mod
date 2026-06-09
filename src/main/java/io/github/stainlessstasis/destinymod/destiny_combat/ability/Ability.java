@@ -3,8 +3,8 @@ package io.github.stainlessstasis.destinymod.destiny_combat.ability;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.registry.property.AbilityProperties;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperty;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
 
 import java.util.Arrays;
 import java.util.List;
