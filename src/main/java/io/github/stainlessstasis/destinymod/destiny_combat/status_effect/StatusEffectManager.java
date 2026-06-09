@@ -43,7 +43,7 @@ public class StatusEffectManager {
     public static void applyScorch(LivingEntity target, @Nullable LivingEntity attacker, int stacks) {
         Scorch scorch = getAndRegisterEffect(target, Scorch.class, DestinyModAttachments.SCORCH);
         scorch.setOwner(attacker);
-        scorch.addStacks(stacks);
+        scorch.addStacks(target, stacks);
     }
 
     public static void applySolInvictus(LivingEntity entity) {

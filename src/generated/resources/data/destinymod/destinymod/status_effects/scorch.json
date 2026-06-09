@@ -1,0 +1,11 @@
+{
+  "isBeneficial": false,
+  "properties": [
+    {
+      "type": "scorch",
+      "damage": 0.25,
+      "decayDelayTicks": 40,
+      "ignitionThreshold": 100
+    }
+  ]
+}

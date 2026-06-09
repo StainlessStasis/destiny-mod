@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.registry.property;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.ScorchProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,5 +31,6 @@ public class AbilityProperties {
 
     static {
         register("heatseeker", HeatseekerProperty.class, HeatseekerProperty.CODEC);
+        register("scorch", ScorchProperty.class, ScorchProperty.CODEC);
     }
 }

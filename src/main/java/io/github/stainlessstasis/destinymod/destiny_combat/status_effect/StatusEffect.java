@@ -10,11 +10,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public record StatusEffect(Identifier effectID, boolean isBeneficial, AbilityProperty... properties) {
+public record StatusEffect(boolean isBeneficial, AbilityProperty... properties) {
     public static final Codec<StatusEffect> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Identifier.CODEC.fieldOf("effectID").forGetter(StatusEffect::effectID),
-                    Codec.BOOL.optionalFieldOf("isBeneficial", false).forGetter(StatusEffect::isBeneficial),
+                    Codec.BOOL.fieldOf("isBeneficial").forGetter(StatusEffect::isBeneficial),
                     Codec.list(AbilityProperties.DISPATCH_CODEC)
                             .optionalFieldOf("properties", List.of())
                             .xmap(list -> list.toArray(new AbilityProperty[0]), List::of)

@@ -8,6 +8,8 @@ import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.solar.Ignition;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.ScorchProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.OwnableStatusEffect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.IStatusEffect;
 import io.netty.buffer.ByteBuf;
@@ -17,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.AttachmentType;
 
 import java.util.function.Supplier;
@@ -35,9 +38,18 @@ public class Scorch extends OwnableStatusEffect {
         this.decayDelay = decayDelay;
     }
 
-    public void addStacks(int amount) {
-        this.stacks = Math.min(IGNITION_THRESHOLD, this.stacks + amount);
-        this.decayDelay = 40;
+    public static ScorchProperty getDefaultProperty() {
+        return new ScorchProperty(0.25f, 40, 100);
+    }
+
+    private ScorchProperty getProperty(Level level) {
+        return StatusEffects.SCORCH.get(level).getProperty(ScorchProperty.class).orElse(getDefaultProperty());
+    }
+
+    public void addStacks(LivingEntity entity, int amount) {
+        ScorchProperty property = getProperty(entity.level());
+        this.stacks = Math.min(property.ignitionThreshold(), this.stacks + amount);
+        this.decayDelay = property.decayDelayTicks();
     }
 
     public int getStacks() { return this.stacks; }
@@ -62,7 +74,9 @@ public class Scorch extends OwnableStatusEffect {
     @Override
     public void tick(LivingEntity entity) {
         super.tick(entity);
-        if (this.stacks >= IGNITION_THRESHOLD && entity.level() instanceof ServerLevel level) {
+        ScorchProperty property = getProperty(entity.level());
+
+        if (this.stacks >= property.ignitionThreshold() && entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);
             Ignition.ignite(entity, owner, owner);
             this.clear(entity);
@@ -81,10 +95,12 @@ public class Scorch extends OwnableStatusEffect {
     }
 
     public void hurt(LivingEntity entity) {
+        ScorchProperty property = getProperty(entity.level());
+
         if (entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);
-            float damageMultiplier = 1f + (this.stacks*2f/IGNITION_THRESHOLD);
-            float damage = DAMAGE * damageMultiplier;
+            float damageMultiplier = 1f + (this.stacks*2f/property.ignitionThreshold());
+            float damage = property.damage() * damageMultiplier;
             DestinyDamageBuilder.create(DMDamageTypes.SCORCH, entity)
                     .directSource(owner)
                     .attacker(owner)
