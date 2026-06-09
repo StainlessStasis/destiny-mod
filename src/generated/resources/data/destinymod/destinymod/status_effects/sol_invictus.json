@@ -3,7 +3,7 @@
   "properties": [
     {
       "type": "sol_invictus",
-      "additionalAbilityRegenPercent": 4.0,
+      "additionalAbilityRegenPercent": 1.0,
       "durationTicks": 60
     }
   ]
