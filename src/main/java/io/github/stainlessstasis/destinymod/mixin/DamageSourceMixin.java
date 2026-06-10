@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(DamageSource.class)
 public abstract class DamageSourceMixin implements DestinyModDamageSource {
     @Unique private DestinyElement destinymod$element = DestinyElement.NONE;
+    @Unique private boolean destinymod$overridesKnockback = false;
     @Unique private boolean destinymod$hasKnockback = true;
 
     @Override
@@ -24,11 +25,14 @@ public abstract class DamageSourceMixin implements DestinyModDamageSource {
     @Override
     public boolean destinymod$hasKnockback() { return this.destinymod$hasKnockback; }
     @Override
-    public void destinymod$setHasKnockback(boolean hasKnockback) { this.destinymod$hasKnockback = hasKnockback; }
+    public void destinymod$setHasKnockback(boolean hasKnockback) {
+        this.destinymod$hasKnockback = hasKnockback;
+        this.destinymod$overridesKnockback = true;
+    }
 
     @Inject(method = "is(Lnet/minecraft/tags/TagKey;)Z", at = @At("HEAD"), cancellable = true)
     private void checkKnockback(TagKey<DamageType> tag, CallbackInfoReturnable<Boolean> cir) {
-        if (tag.equals(DamageTypeTags.NO_KNOCKBACK)) {
+        if (tag.equals(DamageTypeTags.NO_KNOCKBACK) && destinymod$overridesKnockback) {
             cir.setReturnValue(!this.destinymod$hasKnockback);
         }
 
