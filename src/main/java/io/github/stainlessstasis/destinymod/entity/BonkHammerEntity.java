@@ -64,7 +64,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     public static final float RESTITUTION = 0.420f;
     public static final float FRICTION = 0.55f;
     public static final float STICK_SPEED_THRESHOLD = 0.2f;
-    public static final double TERMINAL_VELOCITY = -5d; // 4 blocks/tick downward
+    public static final double TERMINAL_VELOCITY = -5d; // 5 blocks/tick downward
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private final Ability ability;
@@ -116,6 +116,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             setGravityMultiplier(anvil.gravityMultiplier());
             setSpeedMultiplier(anvil.speedMultiplier());
             setDeltaMovement(getDeltaMovement().scale(anvil.speedMultiplier()));
+            markHurt(); // sync delta movement
             setDamageMultiplier(anvil.damageMultiplier());
         });
     }
@@ -258,6 +259,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         handleBlockCollision(context);
         handleEntityCollision(context);
         handleCollision(context);
+        triggerAnvilDropExplosion();
     }
 
     protected void handleBlockCollision(CollisionContext context) {
@@ -395,12 +397,11 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         if (entity instanceof LivingEntity mob) {
             Level level = this.level();
             if (level instanceof ServerLevel serverLevel) {
-                float damage = hasAnvilDrop() ? ability.damage() * getDamageMultiplier() : ability.damage();
                 DestinyDamageBuilder builder = DestinyDamageBuilder.create(DMDamageTypes.MELEE_ABILITY, mob)
                         .directSource(this)
                         .attacker(currentOwner != null ? currentOwner : this)
                         .element(ability.element())
-                        .damage(damage)
+                        .damage(getDamage())
                         .invulnerabilityTicks(0)
                         .knockback(true);
                 DamageSource damageSource = builder.buildDamageSource();
@@ -437,6 +438,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         }
 
         this.playHitSound(false);
+    }
+
+    public float getDamage() {
+        return hasAnvilDrop() ? ability.damage() * getDamageMultiplier() : ability.damage();
     }
 
     protected void applyHoming() {
@@ -509,6 +514,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         }
 
         return bestTarget;
+    }
+
+    protected void triggerAnvilDropExplosion() {
+
     }
 
     protected void tryCollectHammer() {
