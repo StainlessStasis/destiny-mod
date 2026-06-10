@@ -1,4 +1,12 @@
 {
   "abilityType": "melee",
+  "properties": [
+    {
+      "type": "anvil_drop",
+      "damageMultiplier": 1.65,
+      "gravityMultiplier": 1.75,
+      "speedMultiplier": 0.7
+    }
+  ],
   "subclassID": "destinymod:sunbreaker"
 }

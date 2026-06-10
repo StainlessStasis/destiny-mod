@@ -9,6 +9,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.Aspects;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffect;
@@ -48,7 +49,8 @@ public class DestinyModDatagen {
                     bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                     bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1,
                                     new HeatseekerProperty(0.1f, 12f, 90f, 35)));
-                    bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
+                    bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1,
+                            new AnvilDropProperty(1.75f, 0.7f, 1.65f)));
                 })
 
                 // STATUS EFFECTS

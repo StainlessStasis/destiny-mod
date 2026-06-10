@@ -13,6 +13,7 @@ import com.geckolib.util.GeckoLibUtil;
 import com.google.common.collect.Lists;
 import com.mojang.math.Constants;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.Aspects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
@@ -55,6 +56,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     private static final EntityDataAccessor<Float> HOMING_CONE_ANGLE = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> BONUS_SCORCH = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> HAS_ANVIL_DROP = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> GRAVITY_MULTIPLIER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SPEED_MULTIPLIER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DAMAGE_MULTIPLIER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
     public static final float AIR_SPIN_SPEED = 30f;
     public static final float LIQUID_SPIN_SPEED = 10f;
     public static final float RESTITUTION = 0.420f;
@@ -97,6 +101,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     private void initAspects(Player player) {
         setHasMeltingPoint(PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class));
+
         setHasHeatseeker(PlayerSubclassData.isAspectEquipped(player, Aspects.HEATSEEKER));
         PlayerSubclassData.getEquippedProperty(player, HeatseekerProperty.class).ifPresent(heatseeker -> {
             setHomingStrength(heatseeker.homingStrength());
@@ -104,7 +109,14 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             setHomingConeAngle(heatseeker.homingConeAngle());
             setBonusScorch(heatseeker.bonusScorch());
         });
+
         setHasAnvilDrop(PlayerSubclassData.isAspectEquipped(player, Aspects.ANVIL_DROP));
+        PlayerSubclassData.getEquippedProperty(player, AnvilDropProperty.class).ifPresent(anvil -> {
+            setGravityMultiplier(anvil.gravityMultiplier());
+            setSpeedMultiplier(anvil.speedMultiplier());
+            setDeltaMovement(getDeltaMovement().scale(anvil.speedMultiplier()));
+            setDamageMultiplier(anvil.damageMultiplier());
+        });
     }
 
     private void updateVisualSpin() {
@@ -382,11 +394,12 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         if (entity instanceof LivingEntity mob) {
             Level level = this.level();
             if (level instanceof ServerLevel serverLevel) {
+                float damage = hasAnvilDrop() ? ability.damage() * getDamageMultiplier() : ability.damage();
                 DestinyDamageBuilder builder = DestinyDamageBuilder.create(DMDamageTypes.MELEE_ABILITY, mob)
                         .directSource(this)
                         .attacker(currentOwner != null ? currentOwner : this)
                         .element(ability.element())
-                        .damage(ability.damage())
+                        .damage(damage)
                         .invulnerabilityTicks(0)
                         .knockback(true);
                 DamageSource damageSource = builder.buildDamageSource();
@@ -439,11 +452,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         double speed = velocity.length();
         Vec3 newVelocity = velocity.normalize().lerp(toTarget, getHomingStrength()).normalize().scale(speed);
         this.setDeltaMovement(newVelocity);
-
-        float yRot = (float) (Mth.atan2(newVelocity.x, newVelocity.z) * (180 / Math.PI));
-        float xRot = (float) (Mth.atan2(newVelocity.y, newVelocity.horizontalDistance()) * (180 / Math.PI));
-        this.setYRot(lerpRotation(this.getYRot(), yRot));
-        this.setXRot(lerpRotation(this.getXRot(), xRot));
     }
 
     protected @Nullable LivingEntity findHomingTarget() {
@@ -531,7 +539,11 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     @Override
     protected double getDefaultGravity() {
-        return 0.03;
+        float gravity = 0.03f;
+        if (hasAnvilDrop()) {
+            gravity *= getGravityMultiplier();
+        }
+        return gravity;
     }
 
     @Override
@@ -582,6 +594,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         entityData.define(HOMING_CONE_ANGLE, 90f);
         entityData.define(BONUS_SCORCH, 20);
         entityData.define(HAS_ANVIL_DROP, false);
+        entityData.define(GRAVITY_MULTIPLIER, 1f);
+        entityData.define(SPEED_MULTIPLIER, 1f);
+        entityData.define(DAMAGE_MULTIPLIER, 1f);
     }
 
     public boolean hasMeltingPoint() {
@@ -638,6 +653,30 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     public void setHasAnvilDrop(boolean anvilDrop) {
         this.entityData.set(HAS_ANVIL_DROP, anvilDrop);
+    }
+
+    public float getGravityMultiplier() {
+        return this.entityData.get(GRAVITY_MULTIPLIER);
+    }
+
+    public void setGravityMultiplier(float gravityMultiplier) {
+        this.entityData.set(GRAVITY_MULTIPLIER, gravityMultiplier);
+    }
+
+    public float getSpeedMultiplier() {
+        return this.entityData.get(SPEED_MULTIPLIER);
+    }
+
+    public void setSpeedMultiplier(float speedMultiplier) {
+        this.entityData.set(SPEED_MULTIPLIER, speedMultiplier);
+    }
+
+    public float getDamageMultiplier() {
+        return this.entityData.get(DAMAGE_MULTIPLIER);
+    }
+
+    public void setDamageMultiplier(float damageMultiplier) {
+        this.entityData.set(DAMAGE_MULTIPLIER, damageMultiplier);
     }
 
     @Override
