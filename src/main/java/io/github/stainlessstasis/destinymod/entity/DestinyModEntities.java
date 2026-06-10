@@ -23,7 +23,7 @@ public class DestinyModEntities {
                     .sized(0.5f, 0.5f)
                     .noSave()
                     .clientTrackingRange(8)
-                    .updateInterval(3)
+                    .updateInterval(1)
                     .build(ResourceKey.create(
                             Registries.ENTITY_TYPE,
                             Identifier.fromNamespaceAndPath(DestinyMod.MODID, "hammer_of_sol")

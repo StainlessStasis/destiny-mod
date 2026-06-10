@@ -1,5 +1,7 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
+import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
@@ -20,6 +22,8 @@ import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
+import io.github.stainlessstasis.destinymod.network.clientbound.AnvilDropEffectsPacket;
+import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,6 +46,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.*;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -49,16 +54,17 @@ import org.jspecify.annotations.NonNull;
 import java.util.*;
 
 public class BonkHammerEntity extends AbstractArrow implements GeoEntity, DestinyAbility {
-    private static final EntityDataAccessor<Boolean> HAS_MELTING_POINT = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> HAS_HEATSEEKER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> HOMING_STRENGTH = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> HOMING_RANGE = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> HOMING_CONE_ANGLE = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Integer> BONUS_SCORCH = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.INT);
+    private boolean hasMeltingPoint = false;
+    private boolean hasHeatseeker = false;
+    private float homingStrength = 0.1f;
+    private float homingRange = 12f;
+    private float homingConeAngle = 90f;
+    private int bonusScorch = 20;
     private static final EntityDataAccessor<Boolean> HAS_ANVIL_DROP = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> GRAVITY_MULTIPLIER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> SPEED_MULTIPLIER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DAMAGE_MULTIPLIER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
+    private float speedMultiplier = 1f;
+    private float damageMultiplier = 1f;
+
     public static final float AIR_SPIN_SPEED = 30f;
     public static final float LIQUID_SPIN_SPEED = 10f;
     public static final float RESTITUTION = 0.420f;
@@ -101,23 +107,23 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     }
 
     private void initAspects(Player player) {
-        setHasMeltingPoint(PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class));
+        this.hasMeltingPoint = PlayerSubclassData.isAspectEquipped(player, Aspects.MELTING_POINT) && StatusEffectManager.isActive(player, SolInvictus.class);
 
-        setHasHeatseeker(PlayerSubclassData.isAspectEquipped(player, Aspects.HEATSEEKER));
+        this.hasHeatseeker = PlayerSubclassData.isAspectEquipped(player, Aspects.HEATSEEKER);
         PlayerSubclassData.getEquippedProperty(player, HeatseekerProperty.class).ifPresent(heatseeker -> {
-            setHomingStrength(heatseeker.homingStrength());
-            setHomingRange(heatseeker.homingRange());
-            setHomingConeAngle(heatseeker.homingConeAngle());
-            setBonusScorch(heatseeker.bonusScorch());
+            this.homingStrength = heatseeker.homingStrength();
+            this.homingRange = heatseeker.homingRange();
+            this.homingConeAngle = heatseeker.homingConeAngle();
+            this.bonusScorch = heatseeker.bonusScorch();
         });
 
         setHasAnvilDrop(PlayerSubclassData.isAspectEquipped(player, Aspects.ANVIL_DROP));
         PlayerSubclassData.getEquippedProperty(player, AnvilDropProperty.class).ifPresent(anvil -> {
             setGravityMultiplier(anvil.gravityMultiplier());
-            setSpeedMultiplier(anvil.speedMultiplier());
+            this.damageMultiplier = anvil.damageMultiplier();
+            this.speedMultiplier = anvil.speedMultiplier();
             setDeltaMovement(getDeltaMovement().scale(anvil.speedMultiplier()));
             markHurt(); // sync delta movement
-            setDamageMultiplier(anvil.damageMultiplier());
         });
     }
 
@@ -517,7 +523,15 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     }
 
     protected void triggerAnvilDropExplosion() {
+        if (level() instanceof ServerLevel level) {
+            LivingEntity owner = null;
+            if (getOwner() instanceof LivingEntity _owner) owner = _owner;
 
+            float radius = 2f;
+            float damage = getDamage()/2f;
+            CombatUtils.triggerExplosion(level, getEyePosition(), radius, damage, DMDamageTypes.MELEE_ABILITY, DestinyElement.SOLAR, this, owner);
+            PacketDistributor.sendToPlayersTrackingEntity(this, new AnvilDropEffectsPacket(getEyePosition().toVector3f(), radius));
+        }
     }
 
     protected void tryCollectHammer() {
@@ -606,96 +620,32 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     @Override
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder entityData) {
         super.defineSynchedData(entityData);
-        entityData.define(HAS_MELTING_POINT, false);
-        entityData.define(HAS_HEATSEEKER, false);
-        entityData.define(HOMING_STRENGTH, 0.1f);
-        entityData.define(HOMING_RANGE, 12f);
-        entityData.define(HOMING_CONE_ANGLE, 90f);
-        entityData.define(BONUS_SCORCH, 20);
         entityData.define(HAS_ANVIL_DROP, false);
         entityData.define(GRAVITY_MULTIPLIER, 1f);
-        entityData.define(SPEED_MULTIPLIER, 1f);
-        entityData.define(DAMAGE_MULTIPLIER, 1f);
     }
 
-    public boolean hasMeltingPoint() {
-        return this.entityData.get(HAS_MELTING_POINT);
-    }
+    // SERVER-ONLY
+    public boolean hasMeltingPoint() { return this.hasMeltingPoint; }
+    public boolean hasHeatseeker() { return this.hasHeatseeker; }
+    public float getHomingStrength() { return this.homingStrength; }
+    public float getHomingRange() { return this.homingRange; }
+    public float getHomingConeAngle() { return this.homingConeAngle; }
+    public int getBonusScorch() { return this.bonusScorch; }
+    public float getDamageMultiplier() { return this.damageMultiplier; }
+    public float getSpeedMultiplier() { return this.speedMultiplier; }
 
-    public void setHasMeltingPoint(boolean meltingPoint) {
-        this.entityData.set(HAS_MELTING_POINT, meltingPoint);
-    }
-
-    public boolean hasHeatseeker() {
-        return this.entityData.get(HAS_HEATSEEKER);
-    }
-
-    public void setHasHeatseeker(boolean heatseeker) {
-        this.entityData.set(HAS_HEATSEEKER, heatseeker);
-    }
-
-    public float getHomingStrength() {
-        return this.entityData.get(HOMING_STRENGTH);
-    }
-
-    public void setHomingStrength(float homingStrength) {
-        this.entityData.set(HOMING_STRENGTH, homingStrength);
-    }
-
-    public float getHomingRange() {
-        return this.entityData.get(HOMING_RANGE);
-    }
-
-    public void setHomingRange(float homingRange) {
-        this.entityData.set(HOMING_RANGE, homingRange);
-    }
-
-    public float getHomingConeAngle() {
-        return this.entityData.get(HOMING_CONE_ANGLE);
-    }
-
-    public void setHomingConeAngle(float homingConeAngle) {
-        this.entityData.set(HOMING_CONE_ANGLE, homingConeAngle);
-    }
-
-    public int getBonusScorch() {
-        return this.entityData.get(BONUS_SCORCH);
-    }
-
-    public void setBonusScorch(int bonusScorch) {
-        this.entityData.set(BONUS_SCORCH, bonusScorch);
-    }
-
+    // SYNCED TO CLIENT
     public boolean hasAnvilDrop() {
         return this.entityData.get(HAS_ANVIL_DROP);
     }
-
     public void setHasAnvilDrop(boolean anvilDrop) {
         this.entityData.set(HAS_ANVIL_DROP, anvilDrop);
     }
-
     public float getGravityMultiplier() {
         return this.entityData.get(GRAVITY_MULTIPLIER);
     }
-
     public void setGravityMultiplier(float gravityMultiplier) {
         this.entityData.set(GRAVITY_MULTIPLIER, gravityMultiplier);
-    }
-
-    public float getSpeedMultiplier() {
-        return this.entityData.get(SPEED_MULTIPLIER);
-    }
-
-    public void setSpeedMultiplier(float speedMultiplier) {
-        this.entityData.set(SPEED_MULTIPLIER, speedMultiplier);
-    }
-
-    public float getDamageMultiplier() {
-        return this.entityData.get(DAMAGE_MULTIPLIER);
-    }
-
-    public void setDamageMultiplier(float damageMultiplier) {
-        this.entityData.set(DAMAGE_MULTIPLIER, damageMultiplier);
     }
 
     @Override

@@ -7,6 +7,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.Aspects;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
+import io.github.stainlessstasis.destinymod.network.clientbound.AnvilDropEffectsPacket;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import io.github.stainlessstasis.destinymod.network.serverbound.AbilityCastPacket;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.world_interaction.BlockDestructionManager;
@@ -66,6 +67,11 @@ public class DestinyMod {
                     IgnitionEffectsPacket.TYPE,
                     IgnitionEffectsPacket.STREAM_CODEC,
                     IgnitionEffectsPacket.Handler::handle
+            );
+            registrar.playToClient(
+                    AnvilDropEffectsPacket.TYPE,
+                    AnvilDropEffectsPacket.STREAM_CODEC,
+                    AnvilDropEffectsPacket.Handler::handle
             );
         }
     }

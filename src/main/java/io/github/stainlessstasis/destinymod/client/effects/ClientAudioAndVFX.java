@@ -95,6 +95,10 @@ public class ClientAudioAndVFX {
         });
     }
 
+    public static void anvilDrop(Level level, Vec3 center, float size) {
+
+    }
+
     public static void sunspot(Level level, Vec3 center, RandomSource random, int tickCount) {
         double x = center.x;
         double y = center.y;

@@ -3,7 +3,7 @@
   "properties": [
     {
       "type": "melting_point",
-      "additionalDamagePercent": 200.0,
+      "additionalDamagePercent": 0.2,
       "durationTicks": 160
     }
   ]
