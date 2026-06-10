@@ -536,7 +536,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     protected void triggerAnvilDropExplosion(CollisionContext context) {
         if (!(level() instanceof ServerLevel level)) return;
-        System.out.println("COOLDOWN: "+anvilDropCooldown);
         if (anvilDropCooldown > 0) return;
         anvilDropCooldown = anvilDropCooldownDuration;
 
@@ -547,7 +546,6 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         float lerp = Mth.clamp((float) (downwardSpeed / Math.abs(TERMINAL_VELOCITY)), 0f, 1f);
         float radius = Mth.lerp(lerp, getAnvilDropRadiusMin(), getAnvilDropRadiusMax());
         float damage = getDamage() * Mth.lerp(lerp, getAnvilDropDamagePercentMin(), getAnvilDropDamagePercentMax());
-        System.out.println("SPEED: "+downwardSpeed+" | LERP: "+lerp+" | RADIUS: "+radius+" | DAMAGE: "+damage);
         CombatUtils.triggerExplosion(level, getEyePosition(), radius, damage, DMDamageTypes.MELEE_ABILITY, DestinyElement.SOLAR, this, owner);
         PacketDistributor.sendToPlayersTrackingEntity(this, new AnvilDropEffectsPacket(getEyePosition().toVector3f(), radius));
     }

@@ -95,8 +95,12 @@ public class ClientAudioAndVFX {
         });
     }
 
-    public static void anvilDrop(Level level, Vec3 center, float size) {
-
+    public static void anvilDrop(Level level, Vec3 center, float radius) {
+        // SOUNDS
+        float volume = Math.clamp(radius/3f, 0.5f, 1.5f);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.ANVIL_LAND, SoundSource.AMBIENT, volume*0.8f, 1.1f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, volume, 1.7f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.IRON_FALL, SoundSource.AMBIENT, volume, 0.7f, true);
     }
 
     public static void sunspot(Level level, Vec3 center, RandomSource random, int tickCount) {
