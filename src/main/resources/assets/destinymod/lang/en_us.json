@@ -21,7 +21,7 @@
   "tooltip.destinymod.heatseeker.desc": "<ability:Throwing Hammer> homes in on targets and applies significantly more <keyword:Scorch>.",
   "tooltip.destinymod.anvil_drop.title": "ANVIL DROP",
   "tooltip.destinymod.anvil_drop.subtitle": "Sunbreaker Aspect",
-  "tooltip.destinymod.anvil_drop.desc": "<ability:Throwing Hammer> is much slower and heavier, but deals significantly more damage. \n\nWhen <ability:Throwing Hammer> hits the ground, it triggers a small <keyword:Solar> explosion which grows stronger based on its falling velocity.",
+  "tooltip.destinymod.anvil_drop.desc": "<ability:Throwing Hammer> is much slower and heavier, but deals significantly more damage. \n\n<ability:Throwing Hammer> hits trigger a small <keyword:Solar> explosion which grows stronger based on its falling velocity. The explosion has a brief cooldown.",
 
   "tooltip.destinymod.sol_invictus.title": "SOL INVICTUS",
   "tooltip.destinymod.sol_invictus.subtitle": "Sunbreaker Passive",

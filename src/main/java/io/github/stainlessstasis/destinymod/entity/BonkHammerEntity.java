@@ -68,6 +68,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     private float anvilDropRadiusMax = 4f;
     private float anvilDropDamagePercentMin = 0.5f;
     private float anvilDropDamagePercentMax = 2f;
+    private int anvilDropCooldownDuration = 20;
+    private int anvilDropCooldown = 0;
 
     public static final float AIR_SPIN_SPEED = 30f;
     public static final float LIQUID_SPIN_SPEED = 10f;
@@ -132,6 +134,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             this.anvilDropRadiusMax = anvil.explosionRadiusMax();
             this.anvilDropDamagePercentMin = anvil.explosionDamagePercentMin();
             this.anvilDropDamagePercentMax = anvil.explosionDamagePercentMax();
+            this.anvilDropCooldownDuration = Aspects.ANVIL_DROP.get(player).cooldownTicks();
         });
     }
 
@@ -244,6 +247,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         }
 
         tryCollectHammer();
+        if (anvilDropCooldown > 0) anvilDropCooldown--;
         this.firstTick = false;
     }
 
@@ -531,18 +535,21 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     }
 
     protected void triggerAnvilDropExplosion(CollisionContext context) {
-        if (level() instanceof ServerLevel level) {
-            LivingEntity owner = null;
-            if (getOwner() instanceof LivingEntity _owner) owner = _owner;
+        if (!(level() instanceof ServerLevel level)) return;
+        System.out.println("COOLDOWN: "+anvilDropCooldown);
+        if (anvilDropCooldown > 0) return;
+        anvilDropCooldown = anvilDropCooldownDuration;
 
-            double downwardSpeed = Math.max(0, -1*context.sourceVelocity().y);
-            float lerp = Mth.clamp((float) (downwardSpeed / Math.abs(TERMINAL_VELOCITY)), 0f, 1f);
-            float radius = Mth.lerp(lerp, getAnvilDropRadiusMin(), getAnvilDropRadiusMax());
-            float damage = getDamage() * Mth.lerp(lerp, getAnvilDropDamagePercentMin(), getAnvilDropDamagePercentMax());
-            System.out.println("SPEED: "+downwardSpeed+" | LERP: "+lerp+" | RADIUS: "+radius+" | DAMAGE: "+damage);
-            CombatUtils.triggerExplosion(level, getEyePosition(), radius, damage, DMDamageTypes.MELEE_ABILITY, DestinyElement.SOLAR, this, owner);
-            PacketDistributor.sendToPlayersTrackingEntity(this, new AnvilDropEffectsPacket(getEyePosition().toVector3f(), radius));
-        }
+        LivingEntity owner = null;
+        if (getOwner() instanceof LivingEntity _owner) owner = _owner;
+
+        double downwardSpeed = Math.max(0, -1*context.sourceVelocity().y);
+        float lerp = Mth.clamp((float) (downwardSpeed / Math.abs(TERMINAL_VELOCITY)), 0f, 1f);
+        float radius = Mth.lerp(lerp, getAnvilDropRadiusMin(), getAnvilDropRadiusMax());
+        float damage = getDamage() * Mth.lerp(lerp, getAnvilDropDamagePercentMin(), getAnvilDropDamagePercentMax());
+        System.out.println("SPEED: "+downwardSpeed+" | LERP: "+lerp+" | RADIUS: "+radius+" | DAMAGE: "+damage);
+        CombatUtils.triggerExplosion(level, getEyePosition(), radius, damage, DMDamageTypes.MELEE_ABILITY, DestinyElement.SOLAR, this, owner);
+        PacketDistributor.sendToPlayersTrackingEntity(this, new AnvilDropEffectsPacket(getEyePosition().toVector3f(), radius));
     }
 
     protected void tryCollectHammer() {

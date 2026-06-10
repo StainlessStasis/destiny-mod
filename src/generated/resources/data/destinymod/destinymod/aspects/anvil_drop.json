@@ -1,5 +1,6 @@
 {
   "abilityType": "melee",
+  "cooldownTicks": 20,
   "properties": [
     {
       "type": "anvil_drop",
