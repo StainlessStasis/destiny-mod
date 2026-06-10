@@ -64,6 +64,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     public static final float RESTITUTION = 0.420f;
     public static final float FRICTION = 0.55f;
     public static final float STICK_SPEED_THRESHOLD = 0.2f;
+    public static final double TERMINAL_VELOCITY = -5d; // 4 blocks/tick downward
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private final Ability ability;
@@ -544,6 +545,15 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             gravity *= getGravityMultiplier();
         }
         return gravity;
+    }
+
+    @Override
+    protected void applyGravity() {
+        super.applyGravity();
+        Vec3 vel = getDeltaMovement();
+        if (vel.y < TERMINAL_VELOCITY) {
+            setDeltaMovement(vel.x, TERMINAL_VELOCITY, vel.z);
+        }
     }
 
     @Override

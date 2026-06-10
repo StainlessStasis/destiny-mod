@@ -4,7 +4,7 @@
     {
       "type": "anvil_drop",
       "damageMultiplier": 1.65,
-      "gravityMultiplier": 1.75,
+      "gravityMultiplier": 1.8,
       "speedMultiplier": 0.7
     }
   ],
