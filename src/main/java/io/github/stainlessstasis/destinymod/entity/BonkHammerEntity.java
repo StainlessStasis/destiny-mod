@@ -64,6 +64,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     private static final EntityDataAccessor<Float> GRAVITY_MULTIPLIER = SynchedEntityData.defineId(BonkHammerEntity.class, EntityDataSerializers.FLOAT);
     private float speedMultiplier = 1f;
     private float damageMultiplier = 1f;
+    private float anvilDropRadiusMin = 2f;
+    private float anvilDropRadiusMax = 4f;
+    private float anvilDropDamagePercentMin = 0.5f;
+    private float anvilDropDamagePercentMax = 2f;
 
     public static final float AIR_SPIN_SPEED = 30f;
     public static final float LIQUID_SPIN_SPEED = 10f;
@@ -123,7 +127,11 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             this.damageMultiplier = anvil.damageMultiplier();
             this.speedMultiplier = anvil.speedMultiplier();
             setDeltaMovement(getDeltaMovement().scale(anvil.speedMultiplier()));
-            markHurt(); // sync delta movement
+            markHurt(); // sync delta movement (idk if this is even necessary tbh)
+            this.anvilDropRadiusMin = anvil.explosionRadiusMin();
+            this.anvilDropRadiusMax = anvil.explosionRadiusMax();
+            this.anvilDropDamagePercentMin = anvil.explosionDamagePercentMin();
+            this.anvilDropDamagePercentMax = anvil.explosionDamagePercentMax();
         });
     }
 
@@ -265,7 +273,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         handleBlockCollision(context);
         handleEntityCollision(context);
         handleCollision(context);
-        triggerAnvilDropExplosion();
+        triggerAnvilDropExplosion(context);
     }
 
     protected void handleBlockCollision(CollisionContext context) {
@@ -522,13 +530,16 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         return bestTarget;
     }
 
-    protected void triggerAnvilDropExplosion() {
+    protected void triggerAnvilDropExplosion(CollisionContext context) {
         if (level() instanceof ServerLevel level) {
             LivingEntity owner = null;
             if (getOwner() instanceof LivingEntity _owner) owner = _owner;
 
-            float radius = 2f;
-            float damage = getDamage()/2f;
+            double downwardSpeed = Math.max(0, -1*context.sourceVelocity().y);
+            float lerp = Mth.clamp((float) (downwardSpeed / Math.abs(TERMINAL_VELOCITY)), 0f, 1f);
+            float radius = Mth.lerp(lerp, getAnvilDropRadiusMin(), getAnvilDropRadiusMax());
+            float damage = getDamage() * Mth.lerp(lerp, getAnvilDropDamagePercentMin(), getAnvilDropDamagePercentMax());
+            System.out.println("SPEED: "+downwardSpeed+" | LERP: "+lerp+" | RADIUS: "+radius+" | DAMAGE: "+damage);
             CombatUtils.triggerExplosion(level, getEyePosition(), radius, damage, DMDamageTypes.MELEE_ABILITY, DestinyElement.SOLAR, this, owner);
             PacketDistributor.sendToPlayersTrackingEntity(this, new AnvilDropEffectsPacket(getEyePosition().toVector3f(), radius));
         }
@@ -633,6 +644,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     public int getBonusScorch() { return this.bonusScorch; }
     public float getDamageMultiplier() { return this.damageMultiplier; }
     public float getSpeedMultiplier() { return this.speedMultiplier; }
+    public float getAnvilDropRadiusMin() { return this.anvilDropRadiusMin; }
+    public float getAnvilDropRadiusMax() { return this.anvilDropRadiusMax; }
+    public float getAnvilDropDamagePercentMin() { return this.anvilDropDamagePercentMin; }
+    public float getAnvilDropDamagePercentMax() { return this.anvilDropDamagePercentMax; }
 
     // SYNCED TO CLIENT
     public boolean hasAnvilDrop() {

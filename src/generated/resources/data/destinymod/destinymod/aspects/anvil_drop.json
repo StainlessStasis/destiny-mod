@@ -4,7 +4,11 @@
     {
       "type": "anvil_drop",
       "damageMultiplier": 1.65,
-      "gravityMultiplier": 1.8,
+      "explosionDamagePercentMax": 2.0,
+      "explosionDamagePercentMin": 0.5,
+      "explosionRadiusMax": 4.0,
+      "explosionRadiusMin": 2.0,
+      "gravityMultiplier": 1.75,
       "speedMultiplier": 0.7
     }
   ],
