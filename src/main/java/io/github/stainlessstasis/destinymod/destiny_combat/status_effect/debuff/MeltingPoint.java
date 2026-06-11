@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.MeltingPointProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.AbstractStatusEffect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.IStatusEffect;
@@ -15,7 +16,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import java.util.function.Supplier;
 
 public class MeltingPoint extends AbstractStatusEffect {
-    private int remainingTicks = getDefaultProperty().durationTicks();
+    private int remainingTicks = AbilityProperties.MELTING_POINT.get().durationTicks();
 
     public static final MapCodec<MeltingPoint> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("remainingTicks").forGetter(MeltingPoint::getRemainingTicks)
@@ -27,12 +28,8 @@ public class MeltingPoint extends AbstractStatusEffect {
         remainingTicks = ticks;
     }
 
-    public static MeltingPointProperty getDefaultProperty() {
-        return new MeltingPointProperty(160, 0.2f);
-    }
-
     public MeltingPointProperty getProperty(Level level) {
-        return StatusEffects.MELTING_POINT.get(level).getProperty(MeltingPointProperty.class).orElse(getDefaultProperty());
+        return StatusEffects.MELTING_POINT.get(level).getProperty(MeltingPointProperty.class).orElse(AbilityProperties.MELTING_POINT.get());
     }
 
     @Override

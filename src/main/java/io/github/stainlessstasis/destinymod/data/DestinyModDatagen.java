@@ -9,6 +9,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.Aspects;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
@@ -47,17 +48,15 @@ public class DestinyModDatagen {
                 // ASPECTS
                 .add(DestinyModRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
-                    bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1,
-                                    new HeatseekerProperty(0.1f, 12f, 90f, 35)));
-                    bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, 20,
-                            new AnvilDropProperty(2.5f, 0.7f, 1.65f, 1.5f, 5f, 0.5f, 2f)));
+                    bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1, AbilityProperties.HEATSEEKER.get()));
+                    bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, 20, AbilityProperties.ANVIL_DROP.get()));
                 })
 
                 // STATUS EFFECTS
                 .add(DestinyModRegistries.STATUS_EFFECT_REGISTRY_KEY, bootstrap -> {
-                    bootstrap.register(StatusEffects.SCORCH.resourceKey(), new StatusEffect(false, Scorch.getDefaultProperty()));
-                    bootstrap.register(StatusEffects.MELTING_POINT.resourceKey(), new StatusEffect(false, MeltingPoint.getDefaultProperty()));
-                    bootstrap.register(StatusEffects.SOL_INVICTUS.resourceKey(), new StatusEffect(true, SolInvictus.getDefaultProperty()));
+                    bootstrap.register(StatusEffects.SCORCH.resourceKey(), new StatusEffect(false, AbilityProperties.SCORCH.get()));
+                    bootstrap.register(StatusEffects.MELTING_POINT.resourceKey(), new StatusEffect(false, AbilityProperties.MELTING_POINT.get()));
+                    bootstrap.register(StatusEffects.SOL_INVICTUS.resourceKey(), new StatusEffect(true, AbilityProperties.SOL_INVICTUS.get()));
                 })
 
                 // DAMAGE TYPES AND DAMAGE TYPE TAGS

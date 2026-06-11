@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.MeltingPointProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.SolInvictusProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.AbstractStatusEffect;
@@ -16,7 +17,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import java.util.function.Supplier;
 
 public class SolInvictus extends AbstractStatusEffect {
-    private int remainingTicks = getDefaultProperty().durationTicks();
+    private int remainingTicks = AbilityProperties.SOL_INVICTUS.get().durationTicks();
 
     public static final MapCodec<SolInvictus> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("remainingTicks").forGetter(SolInvictus::getRemainingTicks)
@@ -28,12 +29,8 @@ public class SolInvictus extends AbstractStatusEffect {
         remainingTicks = ticks;
     }
 
-    public static SolInvictusProperty getDefaultProperty() {
-        return new SolInvictusProperty(60, 1f);
-    }
-
     public SolInvictusProperty getProperty(Level level) {
-        return StatusEffects.SOL_INVICTUS.get(level).getProperty(SolInvictusProperty.class).orElse(getDefaultProperty());
+        return StatusEffects.SOL_INVICTUS.get(level).getProperty(SolInvictusProperty.class).orElse(AbilityProperties.SOL_INVICTUS.get());
     }
 
     @Override

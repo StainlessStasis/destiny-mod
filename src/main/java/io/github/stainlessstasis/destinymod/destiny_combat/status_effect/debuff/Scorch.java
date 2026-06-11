@@ -9,6 +9,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.solar.Ignitio
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.ScorchProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.OwnableStatusEffect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.IStatusEffect;
@@ -25,9 +26,6 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import java.util.function.Supplier;
 
 public class Scorch extends OwnableStatusEffect {
-    public static final int IGNITION_THRESHOLD = 100;
-    /*** Damage at 0 stacks, scales up to 3x the amount*/
-    public static final float DAMAGE = 0.25f;
     private int stacks = 0;
     private int decayDelay = 0;
 
@@ -38,12 +36,8 @@ public class Scorch extends OwnableStatusEffect {
         this.decayDelay = decayDelay;
     }
 
-    public static ScorchProperty getDefaultProperty() {
-        return new ScorchProperty(0.25f, 40, 100);
-    }
-
     public ScorchProperty getProperty(Level level) {
-        return StatusEffects.SCORCH.get(level).getProperty(ScorchProperty.class).orElse(getDefaultProperty());
+        return StatusEffects.SCORCH.get(level).getProperty(ScorchProperty.class).orElse(AbilityProperties.SCORCH.get());
     }
 
     public void addStacks(LivingEntity entity, int amount) {
