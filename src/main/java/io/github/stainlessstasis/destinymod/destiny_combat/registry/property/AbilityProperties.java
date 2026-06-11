@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.registry.property;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.ability.IgnitionProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.MeltingPointProperty;
@@ -43,6 +44,12 @@ public class AbilityProperties {
         return factory != null ? (T) factory.get() : null;
     }
 
+    // ABILITIES
+    public static Supplier<IgnitionProperty> IGNITION = register("ignition", IgnitionProperty.class, IgnitionProperty.CODEC,
+            () -> new IgnitionProperty(5f)
+    );
+
+    // ASPECTS
     public static Supplier<HeatseekerProperty> HEATSEEKER = register("heatseeker", HeatseekerProperty.class, HeatseekerProperty.CODEC,
             () -> new HeatseekerProperty(0.1f, 12f, 90f, 35)
     );
@@ -50,6 +57,8 @@ public class AbilityProperties {
             () ->  new AnvilDropProperty(2.5f, 0.7f, 1.65f,
                     1.5f, 5f, 0.5f, 2f)
     );
+
+    // STATUS EFFECTS
     public static final Supplier<ScorchProperty> SCORCH = register("scorch", ScorchProperty.class, ScorchProperty.CODEC,
             () -> new ScorchProperty(0.25f, 40, 100)
     );

@@ -1,0 +1,11 @@
+{
+  "abilityType": "passive",
+  "damage": 25.0,
+  "element": "solar",
+  "properties": [
+    {
+      "type": "ignition",
+      "range": 5.0
+    }
+  ]
+}

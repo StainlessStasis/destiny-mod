@@ -43,6 +43,9 @@ public class DestinyModDatagen {
                     bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.SOLAR, -1, -1, 0.3f, 1f, 5
                     ));
+                    bootstrap.register(Abilities.IGNITION.resourceKey(), new Ability(
+                            AbilityType.PASSIVE, DestinyElement.SOLAR, -1, -1, -1f, 25f, -1, AbilityProperties.IGNITION.get()
+                    ));
                 })
 
                 // ASPECTS

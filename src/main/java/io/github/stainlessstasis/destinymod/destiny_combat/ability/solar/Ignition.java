@@ -4,6 +4,9 @@ import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
+import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.ability.IgnitionProperty;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -17,12 +20,15 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class Ignition {
-    public static final float RANGE = 5f;
-    public static final float DAMAGE = 25f;
-
     public static void ignite(LivingEntity entity, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
         if (!(entity.level() instanceof ServerLevel level)) return;
-        CombatUtils.triggerExplosion(level, entity.getEyePosition(), RANGE, DAMAGE, DMDamageTypes.IGNITION, DestinyElement.SOLAR, directEntity, causingEntity);
-        PacketDistributor.sendToPlayersTrackingEntity(entity, new IgnitionEffectsPacket(entity.getEyePosition().toVector3f()));
+
+        var ability = Abilities.IGNITION.get(entity);
+        var property = ability.getProperty(IgnitionProperty.class).orElseGet(AbilityProperties.IGNITION);
+        float damage = ability.damage();
+        float range = property.range();
+
+        CombatUtils.triggerExplosion(level, entity.getEyePosition(), range, damage, DMDamageTypes.IGNITION, DestinyElement.SOLAR, directEntity, causingEntity);
+        PacketDistributor.sendToPlayersTrackingEntity(entity, new IgnitionEffectsPacket(entity.getEyePosition().toVector3f(), range));
     }
 }

@@ -12,4 +12,5 @@ public class Abilities {
     public static final RegisteredAbility NONE = register("none");
     public static final RegisteredAbility THROWING_HAMMER = register("throwing_hammer");
     public static final RegisteredAbility SUNSPOT = register("sunspot");
+    public static final RegisteredAbility IGNITION = register("ignition");
 }

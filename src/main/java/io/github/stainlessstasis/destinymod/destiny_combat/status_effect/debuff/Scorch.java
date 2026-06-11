@@ -72,11 +72,9 @@ public class Scorch extends OwnableStatusEffect {
         ScorchProperty property = getProperty(entity.level());
 
         int ignitionThreshold = property.ignitionThreshold();
-        System.out.println("IGNITION THRESHOLD");
         if (StatusEffectManager.isActive(entity, MeltingPoint.class)) {
             float reduction = MeltingPoint.getProperty(entity.level()).ignitionReductionPercent();
             ignitionThreshold -= (int) (ignitionThreshold * reduction);
-            System.out.println("MELTING POINT ACTIVE | NEW THRESHOLD: "+ignitionThreshold);
         }
         if (this.stacks >= ignitionThreshold && entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);

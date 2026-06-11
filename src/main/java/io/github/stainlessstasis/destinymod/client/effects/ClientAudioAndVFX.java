@@ -30,9 +30,7 @@ public class ClientAudioAndVFX {
     public static final long AMETHYST_RESONATE_3 = -2672010492342827392L;
     public static final long AMETHYST_RESONATE_4 = 186042584424253856L;
 
-    public static void ignition(Level level, Vec3 center) {
-        float radius = Ignition.RANGE;
-
+    public static void ignition(Level level, Vec3 center, float radius) {
         // SOUNDS
         float volume = radius/2f;
         level.playSeededSound(Minecraft.getInstance().player, center.x, center.y, center.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.AMBIENT, 1.2f*volume, 2f, LIGHTNING_THUNDER_3);
@@ -42,7 +40,7 @@ public class ClientAudioAndVFX {
         level.playLocalSound(center.x, center.y, center.z, SoundEvents.BLAZE_BURN, SoundSource.AMBIENT, volume, 1.2f, true);
 
         // LDL COMPAT
-        int lightRadius = (int) (Ignition.RANGE * 2);
+        int lightRadius = (int) (radius * 2);
         addFadingLight(center, lightRadius, 20);
 
         // PARTICLES

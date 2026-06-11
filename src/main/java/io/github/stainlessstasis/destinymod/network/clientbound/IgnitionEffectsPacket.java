@@ -12,18 +12,19 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3fc;
 
-public record IgnitionEffectsPacket(Vector3fc center) implements CustomPacketPayload {
+public record IgnitionEffectsPacket(Vector3fc center, float range) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<@NotNull IgnitionEffectsPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(DestinyMod.MODID, "ignition_effects_packet"));
 
     public static final StreamCodec<ByteBuf, IgnitionEffectsPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VECTOR3F, IgnitionEffectsPacket::center,
+            ByteBufCodecs.FLOAT, IgnitionEffectsPacket::range,
             IgnitionEffectsPacket::new
     );
 
     public static class Handler {
         public static void handle(final IgnitionEffectsPacket packet, final IPayloadContext context) {
             context.enqueueWork(() -> {
-                ClientAudioAndVFX.ignition(context.player().level(), new Vec3(packet.center()));
+                ClientAudioAndVFX.ignition(context.player().level(), new Vec3(packet.center()), packet.range());
             });
         }
     }
