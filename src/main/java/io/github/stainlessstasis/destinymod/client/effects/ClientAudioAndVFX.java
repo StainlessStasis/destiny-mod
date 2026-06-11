@@ -18,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
 
+import java.util.function.Consumer;
+
 public class ClientAudioAndVFX {
     // Sound seeds from https://github.com/Owen1212055/mc-sound-seeds/blob/main/sound_seeds.json
     public static final long LIGHTNING_THUNDER_1 = -3143421179731086385L;
@@ -52,16 +54,12 @@ public class ClientAudioAndVFX {
         ClientTaskScheduler.INSTANCE.runTaskMultiple(5, 0, 1, new CancellableRunnable() {
             @Override
             protected void execute() {
-                for (int i = 0; i < 20; i++) {
-                    double u = Math.random();
-                    double v = Math.random();
-                    double theta = u * 2 * Math.PI;
-                    double phi = Math.acos(2 * v - 1);
-
+                forEachPointOnSphere(20, (context) -> {
                     double randomRadius = Math.cbrt(Math.random()) * radius;
-                    double dx = Math.sin(phi) * Math.cos(theta) * randomRadius;
-                    double dy = Math.sin(phi) * Math.sin(theta) * randomRadius;
-                    double dz = Math.cos(phi) * randomRadius;
+                    Vec3 offset = context.direction().scale(randomRadius);
+                    double dx = x + offset.x;
+                    double dy = y + offset.y;
+                    double dz = z + offset.z;
 
                     var particleType = Math.random() < 0.7 ? ParticleTypes.LAVA : ParticleTypes.FLAME;
                     Particle particle = particleEngine.createParticle(
@@ -77,20 +75,20 @@ public class ClientAudioAndVFX {
                         particleEngine.add(particle);
                     }
 
-                    if (i < 5) {
+                    if (context.index() < 5) {
                         Particle explosionParticle = particleEngine.createParticle(
                                 ParticleTypes.EXPLOSION,
                                 x+dx, y+dy, z+dz, 0, 0, 0
                         );
                         if (explosionParticle != null) {
                             if (explosionParticle instanceof SingleQuadParticle singleQuadParticle) {
-                                DMColor color = i > 3 ? DMColor.SOLAR : DMColor.SOLAR_DARK;
+                                DMColor color = context.index() > 3 ? DMColor.SOLAR : DMColor.SOLAR_DARK;
                                 singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
                             }
                             particleEngine.add(explosionParticle);
                         }
                     }
-                }
+                });
             }
         });
     }
@@ -199,6 +197,23 @@ public class ClientAudioAndVFX {
 
                 particleEngine.add(singleQuadParticle);
             }
+        }
+    }
+
+    public record SpherePointContext(Vec3 direction, int index) {}
+    public static void forEachPointOnSphere(int count, Consumer<SpherePointContext> action) {
+        for (int i = 0; i < count; i++) {
+            double u = Math.random();
+            double v = Math.random();
+
+            double theta = u * 2 * Math.PI;
+            double phi = Math.acos(2 * v - 1);
+
+            double dx = Math.sin(phi) * Math.cos(theta);
+            double dy = Math.sin(phi) * Math.sin(theta);
+            double dz = Math.cos(phi);
+
+            action.accept(new SpherePointContext(new Vec3(dx, dy, dz), i));
         }
     }
 
