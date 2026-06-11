@@ -7,9 +7,9 @@
       "damageMultiplier": 1.65,
       "explosionDamagePercentMax": 2.0,
       "explosionDamagePercentMin": 0.5,
-      "explosionRadiusMax": 4.0,
-      "explosionRadiusMin": 2.0,
-      "gravityMultiplier": 1.75,
+      "explosionRadiusMax": 5.0,
+      "explosionRadiusMin": 1.5,
+      "gravityMultiplier": 2.5,
       "speedMultiplier": 0.7
     }
   ],

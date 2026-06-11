@@ -50,7 +50,7 @@ public class DestinyModDatagen {
                     bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1,
                                     new HeatseekerProperty(0.1f, 12f, 90f, 35)));
                     bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, 20,
-                            new AnvilDropProperty(1.75f, 0.7f, 1.65f, 2f, 4f, 0.5f, 2f)));
+                            new AnvilDropProperty(2.5f, 0.7f, 1.65f, 1.5f, 5f, 0.5f, 2f)));
                 })
 
                 // STATUS EFFECTS

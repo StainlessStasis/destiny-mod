@@ -97,9 +97,57 @@ public class ClientAudioAndVFX {
     public static void anvilDrop(Level level, Vec3 center, float radius) {
         // SOUNDS
         float volume = Math.clamp(radius/3f, 0.5f, 1.5f);
-        level.playLocalSound(center.x, center.y, center.z, SoundEvents.ANVIL_LAND, SoundSource.AMBIENT, volume*0.8f, 1.1f, true);
-        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, volume, 1.7f, true);
-        level.playLocalSound(center.x, center.y, center.z, SoundEvents.IRON_FALL, SoundSource.AMBIENT, volume, 0.7f, true);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.ANVIL_LAND, SoundSource.AMBIENT, volume*0.8f, 1.1f, false);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, volume, 1.7f, false);
+        level.playLocalSound(center.x, center.y, center.z, SoundEvents.IRON_FALL, SoundSource.AMBIENT, volume, 0.7f, false);
+
+        // PARTICLES
+        var particleEngine = Minecraft.getInstance().particleEngine;
+        DMColor solar = DMColor.SOLAR;
+        DMColor solarLight = DMColor.SOLAR_LIGHT;
+        int totalParticles = (int) (radius * 7);
+
+        forEachPointOnSphere(totalParticles, (context) -> {
+            Vec3 dir = context.direction();
+            double randomRadius = Math.cbrt(Math.random()) * radius/2;
+            Vec3 offset = dir.scale(randomRadius);
+
+            double px = center.x + offset.x;
+            double py = center.y + offset.y;
+            double pz = center.z + offset.z;
+
+            var particleType = Math.random() < 0.9 ? ParticleTypes.FLAME : ParticleTypes.LAVA;
+
+            Particle particle = particleEngine.createParticle(
+                    particleType,
+                    px, py, pz,
+                    dir.x * 0.1, dir.y * 0.1, dir.z * 0.1
+            );
+
+            if (particle != null) {
+                if (particle instanceof SingleQuadParticle singleQuadParticle) {
+                    DMColor color = Math.random() < 0.75 ? solar : solarLight;
+                    singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                }
+                particleEngine.add(particle);
+            }
+
+            if (context.index() % 10 == 0) {
+                Particle explosionParticle = particleEngine.createParticle(
+                        ParticleTypes.EXPLOSION,
+                        px, py, pz, 0, 0, 0
+                );
+                if (explosionParticle != null) {
+                    if (explosionParticle instanceof SingleQuadParticle singleQuadParticle) {
+                        DMColor color = DMColor.SOLAR_DARK;
+                        singleQuadParticle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                        float scale = Math.clamp(radius * 0.3f, 0.4f, 0.8f);
+                        singleQuadParticle.scale(scale);
+                    }
+                    particleEngine.add(explosionParticle);
+                }
+            }
+        });
     }
 
     public static void sunspot(Level level, Vec3 center, RandomSource random, int tickCount) {
