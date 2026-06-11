@@ -55,17 +55,18 @@ public class ClientAudioAndVFX {
             @Override
             protected void execute() {
                 forEachPointOnSphere(20, (context) -> {
+                    Vec3 dir = context.direction();
                     double randomRadius = Math.cbrt(Math.random()) * radius;
-                    Vec3 offset = context.direction().scale(randomRadius);
-                    double dx = x + offset.x;
-                    double dy = y + offset.y;
-                    double dz = z + offset.z;
+                    Vec3 offset = dir.scale(randomRadius);
+                    double px = x + offset.x;
+                    double py = y + offset.y;
+                    double pz = z + offset.z;
 
                     var particleType = Math.random() < 0.7 ? ParticleTypes.LAVA : ParticleTypes.FLAME;
                     Particle particle = particleEngine.createParticle(
                             particleType,
-                            x + dx, y + dy, z + dz,
-                            dx * 0.2, dy * 0.2, dz * 0.2
+                            px, py, pz,
+                            dir.x * 0.2, dir.y * 0.2, dir.z * 0.2
                     );
                     if (particle != null) {
                         if (particle instanceof SingleQuadParticle singleQuadParticle) {
@@ -78,7 +79,7 @@ public class ClientAudioAndVFX {
                     if (context.index() < 5) {
                         Particle explosionParticle = particleEngine.createParticle(
                                 ParticleTypes.EXPLOSION,
-                                x+dx, y+dy, z+dz, 0, 0, 0
+                                px, py, pz, 0, 0, 0
                         );
                         if (explosionParticle != null) {
                             if (explosionParticle instanceof SingleQuadParticle singleQuadParticle) {
