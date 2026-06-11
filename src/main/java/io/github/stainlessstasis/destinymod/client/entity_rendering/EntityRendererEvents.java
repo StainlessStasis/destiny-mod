@@ -13,6 +13,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,6 +44,7 @@ public class EntityRendererEvents {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(DestinyModEntities.HAMMER_OF_SOL.get(), BonkHammerRenderer::new);
         event.registerEntityRenderer(DestinyModEntities.SUNSPOT.get(), DummyEntityRenderer::new);
+        event.registerEntityRenderer(DestinyModEntities.GENERIC_GRENADE.get(), DummyEntityRenderer::new);
     }
 
     @SubscribeEvent

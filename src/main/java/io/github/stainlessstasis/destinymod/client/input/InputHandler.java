@@ -42,6 +42,11 @@ public class InputHandler {
             ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.MELEE));
         }
 
+        if (key == DestinyModKeybinds.GRENADE.get().getKey().getValue()) {
+            player.swing(InteractionHand.OFF_HAND);
+            ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.GRENADE));
+        }
+
         if (key == DestinyModKeybinds.SUBCLASS_SCREEN.get().getKey().getValue()) {
             mc.setScreen(new SubclassScreen(Subclasses.SUNBREAKER));
         }

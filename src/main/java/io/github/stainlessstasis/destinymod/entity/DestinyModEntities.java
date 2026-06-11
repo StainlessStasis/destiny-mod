@@ -45,6 +45,21 @@ public class DestinyModEntities {
                     ))
     );
 
+    public static final Supplier<EntityType<@NotNull GrenadeEntity>> GENERIC_GRENADE = ENTITY_TYPES.register(
+            "generic_grenade",
+            () -> EntityType.Builder.of(
+                            GrenadeEntity::createDefault,
+                            MobCategory.MISC
+                    )
+                    .sized(0.3f, 0.3f)
+                    .noSave()
+                    .clientTrackingRange(8)
+                    .build(ResourceKey.create(
+                            Registries.ENTITY_TYPE,
+                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "generic_grenade")
+                    ))
+    );
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }

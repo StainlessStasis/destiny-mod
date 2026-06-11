@@ -19,6 +19,13 @@ public class DestinyModKeybinds {
             new KeyMapping(
                     "key."+DestinyMod.MODID+".melee",
                     InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_C,
+                    KEY_CATEGORY
+            ));
+    public static final Lazy<KeyMapping> GRENADE = Lazy.of(() ->
+            new KeyMapping(
+                    "key."+DestinyMod.MODID+".grenade",
+                    InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_V,
                     KEY_CATEGORY
             ));
@@ -33,6 +40,7 @@ public class DestinyModKeybinds {
     @SubscribeEvent
     public static void registerKeybinds(RegisterKeyMappingsEvent event) {
         event.register(MELEE.get());
+        event.register(GRENADE.get());
         event.register(SUBCLASS_SCREEN.get());
     }
 }

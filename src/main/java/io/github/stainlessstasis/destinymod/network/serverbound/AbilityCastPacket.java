@@ -7,6 +7,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.Abil
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.entity.GrenadeEntity;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -16,6 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,11 +44,27 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
                     player.swing(InteractionHand.MAIN_HAND);
 
                     if (player.level() instanceof ServerLevel serverLevel) {
-                        BonkHammerEntity hammer = Projectile.spawnProjectileFromRotation(
+                        Projectile.spawnProjectileFromRotation(
                                 BonkHammerEntity::new, serverLevel, ItemStack.EMPTY, player, 0f, 1f, 0f
                         );
-                        Ability bonkAbility = Abilities.THROWING_HAMMER.get(player);
-                        hammer.setBaseDamage(bonkAbility.damage());
+                        AbilityCooldownManager.addCooldown(player, ability);
+                    }
+                });
+            }
+
+            if (packet.slot == AbilityType.GRENADE) {
+                var ability = PlayerSubclassData.getRegisteredGrenade(player);
+                if (AbilityCooldownManager.isOnCooldown(player, ability)) {
+                    return;
+                }
+
+                context.enqueueWork(() -> {
+                    player.swing(InteractionHand.MAIN_HAND);
+
+                    if (player.level() instanceof ServerLevel serverLevel) {
+                        Projectile.spawnProjectileFromRotation(
+                                GrenadeEntity::new, serverLevel, new ItemStack(Items.FIRE_CHARGE), player, 0f, 1f, 0f
+                        );
                         AbilityCooldownManager.addCooldown(player, ability);
                     }
                 });
