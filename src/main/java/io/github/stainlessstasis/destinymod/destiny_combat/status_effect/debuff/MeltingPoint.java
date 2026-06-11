@@ -28,7 +28,7 @@ public class MeltingPoint extends AbstractStatusEffect {
         remainingTicks = ticks;
     }
 
-    public MeltingPointProperty getProperty(Level level) {
+    public static MeltingPointProperty getProperty(Level level) {
         return StatusEffects.MELTING_POINT.get(level).getProperty(MeltingPointProperty.class).orElse(AbilityProperties.MELTING_POINT.get());
     }
 

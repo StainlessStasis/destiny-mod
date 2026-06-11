@@ -13,6 +13,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.Abi
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.ScorchProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.OwnableStatusEffect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.IStatusEffect;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -36,7 +37,7 @@ public class Scorch extends OwnableStatusEffect {
         this.decayDelay = decayDelay;
     }
 
-    public ScorchProperty getProperty(Level level) {
+    public static ScorchProperty getProperty(Level level) {
         return StatusEffects.SCORCH.get(level).getProperty(ScorchProperty.class).orElse(AbilityProperties.SCORCH.get());
     }
 
@@ -70,7 +71,14 @@ public class Scorch extends OwnableStatusEffect {
         super.tick(entity);
         ScorchProperty property = getProperty(entity.level());
 
-        if (this.stacks >= property.ignitionThreshold() && entity.level() instanceof ServerLevel level) {
+        int ignitionThreshold = property.ignitionThreshold();
+        System.out.println("IGNITION THRESHOLD");
+        if (StatusEffectManager.isActive(entity, MeltingPoint.class)) {
+            float reduction = MeltingPoint.getProperty(entity.level()).ignitionReductionPercent();
+            ignitionThreshold -= (int) (ignitionThreshold * reduction);
+            System.out.println("MELTING POINT ACTIVE | NEW THRESHOLD: "+ignitionThreshold);
+        }
+        if (this.stacks >= ignitionThreshold && entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);
             Ignition.ignite(entity, owner, owner);
             this.clear(entity);

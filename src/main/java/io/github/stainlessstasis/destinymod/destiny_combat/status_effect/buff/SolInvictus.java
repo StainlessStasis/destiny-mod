@@ -29,7 +29,7 @@ public class SolInvictus extends AbstractStatusEffect {
         remainingTicks = ticks;
     }
 
-    public SolInvictusProperty getProperty(Level level) {
+    public static SolInvictusProperty getProperty(Level level) {
         return StatusEffects.SOL_INVICTUS.get(level).getProperty(SolInvictusProperty.class).orElse(AbilityProperties.SOL_INVICTUS.get());
     }
 

@@ -4,7 +4,8 @@
     {
       "type": "melting_point",
       "additionalDamagePercent": 0.2,
-      "durationTicks": 160
+      "durationTicks": 160,
+      "ignitionReductionPercent": 0.25
     }
   ]
 }
