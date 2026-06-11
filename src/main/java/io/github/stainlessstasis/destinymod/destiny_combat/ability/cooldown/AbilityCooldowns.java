@@ -192,7 +192,7 @@ public class AbilityCooldowns {
             this.cooldowns.put(registeredAbility, new CooldownInstance(
                     nextCharges,
                     cooldown.maxCharges(),
-                    cooldown.cooldownTicks(),
+                    ability.cooldownTicks(),
                     cooldown.progress()
             ));
             if (currentCharges == cooldown.maxCharges()) {
