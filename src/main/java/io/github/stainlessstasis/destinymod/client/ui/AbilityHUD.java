@@ -43,6 +43,7 @@ public class AbilityHUD {
         }
 
         var grenade = PlayerSubclassData.getRegisteredGrenade(player);
+        System.out.println("GRENADE: "+grenade);
         if (grenade != null) {
             activeAbilities.add(new AbilityUIDisplay(melee, THERMITE_GRENADE, THERMITE_GRENADE_CHARGED));
         }
@@ -110,7 +111,7 @@ public class AbilityHUD {
                 iconSize, iconSize
         );
 
-        int chargeBarY = x + iconSize + 3;
+        int chargeBarY = y + iconSize + 3;
         for (int i = 0; i < charges-1; i++) {
             graphics.fill(
                     x,
