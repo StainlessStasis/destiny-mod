@@ -1,8 +1,8 @@
 {
   "abilityType": "grenade",
-  "cooldownTicks": 600,
+  "cooldownTicks": 100,
   "damage": 7.0,
   "element": "solar",
-  "maxCharges": 3,
+  "maxCharges": 5,
   "scorch": 25
 }

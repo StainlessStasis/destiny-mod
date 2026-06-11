@@ -43,7 +43,7 @@ public class InputHandler {
         }
 
         if (key == DestinyModKeybinds.GRENADE.get().getKey().getValue()) {
-            player.swing(InteractionHand.OFF_HAND);
+            player.swing(InteractionHand.MAIN_HAND);
             ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.GRENADE));
         }
 

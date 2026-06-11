@@ -43,9 +43,8 @@ public class AbilityHUD {
         }
 
         var grenade = PlayerSubclassData.getRegisteredGrenade(player);
-        System.out.println("GRENADE: "+grenade);
         if (grenade != null) {
-            activeAbilities.add(new AbilityUIDisplay(melee, THERMITE_GRENADE, THERMITE_GRENADE_CHARGED));
+            activeAbilities.add(new AbilityUIDisplay(grenade, THERMITE_GRENADE, THERMITE_GRENADE_CHARGED));
         }
 
         if (activeAbilities.isEmpty()) return;
