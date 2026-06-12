@@ -2,11 +2,11 @@ package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.BouncingProjectile;
 import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.CollisionContext;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.ProjectileCollisionUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -23,7 +23,6 @@ import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusE
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.github.stainlessstasis.destinymod.network.clientbound.AnvilDropEffectsPacket;
-import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,7 +52,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
-public class BonkHammerEntity extends AbstractArrow implements GeoEntity, DestinyAbility {
+public class BonkHammerEntity extends AbstractArrow implements GeoEntity, DestinyAbility, BouncingProjectile {
     private boolean hasMeltingPoint = false;
     private boolean hasHeatseeker = false;
     private float homingStrength = 0.1f;
@@ -75,7 +74,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     public static final float LIQUID_SPIN_SPEED = 10f;
     public static final float RESTITUTION = 0.420f;
     public static final float FRICTION = 0.55f;
-    public static final float STICK_SPEED_THRESHOLD = 0.2f;
+    public static final float SETTLE_SPEED_THRESHOLD = 0.2f;
     public static final double TERMINAL_VELOCITY = -5d; // 5 blocks/tick downward
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -259,84 +258,50 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         }
     }
 
-    public void moveAndCollide() {
-        moveAndCollide(this.getDeltaMovement());
+    @Override
+    public float getRestitution() {
+        return RESTITUTION;
     }
 
-    public void moveAndCollide(Vec3 movement) {
-        Optional<CollisionContext> collision = ProjectileCollisionUtils.checkCollisions(this, collidedThisTick, movement);
-        if (collision.isPresent()) {
-            onCollisionResult(collision.get());
-        } else {
-            this.setPos(this.position().add(movement));
-        }
+    @Override
+    public float getFriction() {
+        return FRICTION;
     }
 
+    @Override
+    public float getSettleSpeedThreshold() {
+        return SETTLE_SPEED_THRESHOLD;
+    }
+
+    @Override
+    public Set<UUID> getCollidedThisTick() {
+        return collidedThisTick;
+    }
+
+    @Override
     public void onCollisionResult(CollisionContext context) {
         this.hasEverCollided = true;
-        handleBlockCollision(context);
-        handleEntityCollision(context);
-        handleCollision(context);
+        BouncingProjectile.super.onCollisionResult(context);
         triggerAnvilDropExplosion(context);
     }
 
-    protected void handleBlockCollision(CollisionContext context) {
-        if (!(context.result() instanceof BlockHitResult result)) return;
-
-        if (result.getDirection() == Direction.DOWN) {
-            this.hitCeiling = true;
-        }
-
+    @Override
+    public void handleBlockCollision(CollisionContext context, BlockHitResult result) {
+        if (result.getDirection() == Direction.DOWN) this.hitCeiling = true;
         vanillaHitBlock(result);
-
-//        if (this.level() instanceof ServerLevel level) {
-//            double speed = context.sourceVelocity().length();
-//            if (speed > STICK_SPEED_THRESHOLD) {
-//                BlockDestructionManager.addDamage(level, result.getBlockPos(), 0.3f + (float)Math.pow(speed, 1.5f), this, true, true);
-//            }
-//        }
     }
 
-    protected void handleEntityCollision(CollisionContext context) {
-        if (!(context.result() instanceof EntityHitResult result)) return;
-
-        collidedThisTick.add(result.getEntity().getUUID());
+    @Override
+    public void handleEntityCollision(CollisionContext context, EntityHitResult result) {
+        this.collidedThisTick.add(result.getEntity().getUUID());
         vanillaHitEntity(result);
     }
 
-    protected void handleCollision(CollisionContext context) {
-        Vec3 position = context.result().getLocation();
-        Vec3 normal = context.normal();
-        Vec3 newVel = applyBounce(this.getDeltaMovement(), context);
-        if (!this.hitCeiling && normal.length() > Constants.EPSILON && newVel.length() < STICK_SPEED_THRESHOLD) {
+    @Override
+    public void onSettle(CollisionContext context) {
+        if (!this.hitCeiling) {
             vanillaStickInBlock();
-        } else {
-            this.setPos(position.add(normal.scale(0.005))); // prevent infinite collision loop
-            this.setDeltaMovement(newVel);
         }
-    }
-
-    /**
-     * Applies bounce physics given a collision.
-     * Reflects velocity off the collision normal using the hammer's coefficient of restitution.
-     */
-    protected Vec3 applyBounce(Vec3 velocity, CollisionContext context) {
-        Vec3 normal = context.normal();
-        Vec3 relative = velocity.subtract(context.targetVelocity());
-        double normalSpeed = relative.dot(normal);
-        Vec3 scaledNormal = normal.scale(normalSpeed);
-
-        float mass = /* getEnergy(); */ 1f;
-        float targetMass = context.targetMass();
-        float impulse = (1f / mass) + (targetMass > 0 ? 1f / targetMass : 0f);
-
-        double j = -(1 + RESTITUTION) * normalSpeed / impulse;
-        Vec3 bouncedNormal = normal.scale(j / mass);
-
-        Vec3 tangential = relative.subtract(scaledNormal);
-        Vec3 friction = tangential.scale(FRICTION);
-
-        return velocity.add(bouncedNormal).subtract(friction);
     }
 
     /**

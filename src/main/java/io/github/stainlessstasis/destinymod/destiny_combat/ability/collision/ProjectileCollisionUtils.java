@@ -25,22 +25,22 @@ public final class ProjectileCollisionUtils {
     };
 
     /**
-     * Tests the projectile for collisions against blocks and entities. Returns whichever collision is earliest.
+     * Tests the entity for collisions against blocks and entities. Returns whichever collision is earliest.
      */
-    public static Optional<CollisionContext> checkCollisions(Projectile projectile, Set<UUID> alreadyCollidedThisTick) {
-        return checkCollisions(projectile, alreadyCollidedThisTick, projectile.getDeltaMovement());
+    public static Optional<CollisionContext> checkCollisions(Entity entity, Set<UUID> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
+        return checkCollisions(entity, alreadyCollidedThisTick, entity.getDeltaMovement(), skipSameOwnerProjectiles);
     }
 
     /**
      * Alternative method for checkCollisions which uses a custom movement vector instead of delta movement.
      */
-    public static Optional<CollisionContext> checkCollisions(Projectile projectile, Set<UUID> alreadyCollidedThisTick, Vec3 movement) {
-        AABB preTick = projectile.getBoundingBox();
+    public static Optional<CollisionContext> checkCollisions(Entity entity, Set<UUID> alreadyCollidedThisTick, Vec3 movement, boolean skipSameOwnerProjectiles) {
+        AABB preTick = entity.getBoundingBox();
         AABB postTick = preTick.move(movement);
         AABB sweepVolume = union(preTick, postTick);
 
-        Optional<CollisionContext> blockHit = checkBlockCollisions(projectile, sweepVolume);
-        Optional<CollisionContext> entityHit = checkEntityCollisions(projectile, sweepVolume, alreadyCollidedThisTick);
+        Optional<CollisionContext> blockHit = checkBlockCollisions(entity, sweepVolume);
+        Optional<CollisionContext> entityHit = checkEntityCollisions(entity, sweepVolume, alreadyCollidedThisTick, skipSameOwnerProjectiles);
 
         if (blockHit.isEmpty()) return entityHit;
         if (entityHit.isEmpty()) return blockHit;
@@ -50,10 +50,10 @@ public final class ProjectileCollisionUtils {
 
     // --- Blocks ---
 
-    private static Optional<CollisionContext> checkBlockCollisions(Projectile projectile, AABB sweepVolume) {
-        Set<BlockPos> candidates = getBlockCandidates(projectile.level(), sweepVolume);
+    private static Optional<CollisionContext> checkBlockCollisions(Entity entity, AABB sweepVolume) {
+        Set<BlockPos> candidates = getBlockCandidates(entity.level(), sweepVolume);
         if (candidates.isEmpty()) return Optional.empty();
-        return collideBlocks(projectile, candidates);
+        return collideBlocks(entity, candidates);
     }
 
     private static Set<BlockPos> getBlockCandidates(Level level, AABB sweepVolume) {
@@ -66,10 +66,10 @@ public final class ProjectileCollisionUtils {
                 .collect(Collectors.toSet());
     }
 
-    private static Optional<CollisionContext> collideBlocks(Projectile projectile, Set<BlockPos> candidates) {
-        AABB projectileBox = projectile.getBoundingBox();
-        Vec3 velocity = projectile.getDeltaMovement();
-        Level level = projectile.level();
+    private static Optional<CollisionContext> collideBlocks(Entity entity, Set<BlockPos> candidates) {
+        AABB projectileBox = entity.getBoundingBox();
+        Vec3 velocity = entity.getDeltaMovement();
+        Level level = entity.level();
 
         double bestTime = Double.POSITIVE_INFINITY;
         BlockHitResult bestHit = null;
@@ -89,7 +89,7 @@ public final class ProjectileCollisionUtils {
                 if (result.hit() && result.tEntry() < bestTime) {
                     bestTime = result.tEntry();
                     bestNormal = result.normal();
-                    Vec3 hitPos = projectile.position().add(velocity.scale(bestTime));
+                    Vec3 hitPos = entity.position().add(velocity.scale(bestTime));
                     Vec3i bestNormalVec3i = new Vec3i((int) bestNormal.x, (int) bestNormal.y, (int) bestNormal.z);
                     bestHit = new BlockHitResult(
                             hitPos,
@@ -100,7 +100,7 @@ public final class ProjectileCollisionUtils {
         }
 
         if (bestHit == null) return Optional.empty();
-        return Optional.of(new CollisionContext(bestHit, bestNormal, projectile.getDeltaMovement(), Vec3.ZERO,
+        return Optional.of(new CollisionContext(bestHit, bestNormal, entity.getDeltaMovement(), Vec3.ZERO,
                 0, // In my other project I grabbed this code from, the projectiles can actually have mass, but I'm leaving it unimplemented in this mod for now.
                               // This is just so that we can implement it in the future if we so choose
                 0, bestTime));
@@ -108,30 +108,30 @@ public final class ProjectileCollisionUtils {
 
     // --- Entities ---
 
-    private static Optional<CollisionContext> checkEntityCollisions(Projectile projectile, AABB sweepVolume, Set<UUID> alreadyCollidedThisTick) {
-        Set<Entity> candidates = getEntityCandidates(projectile, sweepVolume, alreadyCollidedThisTick);
+    private static Optional<CollisionContext> checkEntityCollisions(Entity entity, AABB sweepVolume, Set<UUID> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
+        Set<Entity> candidates = getEntityCandidates(entity, sweepVolume, alreadyCollidedThisTick, skipSameOwnerProjectiles);
         if (candidates.isEmpty()) return Optional.empty();
-        return collideEntities(projectile, candidates);
+        return collideEntities(entity, candidates);
     }
 
-    private static Set<Entity> getEntityCandidates(Projectile projectile, AABB searchArea, Set<UUID> alreadyCollidedThisTick) {
-        Entity owner = projectile.getOwner();
-        return new HashSet<>(projectile.level().getEntities(projectile, searchArea, entity -> {
-            if (alreadyCollidedThisTick.contains(entity.getUUID())) return false;
-            if (!(entity instanceof LivingEntity) && !(entity instanceof Projectile)) return false;
-            if (owner != null && entity.getUUID().equals(owner.getUUID())) return false;
-            // skip other projectiles from the same owner (leaving unimplemented for now)
-//            if (owner != null && entity instanceof Projectile other) {
-//                Entity otherOwner = other.getOwner();
-//                return otherOwner == null || !otherOwner.getUUID().equals(owner.getUUID());
-//            }
+    private static Set<Entity> getEntityCandidates(Entity entity, AABB searchArea, Set<UUID> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
+        Entity owner = entity instanceof Projectile projectile ? projectile.getOwner() : null;
+        return new HashSet<>(entity.level().getEntities(entity, searchArea, candidate -> {
+            if (alreadyCollidedThisTick.contains(candidate.getUUID())) return false;
+            if (!(candidate instanceof LivingEntity) && !(candidate instanceof Projectile)) return false;
+            if (owner != null && candidate.getUUID().equals(owner.getUUID())) return false;
+            // skip other projectiles from the same owner
+            if (skipSameOwnerProjectiles && owner != null && candidate instanceof Projectile other) {
+                Entity otherOwner = other.getOwner();
+                return otherOwner == null || !otherOwner.getUUID().equals(owner.getUUID());
+            }
             return true;
         }));
     }
 
-    private static Optional<CollisionContext> collideEntities(Projectile projectile, Set<Entity> candidates) {
-        AABB projectileBox = projectile.getBoundingBox();
-        Vec3 velocity = projectile.getDeltaMovement();
+    private static Optional<CollisionContext> collideEntities(Entity entity, Set<Entity> candidates) {
+        AABB projectileBox = entity.getBoundingBox();
+        Vec3 velocity = entity.getDeltaMovement();
 
         double bestTime = Double.POSITIVE_INFINITY;
         EntityHitResult bestHit = null;
@@ -139,22 +139,22 @@ public final class ProjectileCollisionUtils {
         Vec3 bestVictimVelocity = Vec3.ZERO;
         float bestVictimMass = 0;
 
-        for (Entity entity : candidates) {
-            Vec3 entityVelocity = entity.getDeltaMovement();
-            SweepTestResult result = sweepTest(projectileBox, entity.getBoundingBox(), velocity, entityVelocity);
+        for (Entity candidate : candidates) {
+            Vec3 entityVelocity = candidate.getDeltaMovement();
+            SweepTestResult result = sweepTest(projectileBox, candidate.getBoundingBox(), velocity, entityVelocity);
 
             if (result.hit() && result.tEntry() < bestTime) {
                 bestTime = result.tEntry();
                 bestNormal = result.normal();
                 bestVictimVelocity = entityVelocity;
-                if (entity instanceof Projectile proj) bestVictimMass = /* proj.getEnergy(); */ 0;
-                Vec3 hitPos = projectile.position().add(velocity.scale(bestTime));
-                bestHit = new EntityHitResult(entity, hitPos);
+                if (candidate instanceof Projectile proj) bestVictimMass = /* proj.getEnergy(); */ 0;
+                Vec3 hitPos = entity.position().add(velocity.scale(bestTime));
+                bestHit = new EntityHitResult(candidate, hitPos);
             }
         }
 
         if (bestHit == null) return Optional.empty();
-        return Optional.of(new CollisionContext(bestHit, bestNormal, projectile.getDeltaMovement(), bestVictimVelocity, /*projectile.getEnergy()*/ 0, bestVictimMass, bestTime));
+        return Optional.of(new CollisionContext(bestHit, bestNormal, entity.getDeltaMovement(), bestVictimVelocity, /*projectile.getEnergy()*/ 0, bestVictimMass, bestTime));
     }
 
     // --- the rest of the shit ---
