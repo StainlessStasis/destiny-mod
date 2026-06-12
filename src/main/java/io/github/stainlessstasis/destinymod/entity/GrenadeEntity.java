@@ -1,9 +1,12 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.BouncingProjectile;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.CollisionContext;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.DestinyProjectile;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehavior;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,8 +27,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public class GrenadeEntity extends ThrowableProjectile implements DestinyProjectile {
+public class GrenadeEntity extends ThrowableProjectile implements BouncingProjectile, DestinyAbility {
     private static final EntityDataAccessor<String> GRENADE_BEHAVIOR_ID = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.STRING);
+
+    protected Ability ability;
 
     protected GrenadeEntity(EntityType<? extends ThrowableProjectile> type, Level level) {
         super(type, level);
@@ -50,6 +55,12 @@ public class GrenadeEntity extends ThrowableProjectile implements DestinyProject
 
     public Identifier getBehaviorID() {
         return Identifier.parse(this.entityData.get(GRENADE_BEHAVIOR_ID));
+    }
+
+    public void setupFromAbility(RegisteredAbility ability) {
+        if (level().isClientSide()) return;
+        this.ability = ability.get(this);
+        
     }
 
     @Override
@@ -95,5 +106,30 @@ public class GrenadeEntity extends ThrowableProjectile implements DestinyProject
     @Override
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(GRENADE_BEHAVIOR_ID, "");
+    }
+
+    @Override
+    public float getRestitution() {
+        return 0;
+    }
+
+    @Override
+    public float getFriction() {
+        return 0;
+    }
+
+    @Override
+    public float getSettleSpeedThreshold() {
+        return 0;
+    }
+
+    @Override
+    public void onSettle(CollisionContext context) {
+
+    }
+
+    @Override
+    public @Nullable Ability getDestinyAbility() {
+        return ability;
     }
 }

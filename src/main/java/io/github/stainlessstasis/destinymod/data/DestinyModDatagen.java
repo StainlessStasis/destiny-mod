@@ -36,7 +36,7 @@ public class DestinyModDatagen {
                             AbilityType.MELEE, DestinyElement.SOLAR, 200, 3, -1f, 7f, 25
                     ));
                     bootstrap.register(Abilities.THERMITE_GRENADE.resourceKey(), new Ability(
-                            AbilityType.GRENADE, DestinyElement.SOLAR, 100, 5, -1f, 7f, 25
+                            AbilityType.GRENADE, DestinyElement.SOLAR, 100, 5, -1f, 7f, 25, AbilityProperties.THERMITE_GRENADE_PHYSICS.get()
                     ));
                     bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.SOLAR, -1, -1, 0.3f, 1f, 5

@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.registry.property;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
 import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.HeatseekerProperty;
@@ -47,6 +48,10 @@ public class AbilityProperties {
     // ABILITIES
     public static Supplier<IgnitionProperty> IGNITION = register("ignition", IgnitionProperty.class, IgnitionProperty.CODEC,
             () -> new IgnitionProperty(5f)
+    );
+    public static Supplier<GrenadePhysicsProperty> THERMITE_GRENADE_PHYSICS = register("thermite_grenade_physics", GrenadePhysicsProperty.class, GrenadePhysicsProperty.CODEC,
+            () -> new GrenadePhysicsProperty(0.6f, 0.7f, 0.03f, 0.1f,
+                    true, false, true, -1)
     );
 
     // ASPECTS
