@@ -2,7 +2,7 @@ package io.github.stainlessstasis.destinymod;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
-import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
@@ -43,7 +43,7 @@ public class DestinyMod {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         DestinyModAttachments.register(modEventBus);
         DestinyModEntities.register(modEventBus);
-        DestinyRegistries.GRENADE_BEHAVIORS_REGISTER.register(modEventBus);
+        GrenadeBehaviors.registerRegistry(modEventBus);
     }
 
     public static Identifier id(String path) {

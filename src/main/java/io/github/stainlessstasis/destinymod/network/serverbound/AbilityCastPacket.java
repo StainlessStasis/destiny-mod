@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.network.serverbound;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.entity.GrenadeEntity;
@@ -60,9 +61,10 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
                     player.swing(InteractionHand.MAIN_HAND);
 
                     if (player.level() instanceof ServerLevel serverLevel) {
-                        Projectile.spawnProjectileFromRotation(
+                        GrenadeEntity grenade = Projectile.spawnProjectileFromRotation(
                                 GrenadeEntity::new, serverLevel, new ItemStack(Items.FIRE_CHARGE), player, 0f, 1f, 0f
                         );
+                        grenade.setBehavior(GrenadeBehaviors.THERMITE);
                         AbilityCooldownManager.addCooldown(player, ability);
                     }
                 });

@@ -12,8 +12,8 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 
 @EventBusSubscriber
 public class DestinyRegistries {
-    private static final ResourceKey<Registry<GrenadeBehavior>> GRENADE_BEHAVIORS_KEY = ResourceKey.createRegistryKey(DestinyMod.id("grenade_behaviors"));
-    private static final Registry<GrenadeBehavior> GRENADE_BEHAVIORS_REGISTRY = new RegistryBuilder<>(GRENADE_BEHAVIORS_KEY)
+    public static final ResourceKey<Registry<GrenadeBehavior>> GRENADE_BEHAVIORS_KEY = ResourceKey.createRegistryKey(DestinyMod.id("grenade_behaviors"));
+    public static final Registry<GrenadeBehavior> GRENADE_BEHAVIORS_REGISTRY = new RegistryBuilder<>(GRENADE_BEHAVIORS_KEY)
             .sync(true)
             .defaultKey(DestinyMod.id("none"))
             .maxId(256)
