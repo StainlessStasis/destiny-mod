@@ -1,7 +1,5 @@
 package io.github.stainlessstasis.destinymod.network.serverbound;
 
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;

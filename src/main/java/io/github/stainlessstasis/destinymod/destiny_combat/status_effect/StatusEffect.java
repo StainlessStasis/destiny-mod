@@ -2,8 +2,8 @@ package io.github.stainlessstasis.destinymod.destiny_combat.status_effect;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperty;
+import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
+import io.github.stainlessstasis.destinymod.registry.property.AbilityProperty;
 
 import java.util.Arrays;
 import java.util.List;

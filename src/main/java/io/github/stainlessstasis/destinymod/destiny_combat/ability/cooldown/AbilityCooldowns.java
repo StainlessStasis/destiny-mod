@@ -12,7 +12,7 @@ import java.util.Set;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.registry.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.netty.buffer.ByteBuf;
