@@ -23,22 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbility {
+public class SunspotEntity extends AbstractAbilityEntity {
     public static final float RADIUS = 2f;
-    public static final float RADIUS_SQUARED = RADIUS*RADIUS;
-    public static final int SCORCH_AMOUNT = 5;
     public static final int HIT_INTERVAL = 10;
     public static final int MAX_LIFETIME = 160;
 
-    private final Ability ability;
     private final Map<LivingEntity, Integer> attackCooldowns = new HashMap<>();
-    private @Nullable EntityReference<LivingEntity> owner;
 
     private SunspotEntity(EntityType<? extends Entity> type, Level level) {
-        super(type, level);
-        ability = Abilities.SUNSPOT.get(level());
-        noPhysics = true;
-        refreshDimensions();
+        super(type, level, Abilities.SUNSPOT.get(level));
     }
 
     public static SunspotEntity createDefault(EntityType<? extends Entity> entityType, Level level) {
@@ -99,14 +92,6 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
         ClientAudioAndVFX.sunspot(level(), position(), random, tickCount);
     }
 
-    public void setOwner(@Nullable LivingEntity owner) {
-        this.owner = EntityReference.of(owner);
-    }
-    @Override
-    public @Nullable LivingEntity getOwner() {
-        return EntityReference.getLivingEntity(owner, level());
-    }
-
     @Override
     public @NonNull EntityDimensions getDimensions(@NonNull Pose pose) {
         return EntityDimensions.fixed(RADIUS*2, 2.5f);
@@ -114,18 +99,4 @@ public class SunspotEntity extends Entity implements TraceableEntity, DestinyAbi
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {}
-    @Override
-    public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource damageSource, float v) {return false;}
-    @Override
-    protected void readAdditionalSaveData(@NonNull ValueInput valueInput) {
-        discard();
-    }
-    @Override
-    protected void addAdditionalSaveData(@NonNull ValueOutput valueOutput) {}
-
-
-    @Override
-    public @NotNull Ability getDestinyAbility() {
-        return ability;
-    }
 }
