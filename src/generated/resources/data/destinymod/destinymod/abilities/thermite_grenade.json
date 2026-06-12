@@ -6,14 +6,14 @@
   "maxCharges": 5,
   "properties": [
     {
-      "type": "thermite_grenade_physics",
+      "type": "grenade_physics",
       "bounciness": 0.6,
       "detonateOnBlock": true,
       "detonateOnEntity": false,
       "detonateOnSettle": true,
-      "friction": 0.7,
-      "gravity": 0.03,
-      "settleSpeedThreshold": 0.1,
+      "friction": 0.5,
+      "gravity": 0.0325,
+      "settleSpeedThreshold": 0.05,
       "ticksBeforeForceDetonate": -1
     }
   ],

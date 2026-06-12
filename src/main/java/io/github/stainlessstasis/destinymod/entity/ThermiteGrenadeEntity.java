@@ -29,7 +29,6 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     @Override
     public void tick() {
         super.tick();
-        System.out.println("THERMITE TICK");
     }
 
     @Override

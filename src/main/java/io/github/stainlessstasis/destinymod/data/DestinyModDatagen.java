@@ -12,6 +12,7 @@ import io.github.stainlessstasis.destinymod.registry.datapack.StatusEffects;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffect;
+import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageEffects;
@@ -36,7 +37,11 @@ public class DestinyModDatagen {
                             AbilityType.MELEE, DestinyElement.SOLAR, 200, 3, -1f, 7f, 25
                     ));
                     bootstrap.register(Abilities.THERMITE_GRENADE.resourceKey(), new Ability(
-                            AbilityType.GRENADE, DestinyElement.SOLAR, 100, 5, -1f, 7f, 25, AbilityProperties.GRENADE_PHYSICS.get()
+                            AbilityType.GRENADE, DestinyElement.SOLAR, 100, 5, -1f, 7f, 25,
+                            new GrenadePhysicsProperty(
+                                    0.6f, 0.5f, 0.0325f, 0.05f,
+                                    true, false, true, -1
+                            )
                     ));
                     bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.SOLAR, -1, -1, 0.3f, 1f, 5

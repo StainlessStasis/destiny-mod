@@ -7,7 +7,6 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.Col
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehavior;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
-import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -25,6 +24,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -40,6 +40,7 @@ public class GrenadeEntity extends ThrowableProjectile implements BouncingProjec
     private static final EntityDataAccessor<Boolean> DETONATE_ON_SETTLE = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> TICKS_BEFORE_FORCE_DETONATE = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.INT);
 
+    private final Set<UUID> collidedThisTick = new HashSet<>();
     protected Ability ability;
 
     protected GrenadeEntity(EntityType<? extends ThrowableProjectile> type, Level level) {
@@ -116,7 +117,7 @@ public class GrenadeEntity extends ThrowableProjectile implements BouncingProjec
 
     @Override
     public Set<UUID> getCollidedThisTick() {
-        return Set.of();
+        return collidedThisTick;
     }
 
     @Override
@@ -128,6 +129,7 @@ public class GrenadeEntity extends ThrowableProjectile implements BouncingProjec
 
     @Override
     public void handleEntityCollision(CollisionContext context, EntityHitResult result) {
+        collidedThisTick.add(result.getEntity().getUUID());
         if (this.entityData.get(DETONATE_ON_ENTITY)) {
             detonate(context);
         }
