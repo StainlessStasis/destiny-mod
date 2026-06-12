@@ -4,10 +4,10 @@ import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.*;
-import io.github.stainlessstasis.destinymod.registry.Abilities;
-import io.github.stainlessstasis.destinymod.registry.Aspects;
-import io.github.stainlessstasis.destinymod.registry.RegisteredAbility;
-import io.github.stainlessstasis.destinymod.registry.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
+import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
 import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.registry;
+package io.github.stainlessstasis.destinymod.registry.datapack;
 
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;

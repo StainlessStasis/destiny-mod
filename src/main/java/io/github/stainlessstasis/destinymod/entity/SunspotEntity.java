@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
-import io.github.stainlessstasis.destinymod.registry.Abilities;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;

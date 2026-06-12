@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.registry;
+package io.github.stainlessstasis.destinymod.registry.datapack;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;

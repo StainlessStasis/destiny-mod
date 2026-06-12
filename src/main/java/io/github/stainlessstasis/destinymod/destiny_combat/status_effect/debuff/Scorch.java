@@ -8,7 +8,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.misc_solar.Ignition;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
-import io.github.stainlessstasis.destinymod.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.registry.datapack.StatusEffects;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.ScorchProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.OwnableStatusEffect;

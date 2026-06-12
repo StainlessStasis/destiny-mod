@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.client.ui;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
-import io.github.stainlessstasis.destinymod.registry.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;

@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
-import io.github.stainlessstasis.destinymod.registry.StatusEffects;
+import io.github.stainlessstasis.destinymod.registry.datapack.StatusEffects;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.SolInvictusProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.AbstractStatusEffect;

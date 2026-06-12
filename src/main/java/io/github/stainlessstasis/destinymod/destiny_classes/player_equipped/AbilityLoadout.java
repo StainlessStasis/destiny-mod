@@ -2,9 +2,9 @@ package io.github.stainlessstasis.destinymod.destiny_classes.player_equipped;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.stainlessstasis.destinymod.registry.Abilities;
-import io.github.stainlessstasis.destinymod.registry.RegisteredAbility;
-import io.github.stainlessstasis.destinymod.registry.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

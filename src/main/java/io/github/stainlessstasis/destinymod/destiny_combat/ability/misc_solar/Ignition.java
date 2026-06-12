@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.ability.misc_solar;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
-import io.github.stainlessstasis.destinymod.registry.Abilities;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;

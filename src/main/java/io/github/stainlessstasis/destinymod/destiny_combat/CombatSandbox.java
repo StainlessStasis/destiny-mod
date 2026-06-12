@@ -4,7 +4,7 @@ import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
-import io.github.stainlessstasis.destinymod.registry.Abilities;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;

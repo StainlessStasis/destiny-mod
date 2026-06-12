@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.data;
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldowns;
-import io.github.stainlessstasis.destinymod.registry.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
