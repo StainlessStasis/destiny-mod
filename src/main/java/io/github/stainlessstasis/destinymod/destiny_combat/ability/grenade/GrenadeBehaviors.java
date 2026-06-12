@@ -1,23 +1,18 @@
 package io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade;
 
+import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.function.Supplier;
 
 public class GrenadeBehaviors {
-    private static final Map<String, GrenadeBehavior> REGISTRY = new HashMap<>();
+    public static DeferredHolder<GrenadeBehavior, GrenadeBehavior> register(String id, Supplier<GrenadeBehavior> behavior) {
+        return DestinyRegistries.GRENADE_BEHAVIORS_REGISTER.register(id, behavior);
+    }
 
-    public static final GrenadeBehavior THERMITE = (grenade, context) -> {
-        if (!(grenade.level() instanceof ServerLevel serverLevel)) return;
+    public static final DeferredHolder<GrenadeBehavior, GrenadeBehavior> THERMITE = register("thermite", () -> (entity, context) ->  {
+        if (!(entity.level() instanceof ServerLevel level)) return;
         System.out.println("THERMITE GRENADE");
-    };
-
-    static {
-        REGISTRY.put("thermite", THERMITE);
-    }
-
-    public static GrenadeBehavior get(String type) {
-        return REGISTRY.getOrDefault(type, (g, c) -> {});
-    }
+    });
 }
