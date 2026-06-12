@@ -7,6 +7,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.Grena
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.entity.GrenadeEntity;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -65,6 +66,7 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
                                 GrenadeEntity::new, serverLevel, new ItemStack(Items.FIRE_CHARGE), player, 0f, 1f, 0f
                         );
                         grenade.setBehavior(GrenadeBehaviors.THERMITE);
+                        grenade.setupFromAbility(Abilities.THERMITE_GRENADE);
                         AbilityCooldownManager.addCooldown(player, ability);
                     }
                 });

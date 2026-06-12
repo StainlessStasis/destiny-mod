@@ -7,6 +7,8 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.Col
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehavior;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
+import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,6 +31,14 @@ import java.util.UUID;
 
 public class GrenadeEntity extends ThrowableProjectile implements BouncingProjectile, DestinyAbility {
     private static final EntityDataAccessor<String> GRENADE_BEHAVIOR_ID = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Float> BOUNCINESS = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> FRICTION = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> GRAVITY = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SETTLE_SPEED_THRESHOLD = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DETONATE_ON_BLOCK = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DETONATE_ON_ENTITY = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DETONATE_ON_SETTLE = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> TICKS_BEFORE_FORCE_DETONATE = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.INT);
 
     protected Ability ability;
 
@@ -60,7 +70,16 @@ public class GrenadeEntity extends ThrowableProjectile implements BouncingProjec
     public void setupFromAbility(RegisteredAbility ability) {
         if (level().isClientSide()) return;
         this.ability = ability.get(this);
-        
+        this.ability.getProperty(GrenadePhysicsProperty.class).ifPresent(props -> {
+            this.entityData.set(BOUNCINESS, props.bounciness());
+            this.entityData.set(FRICTION, props.friction());
+            this.entityData.set(GRAVITY, props.gravity());
+            this.entityData.set(SETTLE_SPEED_THRESHOLD, props.settleSpeedThreshold());
+            this.entityData.set(DETONATE_ON_BLOCK, props.detonateOnBlock());
+            this.entityData.set(DETONATE_ON_ENTITY, props.detonateOnEntity());
+            this.entityData.set(DETONATE_ON_SETTLE, props.detonateOnSettle());
+            this.entityData.set(TICKS_BEFORE_FORCE_DETONATE, props.ticksBeforeForceDetonate());
+        });
     }
 
     @Override
@@ -78,6 +97,13 @@ public class GrenadeEntity extends ThrowableProjectile implements BouncingProjec
             this.hasBeenShot = true;
         }
 
+        int forceDetonateTicks = this.entityData.get(TICKS_BEFORE_FORCE_DETONATE);
+        if (forceDetonateTicks >= 0 && this.tickCount >= forceDetonateTicks) {
+            detonate(null);
+            return;
+        }
+
+        // leave this last
         this.checkLeftOwner();
         this.baseTick();
         this.leftOwnerChecked = false;
@@ -95,37 +121,56 @@ public class GrenadeEntity extends ThrowableProjectile implements BouncingProjec
 
     @Override
     public void handleBlockCollision(CollisionContext context, BlockHitResult result) {
-        detonate(context);
+        if (this.entityData.get(DETONATE_ON_BLOCK)) {
+            detonate(context);
+        }
     }
 
     @Override
     public void handleEntityCollision(CollisionContext context, EntityHitResult result) {
-        detonate(context);
+        if (this.entityData.get(DETONATE_ON_ENTITY)) {
+            detonate(context);
+        }
+    }
+
+    @Override
+    public void onSettle(CollisionContext context) {
+        if (this.entityData.get(DETONATE_ON_SETTLE)) {
+            detonate(context);
+        }
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(GRENADE_BEHAVIOR_ID, "");
+        builder.define(BOUNCINESS, 0.0f);
+        builder.define(FRICTION, 0.0f);
+        builder.define(GRAVITY, 0.0f);
+        builder.define(SETTLE_SPEED_THRESHOLD, 0.0f);
+        builder.define(DETONATE_ON_BLOCK, false);
+        builder.define(DETONATE_ON_ENTITY, false);
+        builder.define(DETONATE_ON_SETTLE, false);
+        builder.define(TICKS_BEFORE_FORCE_DETONATE, -1);
     }
 
     @Override
     public float getRestitution() {
-        return 0;
+        return this.entityData.get(BOUNCINESS);
     }
 
     @Override
     public float getFriction() {
-        return 0;
+        return this.entityData.get(FRICTION);
+    }
+
+    @Override
+    protected double getDefaultGravity() {
+        return this.entityData.get(GRAVITY);
     }
 
     @Override
     public float getSettleSpeedThreshold() {
-        return 0;
-    }
-
-    @Override
-    public void onSettle(CollisionContext context) {
-
+        return this.entityData.get(SETTLE_SPEED_THRESHOLD);
     }
 
     @Override

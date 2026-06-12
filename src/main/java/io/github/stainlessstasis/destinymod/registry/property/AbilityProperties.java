@@ -49,9 +49,8 @@ public class AbilityProperties {
     public static Supplier<IgnitionProperty> IGNITION = register("ignition", IgnitionProperty.class, IgnitionProperty.CODEC,
             () -> new IgnitionProperty(5f)
     );
-    public static Supplier<GrenadePhysicsProperty> THERMITE_GRENADE_PHYSICS = register("thermite_grenade_physics", GrenadePhysicsProperty.class, GrenadePhysicsProperty.CODEC,
-            () -> new GrenadePhysicsProperty(0.6f, 0.7f, 0.03f, 0.1f,
-                    true, false, true, -1)
+    public static Supplier<GrenadePhysicsProperty> GRENADE_PHYSICS = register("grenade_physics", GrenadePhysicsProperty.class, GrenadePhysicsProperty.CODEC,
+            GrenadePhysicsProperty::getDefault
     );
 
     // ASPECTS
