@@ -45,6 +45,7 @@ public class EntityRendererEvents {
         event.registerEntityRenderer(DestinyModEntities.HAMMER_OF_SOL.get(), BonkHammerRenderer::new);
         event.registerEntityRenderer(DestinyModEntities.SUNSPOT.get(), DummyEntityRenderer::new);
         event.registerEntityRenderer(DestinyModEntities.GENERIC_GRENADE.get(), DummyEntityRenderer::new);
+        event.registerEntityRenderer(DestinyModEntities.THERMITE_GRENADE.get(), DummyEntityRenderer::new);
     }
 
     @SubscribeEvent

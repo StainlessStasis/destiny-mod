@@ -8,6 +8,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -16,11 +17,17 @@ public abstract class AbstractAbilityEntity extends Entity implements TraceableE
     protected final Ability ability;
     protected @Nullable EntityReference<LivingEntity> owner;
 
-    public AbstractAbilityEntity(EntityType<?> type, Level level, Ability ability) {
+    protected AbstractAbilityEntity(EntityType<?> type, Level level, Ability ability) {
         super(type, level);
         this.ability = ability;
         noPhysics = true;
         refreshDimensions();
+    }
+
+    public AbstractAbilityEntity(EntityType<?> type, Level level, Ability ability, Vec3 pos, @Nullable LivingEntity owner) {
+        this(type, level, ability);
+        setPos(pos);
+        setOwner(owner);
     }
 
     @Override

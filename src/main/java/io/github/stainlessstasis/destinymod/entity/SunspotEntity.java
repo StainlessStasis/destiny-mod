@@ -30,15 +30,15 @@ public class SunspotEntity extends AbstractAbilityEntity {
 
     private final Map<LivingEntity, Integer> attackCooldowns = new HashMap<>();
 
-    private SunspotEntity(EntityType<? extends Entity> type, Level level) {
+    private SunspotEntity(EntityType<? extends AbstractAbilityEntity> type, Level level) {
         super(type, level, Abilities.SUNSPOT.get(level));
     }
 
-    public static SunspotEntity createDefault(EntityType<? extends Entity> entityType, Level level) {
+    public static SunspotEntity createDefault(EntityType<? extends AbstractAbilityEntity> entityType, Level level) {
         return new SunspotEntity(entityType, level);
     }
 
-    public SunspotEntity(EntityType<? extends Entity> type, Level level, Vec3 pos, @Nullable LivingEntity owner) {
+    public SunspotEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, @Nullable LivingEntity owner) {
         this(type, level);
         setPos(pos);
         setOwner(owner);

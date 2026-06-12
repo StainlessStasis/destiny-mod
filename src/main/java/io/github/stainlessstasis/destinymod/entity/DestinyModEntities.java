@@ -60,6 +60,21 @@ public class DestinyModEntities {
                     ))
     );
 
+    public static final Supplier<EntityType<@NotNull ThermiteGrenadeEntity>> THERMITE_GRENADE = ENTITY_TYPES.register(
+            "thermite_grenade",
+            () -> EntityType.Builder.of(
+                            ThermiteGrenadeEntity::createDefault,
+                            MobCategory.MISC
+                    )
+                    .sized(0.5f, 0.5f)
+                    .noSave()
+                    .clientTrackingRange(8)
+                    .build(ResourceKey.create(
+                            Registries.ENTITY_TYPE,
+                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "thermite_grenade")
+                    ))
+    );
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }
