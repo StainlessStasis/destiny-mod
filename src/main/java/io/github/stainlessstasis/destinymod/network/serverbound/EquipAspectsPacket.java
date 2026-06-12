@@ -4,7 +4,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.registry.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

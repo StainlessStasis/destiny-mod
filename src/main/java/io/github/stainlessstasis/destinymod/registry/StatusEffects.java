@@ -1,8 +1,8 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.registry;
+package io.github.stainlessstasis.destinymod.registry;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperty;
+import io.github.stainlessstasis.destinymod.registry.property.AbilityProperty;
 import net.minecraft.resources.ResourceKey;
 
 public class StatusEffects {

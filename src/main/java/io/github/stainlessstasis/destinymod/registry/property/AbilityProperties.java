@@ -1,13 +1,13 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.registry.property;
+package io.github.stainlessstasis.destinymod.registry.property;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.ability.IgnitionProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.AnvilDropProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect.HeatseekerProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.MeltingPointProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.ScorchProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.status_effect.SolInvictusProperty;
+import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
+import io.github.stainlessstasis.destinymod.registry.property.aspect.AnvilDropProperty;
+import io.github.stainlessstasis.destinymod.registry.property.aspect.HeatseekerProperty;
+import io.github.stainlessstasis.destinymod.registry.property.status_effect.MeltingPointProperty;
+import io.github.stainlessstasis.destinymod.registry.property.status_effect.ScorchProperty;
+import io.github.stainlessstasis.destinymod.registry.property.status_effect.SolInvictusProperty;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

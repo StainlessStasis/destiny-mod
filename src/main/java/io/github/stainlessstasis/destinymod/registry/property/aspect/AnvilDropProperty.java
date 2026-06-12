@@ -1,9 +1,9 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.registry.property.aspect;
+package io.github.stainlessstasis.destinymod.registry.property.aspect;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperty;
+import io.github.stainlessstasis.destinymod.registry.property.AbilityProperty;
 
 public record AnvilDropProperty(
         float gravityMultiplier,

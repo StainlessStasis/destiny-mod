@@ -1,23 +1,17 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.ability.solar;
+package io.github.stainlessstasis.destinymod.destiny_combat.ability.misc_solar;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
-import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.AbilityProperties;
-import io.github.stainlessstasis.destinymod.destiny_combat.registry.property.ability.IgnitionProperty;
+import io.github.stainlessstasis.destinymod.registry.Abilities;
+import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
+import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
 import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
-
-import java.util.List;
-import java.util.function.Predicate;
 
 public class Ignition {
     public static void ignite(LivingEntity entity, @Nullable Entity directEntity, @Nullable Entity causingEntity) {

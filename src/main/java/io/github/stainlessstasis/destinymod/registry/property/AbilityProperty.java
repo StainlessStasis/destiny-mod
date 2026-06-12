@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.registry.property;
+package io.github.stainlessstasis.destinymod.registry.property;
 
 public interface AbilityProperty {
     default String type() {
