@@ -92,7 +92,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
      */
     private int _ignoreThis = 0;
 
-    public BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
+    protected BonkHammerEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
         ability = Abilities.THROWING_HAMMER.get(level());
         init();
