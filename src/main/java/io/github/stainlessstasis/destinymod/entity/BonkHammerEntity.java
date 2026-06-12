@@ -282,7 +282,9 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     public void onCollisionResult(CollisionContext context) {
         this.hasEverCollided = true;
         BouncingProjectile.super.onCollisionResult(context);
-        triggerAnvilDropExplosion(context);
+        if (hasAnvilDrop()) {
+            triggerAnvilDropExplosion(context);
+        }
     }
 
     @Override
