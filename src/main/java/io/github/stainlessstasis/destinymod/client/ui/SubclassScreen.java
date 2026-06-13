@@ -13,6 +13,9 @@ import dev.vfyjxf.taffy.style.*;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
+import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
+import io.github.stainlessstasis.destinymod.client.tooltip.HeaderTooltipComponent;
+import io.github.stainlessstasis.destinymod.client.tooltip.KeywordColumnsTooltipWrapper;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -455,12 +458,29 @@ public class SubclassScreen extends ModularUIScreen {
         }
         var actionHint = new ActionHintComponent(hintText, widthContext);
 
-        return HoverTooltips.create(
+        List<ClientTooltipComponent> mainTooltip = List.of(
                 ClientTooltipComponent.create(header),
                 ClientTooltipComponent.create(bar),
                 ClientTooltipComponent.create(description),
                 ClientTooltipComponent.create(actionHint)
         );
+
+        // KEYWORDS
+        List<List<ClientTooltipComponent>> sideColumns = new ArrayList<>();
+        List<ClientTooltipComponent> column = new ArrayList<>();
+
+        TooltipWidthContext kwWidth1 = new TooltipWidthContext();
+        column.add(new HeaderTooltipComponent(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.scorch.title"), "Keyword", kwWidth1, DMColor.SOLAR.withOpacity(0.95f)));
+        column.add(new DescriptionTooltipComponent(DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.scorch.desc"), kwWidth1, 0xEE111111));
+
+        TooltipWidthContext kwWidth2 = new TooltipWidthContext();
+        column.add(new HeaderTooltipComponent(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.ignition.title"), "Keyword", kwWidth2, DMColor.SOLAR.withOpacity(0.95f)));
+        column.add(new DescriptionTooltipComponent(DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.ignition.desc"), kwWidth2, 0xEE111111));
+
+        sideColumns.add(column);
+
+        var wrapper = new KeywordColumnsTooltipWrapper(mainTooltip, sideColumns);
+        return HoverTooltips.create(wrapper);
     }
 
     @Override
