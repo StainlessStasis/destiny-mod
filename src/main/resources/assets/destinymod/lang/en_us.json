@@ -12,7 +12,11 @@
 
   "tooltip.destinymod.throwing_hammer.title": "THROWING HAMMER",
   "tooltip.destinymod.throwing_hammer.subtitle": "Sunbreaker Melee",
-  "tooltip.destinymod.throwing_hammer.desc": "Throw a hammer forged from <keyword:Solar> energy. Picking up <ability:Throwing Hammer> refunds melee energy.\n\nCooldown: 10s",
+  "tooltip.destinymod.throwing_hammer.desc": "Throw a hammer forged from <keyword:Solar> energy. Picking up <ability:Throwing Hammer> refunds melee energy.",
+  "tooltip.destinymod.thermite_grenade.title": "THERMITE GRENADE",
+  "tooltip.destinymod.thermite_grenade.subtitle": "Sunbreaker Grenade",
+  "tooltip.destinymod.thermite_grenade.desc": "Explodes into a burning trail of <keyword:Solar> fire which pulses multiple times.",
+
   "tooltip.destinymod.melting_point.title": "MELTING POINT",
   "tooltip.destinymod.melting_point.subtitle": "Sunbreaker Aspect",
   "tooltip.destinymod.melting_point.desc": "While <keyword:Sol Invictus> is active, <ability:Throwing Hammer> inflicts targets with <keyword:Melting Point>.\n\nTargets affected by <keyword:Melting Point> take more damage from all sources, and the threshold to trigger an <keyword:Ignition> is reduced.",
