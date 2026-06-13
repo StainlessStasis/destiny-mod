@@ -14,7 +14,7 @@ public class KeywordDescriptionTooltipComponent implements ClientTooltipComponen
     public static final int MAX_WIDTH = 180;
     public static final int WIDTH_PADDING = 12;
     public static final int HEIGHT_PADDING = 10;
-    public static final float TITLE_SCALE = 1.1f;
+    public static final float TITLE_SCALE = 1.2f;
     public static final float DESC_SCALE = 1f;
     public static final int TITLE_LINE_SPACING = 12;
     public static final int DESC_LINE_SPACING = 10;
@@ -62,7 +62,7 @@ public class KeywordDescriptionTooltipComponent implements ClientTooltipComponen
     @Override
     public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
         int renderX = x - 2;
-        graphics.fill(renderX, y - 2, renderX + getWidth(font), y + getHeight(font) - 2, this.backgroundColor);
+        graphics.fill(renderX, y - 2, renderX + 4 + getWidth(font), y + getHeight(font) - 2, this.backgroundColor);
 
         var pose = graphics.pose();
         int currentY = y + 2;
