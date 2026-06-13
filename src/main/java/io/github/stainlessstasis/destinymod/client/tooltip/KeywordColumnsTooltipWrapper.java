@@ -20,14 +20,7 @@ public class KeywordColumnsTooltipWrapper implements ClientTooltipComponent {
     public int getHeight(Font font) {
         int maxHeight = mainComponents.stream().mapToInt(c -> c.getHeight(font)).sum();
         for (List<ClientTooltipComponent> column : keywordColumns) {
-            int colHeight = 0;
-            for (int i = 0; i < column.size(); i++) {
-                ClientTooltipComponent component = column.get(i);
-                if (i > 0 && component instanceof HeaderTooltipComponent) {
-                    colHeight += HORIZONTAL_PADDING;
-                }
-                colHeight += component.getHeight(font);
-            }
+            int colHeight = column.stream().mapToInt(c -> c.getHeight(font)).sum();
             maxHeight = Math.max(maxHeight, colHeight);
         }
         return maxHeight;
@@ -45,16 +38,22 @@ public class KeywordColumnsTooltipWrapper implements ClientTooltipComponent {
 
     @Override
     public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
+        int totalKeywordsWidth = 0;
+        for (List<ClientTooltipComponent> column : keywordColumns) {
+            int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
+            totalKeywordsWidth += colWidth + HORIZONTAL_PADDING;
+        }
+
+        int mainX = x + totalKeywordsWidth;
         int currentY = y;
         int mainWidth = mainComponents.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
         for (ClientTooltipComponent component : mainComponents) {
             int compHeight = component.getHeight(font);
-            component.extractImage(font, x, currentY, mainWidth, compHeight, graphics);
+            component.extractImage(font, mainX, currentY, mainWidth, compHeight, graphics);
             currentY += compHeight;
         }
 
-        int xOffset = x + mainWidth + HORIZONTAL_PADDING;
-
+        int xOffset = x;
         for (List<ClientTooltipComponent> column : keywordColumns) {
             currentY = y;
             int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
@@ -71,16 +70,20 @@ public class KeywordColumnsTooltipWrapper implements ClientTooltipComponent {
 
     @Override
     public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
-        int currentY = y;
-        int mainWidth = mainComponents.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
+        int totalKeywordsWidth = 0;
+        for (List<ClientTooltipComponent> column : keywordColumns) {
+            int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
+            totalKeywordsWidth += colWidth + HORIZONTAL_PADDING;
+        }
 
+        int mainX = x + totalKeywordsWidth;
+        int currentY = y;
         for (ClientTooltipComponent component : mainComponents) {
-            component.extractText(graphics, font, x, currentY);
+            component.extractText(graphics, font, mainX, currentY);
             currentY += component.getHeight(font);
         }
 
-        int xOffset = x + mainWidth + HORIZONTAL_PADDING;
-
+        int xOffset = x;
         for (List<ClientTooltipComponent> column : keywordColumns) {
             currentY = y;
             int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
