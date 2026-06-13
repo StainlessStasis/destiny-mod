@@ -25,8 +25,8 @@ public class AbilityHUD {
     public static final Identifier ABILITY_BORDER = DestinyMod.id("textures/gui/sprites/destiny_ui/ability_border.png");
     public static final Identifier THROWING_HAMMER = DestinyMod.id("textures/gui/sprites/destiny_ui/throwing_hammer.png");
     public static final Identifier THROWING_HAMMER_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_ui/throwing_hammer_charged.png");
-    public static final Identifier THERMITE_GRENADE = DestinyMod.id("textures/gui/sprites/destiny_ui/throwing_hammer.png");
-    public static final Identifier THERMITE_GRENADE_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_ui/throwing_hammer_charged.png");
+    public static final Identifier THERMITE_GRENADE = DestinyMod.id("textures/gui/sprites/destiny_ui/thermite_grenade.png");
+    public static final Identifier THERMITE_GRENADE_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_ui/thermite_grenade_charged.png");
 
     @SubscribeEvent
     public static void onRenderGuiLayers(RenderGuiLayerEvent.Post event) {
