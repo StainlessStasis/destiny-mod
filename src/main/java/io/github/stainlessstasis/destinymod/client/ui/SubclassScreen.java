@@ -13,9 +13,7 @@ import dev.vfyjxf.taffy.style.*;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
-import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
-import io.github.stainlessstasis.destinymod.client.tooltip.HeaderTooltipComponent;
-import io.github.stainlessstasis.destinymod.client.tooltip.KeywordColumnsTooltipWrapper;
+import io.github.stainlessstasis.destinymod.client.tooltip.*;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -469,13 +467,21 @@ public class SubclassScreen extends ModularUIScreen {
         List<List<ClientTooltipComponent>> sideColumns = new ArrayList<>();
         List<ClientTooltipComponent> column = new ArrayList<>();
 
+        int keywordBgColor = 0xEE111111;
+        int solarTitleColor = DMColor.SOLAR.get();
+
         TooltipWidthContext kwWidth1 = new TooltipWidthContext();
-        column.add(new HeaderTooltipComponent(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.scorch.title"), "Keyword", kwWidth1, DMColor.SOLAR.withOpacity(0.95f)));
-        column.add(new DescriptionTooltipComponent(DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.scorch.desc"), kwWidth1, 0xEE111111));
+        Component scorchTitle = Component.literal(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.scorch.title"));
+        Component scorchDesc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.scorch.desc");
+
+        column.add(new KeywordDescriptionTooltipComponent(scorchTitle, scorchDesc, kwWidth1, keywordBgColor, solarTitleColor));
+        column.add(new SeparatorTooltipComponent(kwWidth1, 1, DMColor.LIGHT_GRAY.get()));
 
         TooltipWidthContext kwWidth2 = new TooltipWidthContext();
-        column.add(new HeaderTooltipComponent(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.ignition.title"), "Keyword", kwWidth2, DMColor.SOLAR.withOpacity(0.95f)));
-        column.add(new DescriptionTooltipComponent(DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.ignition.desc"), kwWidth2, 0xEE111111));
+        Component ignitionTitle = Component.literal(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.ignition.title"));
+        Component ignitionDesc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.ignition.desc");
+
+        column.add(new KeywordDescriptionTooltipComponent(ignitionTitle, ignitionDesc, kwWidth2, keywordBgColor, solarTitleColor));
 
         sideColumns.add(column);
 

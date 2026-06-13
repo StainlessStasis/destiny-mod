@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.tooltip.component;
 
+import io.github.stainlessstasis.destinymod.DMColor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -36,7 +37,10 @@ public class DescriptionComponentParser {
 
             MutableComponent styledPart = Component.literal(tagText);
             switch (tagType.toLowerCase()) {
-                case "keyword" -> styledPart.withStyle(ChatFormatting.GOLD);
+                case "keyword" -> styledPart.withStyle(ChatFormatting.BLUE);
+                case "keyword_solar" -> styledPart.withColor(DMColor.SOLAR.get());
+                case "keyword_solar_light" -> styledPart.withColor(DMColor.SOLAR_LIGHT.get());
+                case "keyword_solar_dark" -> styledPart.withColor(DMColor.SOLAR_DARK.get());
                 case "ability" -> styledPart.withStyle(ChatFormatting.WHITE);
                 default -> styledPart.withStyle(ChatFormatting.GRAY);
             }
