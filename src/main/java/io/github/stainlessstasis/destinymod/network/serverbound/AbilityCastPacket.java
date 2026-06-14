@@ -6,7 +6,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.Play
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.entity.GrenadeEntity;
+import io.github.stainlessstasis.destinymod.entity.ThrownGrenadeEntity;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -62,8 +62,8 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
                     player.swing(InteractionHand.MAIN_HAND);
 
                     if (player.level() instanceof ServerLevel serverLevel) {
-                        GrenadeEntity grenade = Projectile.spawnProjectileFromRotation(
-                                GrenadeEntity::new, serverLevel, new ItemStack(Items.FIRE_CHARGE), player, 0f, 1f, 0f
+                        ThrownGrenadeEntity grenade = Projectile.spawnProjectileFromRotation(
+                                ThrownGrenadeEntity::new, serverLevel, new ItemStack(Items.FIRE_CHARGE), player, 0f, 1f, 0f
                         );
                         grenade.setBehavior(GrenadeBehaviors.THERMITE);
                         grenade.setupFromAbility(Abilities.THERMITE_GRENADE);

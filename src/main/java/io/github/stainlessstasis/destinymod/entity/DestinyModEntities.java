@@ -45,10 +45,10 @@ public class DestinyModEntities {
                     ))
     );
 
-    public static final Supplier<EntityType<@NotNull GrenadeEntity>> GENERIC_GRENADE = ENTITY_TYPES.register(
+    public static final Supplier<EntityType<@NotNull ThrownGrenadeEntity>> GENERIC_GRENADE = ENTITY_TYPES.register(
             "generic_grenade",
             () -> EntityType.Builder.of(
-                            GrenadeEntity::createDefault,
+                            ThrownGrenadeEntity::createDefault,
                             MobCategory.MISC
                     )
                     .sized(0.3f, 0.3f)

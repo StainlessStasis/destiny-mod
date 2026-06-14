@@ -29,31 +29,31 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public class GrenadeEntity extends ThrowableProjectile implements BouncingProjectile, DestinyAbility {
-    private static final EntityDataAccessor<String> GRENADE_BEHAVIOR_ID = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<Float> BOUNCINESS = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> FRICTION = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> GRAVITY = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> SETTLE_SPEED_THRESHOLD = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Boolean> DETONATE_ON_BLOCK = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DETONATE_ON_ENTITY = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DETONATE_ON_SETTLE = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Integer> TICKS_BEFORE_FORCE_DETONATE = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.INT);
+public class ThrownGrenadeEntity extends ThrowableProjectile implements BouncingProjectile, DestinyAbility {
+    private static final EntityDataAccessor<String> GRENADE_BEHAVIOR_ID = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Float> BOUNCINESS = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> FRICTION = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> GRAVITY = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SETTLE_SPEED_THRESHOLD = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DETONATE_ON_BLOCK = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DETONATE_ON_ENTITY = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DETONATE_ON_SETTLE = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> TICKS_BEFORE_FORCE_DETONATE = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.INT);
 
     private final Set<UUID> collidedThisTick = new HashSet<>();
     protected Ability ability;
 
-    protected GrenadeEntity(EntityType<? extends ThrowableProjectile> type, Level level) {
+    protected ThrownGrenadeEntity(EntityType<? extends ThrowableProjectile> type, Level level) {
         super(type, level);
     }
 
-    public GrenadeEntity(Level level, LivingEntity owner, ItemStack __) {
+    public ThrownGrenadeEntity(Level level, LivingEntity owner, ItemStack __) {
         super(DestinyModEntities.GENERIC_GRENADE.get(), owner.getX(), owner.getEyeY()-0.1, owner.getZ(), level);
         setOwner(owner);
     }
 
-    public static GrenadeEntity createDefault(EntityType<? extends ThrowableProjectile> entityType, Level level) {
-        return new GrenadeEntity(entityType, level);
+    public static ThrownGrenadeEntity createDefault(EntityType<? extends ThrowableProjectile> entityType, Level level) {
+        return new ThrownGrenadeEntity(entityType, level);
     }
 
     public void setBehavior(DeferredHolder<GrenadeBehavior, GrenadeBehavior> behavior) {
