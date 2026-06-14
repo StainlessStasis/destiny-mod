@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.client.entity_rendering.renderer;
 
+import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import com.geckolib.constant.DataTickets;

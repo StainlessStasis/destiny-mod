@@ -17,6 +17,9 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -78,6 +81,10 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements GeoEntit
 
     @Override
     public void tick() {
+        if (this.firstTick && level() instanceof ServerLevel level) {
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.AMBIENT, 0.7f, 1.4f);
+        }
+
         this.handleFirstTickBubbleColumn();
         this.applyGravity();
         this.applyInertia();
