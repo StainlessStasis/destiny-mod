@@ -6,6 +6,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.Bou
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.CollisionContext;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehavior;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -31,14 +32,7 @@ import java.util.UUID;
 
 public class ThrownGrenadeEntity extends ThrowableProjectile implements BouncingProjectile, DestinyAbility {
     private static final EntityDataAccessor<String> GRENADE_BEHAVIOR_ID = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<Float> BOUNCINESS = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> FRICTION = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> GRAVITY = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> SETTLE_SPEED_THRESHOLD = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Boolean> DETONATE_ON_BLOCK = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DETONATE_ON_ENTITY = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DETONATE_ON_SETTLE = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Integer> TICKS_BEFORE_FORCE_DETONATE = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<String> ABILITY_ID = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.STRING);
 
     private final Set<UUID> collidedThisTick = new HashSet<>();
     protected Ability ability;
@@ -59,11 +53,9 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
     public void setBehavior(DeferredHolder<GrenadeBehavior, GrenadeBehavior> behavior) {
         this.entityData.set(GRENADE_BEHAVIOR_ID, behavior.getId().toString());
     }
-
     public Optional<GrenadeBehavior> getBehavior() {
         return GrenadeBehaviors.getOptional(getBehaviorID());
     }
-
     public Identifier getBehaviorID() {
         return Identifier.parse(this.entityData.get(GRENADE_BEHAVIOR_ID));
     }
@@ -71,16 +63,12 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
     public void setupFromAbility(RegisteredAbility ability) {
         if (level().isClientSide()) return;
         this.ability = ability.get(this);
-        this.ability.getProperty(GrenadePhysicsProperty.class).ifPresent(props -> {
-            this.entityData.set(BOUNCINESS, props.bounciness());
-            this.entityData.set(FRICTION, props.friction());
-            this.entityData.set(GRAVITY, props.gravity());
-            this.entityData.set(SETTLE_SPEED_THRESHOLD, props.settleSpeedThreshold());
-            this.entityData.set(DETONATE_ON_BLOCK, props.detonateOnBlock());
-            this.entityData.set(DETONATE_ON_ENTITY, props.detonateOnEntity());
-            this.entityData.set(DETONATE_ON_SETTLE, props.detonateOnSettle());
-            this.entityData.set(TICKS_BEFORE_FORCE_DETONATE, props.ticksBeforeForceDetonate());
-        });
+        this.entityData.set(ABILITY_ID, ability.getID().toString());
+    }
+
+    public Optional<GrenadePhysicsProperty> getPhysics() {
+        Ability ability = getDestinyAbility();
+        return ability != null ? ability.getProperty(GrenadePhysicsProperty.class) : Optional.empty();
     }
 
     @Override
@@ -98,7 +86,7 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
             this.hasBeenShot = true;
         }
 
-        int forceDetonateTicks = this.entityData.get(TICKS_BEFORE_FORCE_DETONATE);
+        int forceDetonateTicks = getForceDetonateTicks();
         if (forceDetonateTicks >= 0 && this.tickCount >= forceDetonateTicks) {
             detonate(null);
             return;
@@ -122,7 +110,7 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
 
     @Override
     public void handleBlockCollision(CollisionContext context, BlockHitResult result) {
-        if (this.entityData.get(DETONATE_ON_BLOCK)) {
+        if (getDetonateOnBlock()) {
             detonate(context);
         }
     }
@@ -130,14 +118,14 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
     @Override
     public void handleEntityCollision(CollisionContext context, EntityHitResult result) {
         collidedThisTick.add(result.getEntity().getUUID());
-        if (this.entityData.get(DETONATE_ON_ENTITY)) {
+        if (getDetonateOnEntity()) {
             detonate(context);
         }
     }
 
     @Override
     public void onSettle(CollisionContext context) {
-        if (this.entityData.get(DETONATE_ON_SETTLE)) {
+        if (getDetonateOnSettle()) {
             detonate(context);
         }
     }
@@ -145,38 +133,54 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
     @Override
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(GRENADE_BEHAVIOR_ID, "");
-        builder.define(BOUNCINESS, 0.0f);
-        builder.define(FRICTION, 0.0f);
-        builder.define(GRAVITY, 0.0f);
-        builder.define(SETTLE_SPEED_THRESHOLD, 0.0f);
-        builder.define(DETONATE_ON_BLOCK, false);
-        builder.define(DETONATE_ON_ENTITY, false);
-        builder.define(DETONATE_ON_SETTLE, false);
-        builder.define(TICKS_BEFORE_FORCE_DETONATE, -1);
+        builder.define(ABILITY_ID, "");
     }
 
     @Override
     public float getRestitution() {
-        return this.entityData.get(BOUNCINESS);
+        return getPhysics().map(GrenadePhysicsProperty::bounciness).orElse(0.5f);
     }
 
     @Override
     public float getFriction() {
-        return this.entityData.get(FRICTION);
+        return getPhysics().map(GrenadePhysicsProperty::friction).orElse(0.5f);
+    }
+
+    public boolean getDetonateOnSettle() {
+        return getPhysics().map(GrenadePhysicsProperty::detonateOnSettle).orElse(false);
+    }
+
+    public boolean getDetonateOnBlock() {
+        return getPhysics().map(GrenadePhysicsProperty::detonateOnBlock).orElse(false);
+    }
+
+    public boolean getDetonateOnEntity() {
+        return getPhysics().map(GrenadePhysicsProperty::detonateOnEntity).orElse(false);
+    }
+
+    public int getForceDetonateTicks() {
+        return getPhysics().map(GrenadePhysicsProperty::ticksBeforeForceDetonate).orElse(-1);
     }
 
     @Override
     protected double getDefaultGravity() {
-        return this.entityData.get(GRAVITY);
+        return getPhysics().map(prop -> (double) prop.gravity()).orElse(super.getDefaultGravity());
     }
 
     @Override
     public float getSettleSpeedThreshold() {
-        return this.entityData.get(SETTLE_SPEED_THRESHOLD);
+        return getPhysics().map(GrenadePhysicsProperty::settleSpeedThreshold).orElse(0.5f);
     }
 
     @Override
     public @Nullable Ability getDestinyAbility() {
-        return ability;
+        if (this.ability == null) {
+            String idString = this.entityData.get(ABILITY_ID);
+            if (!idString.isEmpty()) {
+                Identifier id = Identifier.parse(idString);
+                this.ability = Abilities.get(id).get(level());
+            }
+        }
+        return this.ability;
     }
 }

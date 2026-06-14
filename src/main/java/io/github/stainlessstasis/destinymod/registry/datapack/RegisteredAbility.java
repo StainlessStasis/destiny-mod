@@ -6,6 +6,7 @@ import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -23,6 +24,9 @@ public record RegisteredAbility(ResourceKey<Ability> resourceKey) {
         return get(entity.level().registryAccess());
     }
 
+    public Identifier getID() {
+        return resourceKey.identifier();
+    }
     public String getName() {
         return resourceKey.identifier().getPath();
     }
