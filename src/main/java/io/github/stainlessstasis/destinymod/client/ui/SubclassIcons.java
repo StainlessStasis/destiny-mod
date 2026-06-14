@@ -8,7 +8,6 @@ import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
-import io.github.stainlessstasis.destinymod.util.AbilityUtil;
 import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
@@ -37,12 +36,12 @@ public class SubclassIcons {
         public Identifier getMainIcon(boolean charged) {
             if (mainAbility == null || mainAbility == Abilities.NONE) return null;
             String suffix = charged ? "_charged" : "";
-            return getHudTexture(AbilityUtil.getAbilityName(mainAbility) + suffix);
+            return getHudTexture(mainAbility.getName() + suffix);
         }
 
         public Identifier getAspectIcon(int aspectIndex) {
             if (aspectIndex < 0 || aspectIndex >= aspects.size()) return null;
-            return getHudTexture(AbilityUtil.getAspectName(aspects.get(aspectIndex)));
+            return getHudTexture(aspects.get(aspectIndex).getName());
         }
 
         public int totalAspects() {
@@ -68,7 +67,7 @@ public class SubclassIcons {
         }
 
         public Identifier getPassiveIcon() {
-            return getHudTexture(AbilityUtil.getAbilityName(passiveAbility));
+            return getHudTexture(passiveAbility.getName());
         }
     }
 }

@@ -2,7 +2,6 @@ package io.github.stainlessstasis.destinymod.client.keyword;
 
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
-import io.github.stainlessstasis.destinymod.util.AbilityUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +11,10 @@ public class DestinyKeywords {
     private static final Map<String, List<DestinyKeyword>> KEYWORDS = new HashMap<>();
 
     static {
-        KEYWORDS.put(AbilityUtil.getAbilityName(Abilities.THROWING_HAMMER), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
-        KEYWORDS.put(AbilityUtil.getAbilityName(Abilities.THERMITE_GRENADE), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
-        KEYWORDS.put(AbilityUtil.getAspectName(Aspects.MELTING_POINT), List.of(DestinyKeyword.IGNITION));
-        KEYWORDS.put(AbilityUtil.getAspectName(Aspects.HEATSEEKER), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
+        KEYWORDS.put(Abilities.THROWING_HAMMER.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
+        KEYWORDS.put(Abilities.THERMITE_GRENADE.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
+        KEYWORDS.put(Aspects.MELTING_POINT.getName(), List.of(DestinyKeyword.IGNITION));
+        KEYWORDS.put(Aspects.HEATSEEKER.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
     }
 
     public static List<DestinyKeyword> getKeywordsFor(String name) {
