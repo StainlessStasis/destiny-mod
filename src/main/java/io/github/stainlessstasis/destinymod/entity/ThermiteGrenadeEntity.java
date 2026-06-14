@@ -6,6 +6,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageB
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -31,8 +32,11 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private static final EntityDataAccessor<Float> DISTANCE_PER_TICK = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> MAX_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> MAX_STEP_HEIGHT = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> TRAVELED_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     public static final float SUBSTEP_DISTANCE = 0.25f;
 
+    private final Set<Entity> hitEntitiesThisPulse = new HashSet<>();
+    private float lastObservedDistance = 0f;
     private int lastObservedPulse = 0;
 
     private ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level) {
@@ -63,60 +67,73 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     @Override
     public void tick() {
         super.tick();
-
-        if (! level().isClientSide()) {
-            int interval = getPulseInterval();
-            int maxPulses = getMaxPulses();
-
-            if (interval > 0 && tickCount % interval == 0) {
-                int nextPulse = getCurrentPulse() + 1;
-                setCurrentPulse(nextPulse);
-                executeServerPulseLogic();
-
-                if (nextPulse >= maxPulses) {
-                    discard();
-                }
-            }
-        } else {
-            int pulse = getCurrentPulse();
-            if (pulse > lastObservedPulse) {
-                spawnClientPulseVisuals(pulse);
-                lastObservedPulse = pulse;
-            }
-        }
+        executeServerPulseLogic();
+        spawnClientPulseVisuals();
     }
 
     private void executeServerPulseLogic() {
         if (level().isClientSide()) return;
 
-        Set<Entity> hitEntities = new HashSet<>();
-        marchPulsePath(pos -> damageEntitiesAtPosition(pos, hitEntities));
+        int interval = getPulseInterval();
+        int maxPulses = getMaxPulses();
+
+        if (interval > 0 && tickCount % interval == 0) {
+            int nextPulse = getCurrentPulse() + 1;
+            setCurrentPulse(nextPulse);
+            setTraveledDistance(0f);
+            hitEntitiesThisPulse.clear();
+
+            if (nextPulse > maxPulses) {
+                discard();
+                return;
+            }
+        }
+
+        if (getCurrentPulse() > 0 && getCurrentPulse() <= maxPulses) {
+            float currentDist = getTraveledDistance();
+            float maxDist = getMaxDistance();
+
+            if (currentDist < maxDist) {
+                float nextDist = Math.min(currentDist + getDistancePerTick(), maxDist);
+                marchPulsePath(currentDist, nextDist, pos -> damageEntitiesAtPosition(pos, this.hitEntitiesThisPulse));
+                setTraveledDistance(nextDist);
+            }
+        }
     }
 
-    private void spawnClientPulseVisuals(int pulse) {
+    private void spawnClientPulseVisuals() {
         if (!level().isClientSide()) return;
 
-        marchPulsePath(pos -> {
-            level().addParticle(
-                    ParticleTypes.FLAME,
-                    pos.x, pos.y + 0.1, pos.z,
-                    0.0, 0.05, 0.0
-            );
-        });
+        int currentPulse = getCurrentPulse();
+        float currentDist = getTraveledDistance();
+
+        if (currentPulse > lastObservedPulse) {
+            lastObservedPulse = currentPulse;
+            lastObservedDistance = 0f;
+        }
+
+        if (currentDist > lastObservedDistance) {
+            marchPulsePath(lastObservedDistance, currentDist, pos -> {
+                level().addParticle(
+                        ParticleTypes.FLAME,
+                        pos.x, pos.y + 0.1, pos.z,
+                        0.0, 0.05, 0.0
+                );
+            });
+            lastObservedDistance = currentDist;
+        }
     }
 
-    private void marchPulsePath(PulseStepCallback callback) {
+    private void marchPulsePath(float startDist, float endDist, PulseStepCallback callback) {
         float yawRad = (float) Math.toRadians(getYRot());
         Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
-        Vec3 currentPos = this.position();
-        float totalDistanceToTravel = getDistancePerTick();
-        float distanceThisPulse = 0f;
-        float maxDistance = getMaxDistance();
+        Vec3 currentPos = position().add(forwardDir.scale(startDist));
         float maxStep = getMaxStepHeight();
-        Set<Entity> hitEntities = new HashSet<>();
+        float totalStepDistance = endDist - startDist;
+        float distanceThisStep = 0f;
 
-        while (distanceThisPulse < totalDistanceToTravel) {
-            float substep = Math.min(SUBSTEP_DISTANCE, totalDistanceToTravel-distanceThisPulse);
+        while (distanceThisStep < totalStepDistance) {
+            float substep = Math.min(SUBSTEP_DISTANCE, totalStepDistance - distanceThisStep);
             Vec3 nextPos = currentPos.add(forwardDir.scale(substep));
 
             BlockPos blockPos = BlockPos.containing(nextPos);
@@ -124,13 +141,13 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             if (!blockState.isAir() && blockState.isCollisionShapeFullBlock(level(), blockPos)) {
                 // something is in the way, check if it can step up
                 double originalY = currentPos.y;
-                double obstacleTopY = blockPos.getY() + blockState.getShape(level(), blockPos).max(net.minecraft.core.Direction.Axis.Y);
+                double obstacleTopY = blockPos.getY() + blockState.getShape(level(), blockPos).max(Direction.Axis.Y);
                 double stepHeightNeeded = obstacleTopY - originalY;
 
                 if (stepHeightNeeded <= maxStep) {
                     currentPos = new Vec3(nextPos.x, obstacleTopY, nextPos.z);
                 } else {
-                    break;
+                    break; // wall is too high to step up
                 }
             } else {
                 // path is clear
@@ -138,11 +155,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             }
 
             callback.onStep(currentPos);
-            distanceThisPulse += substep;
-
-            if (position().distanceTo(currentPos) >= maxDistance) {
-                break;
-            }
+            distanceThisStep += substep;
         }
     }
 
@@ -179,6 +192,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
         builder.define(DISTANCE_PER_TICK, 0f);
         builder.define(MAX_DISTANCE, 0f);
         builder.define(MAX_STEP_HEIGHT, 0f);
+        builder.define(TRAVELED_DISTANCE, 0f);
     }
 
     public int getCurrentPulse() {
@@ -227,5 +241,13 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
     public void setMaxStepHeight(float maxStepHeight) {
         entityData.set(MAX_STEP_HEIGHT, maxStepHeight);
+    }
+
+    public float getTraveledDistance() {
+        return entityData.get(TRAVELED_DISTANCE);
+    }
+
+    public void setTraveledDistance(float distance) {
+        entityData.set(TRAVELED_DISTANCE, distance);
     }
 }
