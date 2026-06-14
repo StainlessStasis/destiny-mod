@@ -24,7 +24,7 @@ public abstract class AbstractAbilityEntity extends Entity implements TraceableE
         refreshDimensions();
     }
 
-    public AbstractAbilityEntity(EntityType<?> type, Level level, Ability ability, Vec3 pos, @Nullable LivingEntity owner) {
+    public AbstractAbilityEntity(EntityType<?> type, Level level, Vec3 pos, @Nullable LivingEntity owner, Ability ability) {
         this(type, level, ability);
         setPos(pos);
         setOwner(owner);

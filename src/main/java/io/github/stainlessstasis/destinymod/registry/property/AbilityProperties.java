@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
 import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
+import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.MeltingPointProperty;
@@ -51,6 +52,9 @@ public class AbilityProperties {
     );
     public static Supplier<GrenadePhysicsProperty> DEFAULT_GRENADE_PHYSICS = register("grenade_physics", GrenadePhysicsProperty.class, GrenadePhysicsProperty.CODEC,
             GrenadePhysicsProperty::getDefault
+    );
+    public static Supplier<ThermiteGrenadeProperty> THERMITE_GRENADE = register("thermite_grenade", ThermiteGrenadeProperty.class, ThermiteGrenadeProperty.CODEC,
+            ThermiteGrenadeProperty::getDefault
     );
 
     // ASPECTS

@@ -15,6 +15,14 @@
       "gravity": 0.0325,
       "settleSpeedThreshold": 0.05,
       "ticksBeforeForceDetonate": -1
+    },
+    {
+      "type": "thermite_grenade",
+      "distancePerTick": 2.0,
+      "maxDistance": 12.0,
+      "maxStepHeight": 1.5,
+      "pulseIntervalTicks": 20,
+      "pulses": 4
     }
   ],
   "scorch": 25

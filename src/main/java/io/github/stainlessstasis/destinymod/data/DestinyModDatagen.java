@@ -13,6 +13,7 @@ import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffect;
 import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
+import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageEffects;
@@ -41,7 +42,8 @@ public class DestinyModDatagen {
                             new GrenadePhysicsProperty(
                                     0.6f, 0.5f, 0.0325f, 0.05f,
                                     true, false, true, -1
-                            )
+                            ),
+                            AbilityProperties.THERMITE_GRENADE.get()
                     ));
                     bootstrap.register(Abilities.SOL_INVICTUS.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.NONE, -1, -1, -1, -1, -1

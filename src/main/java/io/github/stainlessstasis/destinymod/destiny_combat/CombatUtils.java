@@ -7,11 +7,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.TraceableEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -53,5 +58,25 @@ public class CombatUtils {
                 victimLogic.accept(victim);
             }
         }
+    }
+
+    /**
+     * Gets entities in the specified AABB.
+     * If an owner is provided, then any entities sharing the same owner will be excluded.
+     * If a collection of already hit entities is provided, then any entities in the list will be excluded.
+     */
+    public static <T extends Entity> List<T> getEntitiesInArea(AABB area, Level level, Class<T> clazz, @Nullable LivingEntity owner, @Nullable Collection<Entity> alreadyHit, @Nullable Predicate<T> filter) {
+        return  level.getEntitiesOfClass(clazz, area,
+                entity -> {
+                    if (owner != null) {
+                        if (entity == owner) return false;
+                        if (entity instanceof OwnableEntity ownable && ownable.getOwner() == owner) return false;
+                        if (entity instanceof TraceableEntity traceable && traceable.getOwner() == owner) return false;
+                    }
+                    if (alreadyHit != null && alreadyHit.contains(entity)) return false;
+                    if (filter != null) return filter.test(entity);
+                    return true;
+                }
+        );
     }
 }
