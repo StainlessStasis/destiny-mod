@@ -84,7 +84,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
         int interval = getPulseInterval();
         int maxPulses = getMaxPulses();
 
-        if (interval > 0 && tickCount % interval == 0) {
+        boolean shouldPulse = (getCurrentPulse() == 0) || (interval > 0 && tickCount % interval == 0);
+        if (shouldPulse) {
             int nextPulse = getCurrentPulse() + 1;
             setCurrentPulse(nextPulse);
             setTraveledDistance(0f);

@@ -250,6 +250,7 @@ public class ClientAudioAndVFX {
         var random = level.getRandom();
         var particleEngine = Minecraft.getInstance().particleEngine;
 
+        DMColor solarDark = DMColor.SOLAR_DARK;
         DMColor solar = DMColor.SOLAR;
         DMColor solarLight = DMColor.SOLAR_LIGHT;
 
@@ -258,28 +259,40 @@ public class ClientAudioAndVFX {
             level.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, 0.25f, 1.4f + randomPitch, true);
         }
 
-        int densityMultiplier = 3;
+        int densityMultiplier = 4;
         for (int i = 0; i < densityMultiplier; i++) {
             double widthBias = (random.nextFloat() - 0.5f) * width;
             Vec3 groundPos = pos.add(rightDir.scale(widthBias));
 
-            double vx = -forwardDir.x * 0.04f + (random.nextFloat() - 0.5f) * 0.02f;
-            double vy = 0.04f + random.nextFloat() * 0.04f;
-            double vz = -forwardDir.z * 0.04f + (random.nextFloat() - 0.5f) * 0.02f;
+            double vx = (random.nextFloat() - 0.5f) * 0.03f;
+            double vy = 0.005f + random.nextFloat() * 0.01f;
+            double vz = (random.nextFloat() - 0.5f) * 0.03f;
 
-            Particle exhaust = particleEngine.createParticle(ParticleTypes.SMALL_FLAME, groundPos.x, groundPos.y + 0.05, groundPos.z, vx, vy, vz);
-            if (exhaust instanceof SingleQuadParticle qp) {
-                DMColor color = random.nextFloat() > 0.7f ? solarLight : solar;
-                qp.setColor(color.getRed(), color.getGreen(), color.getBlue());
-                qp.scale(1.2f + random.nextFloat() * 0.4f);
+            Particle smoke = particleEngine.createParticle(ParticleTypes.SWEEP_ATTACK, groundPos.x, groundPos.y + 0.02, groundPos.z, vx, vy, vz);
+            if (smoke instanceof SingleQuadParticle particle) {
+                DMColor color = random.nextFloat() > 0.7f ? solarDark : solar;
+                particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                particle.setLifetime((int) (random.nextFloat()*6));
+                particle.scale(random.nextFloat()*1.5f);
             }
 
-            double randomHeight = random.nextFloat() * height;
+            vx = -forwardDir.x * 0.04f + (random.nextFloat() - 0.5f) * 0.02f;
+            vy = 0.04f + random.nextFloat() * 0.04f;
+            vz = -forwardDir.z * 0.04f + (random.nextFloat() - 0.5f) * 0.02f;
+
+            Particle smallFlame = particleEngine.createParticle(ParticleTypes.SMALL_FLAME, groundPos.x, groundPos.y + 0.05, groundPos.z, vx, vy, vz);
+            if (smallFlame instanceof SingleQuadParticle particle) {
+                DMColor color = random.nextFloat() > 0.7f ? solarLight : solar;
+                particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                particle.scale(1.2f + random.nextFloat() * 0.4f);
+            }
+
+            double biasedHeight = Math.pow(random.nextFloat(), 1.5) * height;
             vx = (random.nextFloat() - 0.5f) * 0.01f;
             vy = 0.08f + random.nextFloat() * 0.08f;
             vz = (random.nextFloat() - 0.5f) * 0.01f;
 
-            Particle flame = particleEngine.createParticle(ParticleTypes.FLAME, groundPos.x, groundPos.y + randomHeight, groundPos.z, vx, vy, vz);
+            Particle flame = particleEngine.createParticle(ParticleTypes.FLAME, groundPos.x, groundPos.y + biasedHeight, groundPos.z, vx, vy, vz);
             if (flame instanceof SingleQuadParticle particle) {
                 DMColor color = random.nextFloat() > 0.4f ? solar : solarLight;
                 particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
@@ -289,10 +302,10 @@ public class ClientAudioAndVFX {
             if (random.nextFloat() < 0.35f) {
                 double spread = (random.nextFloat() - 0.5f) * 0.1f;
                 vx = rightDir.x * spread + (random.nextFloat() - 0.5f) * 0.05f;
-                vy = 0.12f + random.nextFloat() * 0.12f;
+                vy = 0.5f + random.nextFloat() * 0.8f;
                 vz = rightDir.z * spread + (random.nextFloat() - 0.5f) * 0.05f;
 
-                Particle lava = particleEngine.createParticle(ParticleTypes.LAVA, groundPos.x, groundPos.y + 0.1, groundPos.z, vx, vy, vz);
+                Particle lava = particleEngine.createParticle(ParticleTypes.LAVA, groundPos.x, groundPos.y + 0.05, groundPos.z, vx, vy, vz);
                 if (lava instanceof SingleQuadParticle particle) {
                     particle.setColor(solarLight.getRed(), solarLight.getGreen(), solarLight.getBlue());
                 }
