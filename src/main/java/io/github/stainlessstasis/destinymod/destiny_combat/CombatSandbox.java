@@ -4,6 +4,7 @@ import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
@@ -54,9 +55,8 @@ public class CombatSandbox {
         if (source.getEntity() instanceof Player player) {
             final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
 
-            if (randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER
-                    && source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT)
-            ) {
+            boolean canSpawnSunspot = StatusEffectManager.isActive(victim, Scorch.class) || (source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT));
+            if (canSpawnSunspot && randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER) {
                 Vec3 spawnPos = findGroundPosition(victim);
                 SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
                 player.level().addFreshEntity(sunspotEntity);
