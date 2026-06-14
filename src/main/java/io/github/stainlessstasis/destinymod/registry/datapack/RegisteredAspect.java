@@ -1,8 +1,8 @@
 package io.github.stainlessstasis.destinymod.registry.datapack;
 
 import com.mojang.serialization.Codec;
-import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
+import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.StreamCodec;
@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 
 public record RegisteredAspect(ResourceKey<Aspect> resourceKey) {
     public Aspect get(RegistryAccess access) {
-        return access.lookupOrThrow(DestinyModRegistries.ASPECT_REGISTRY_KEY).getValueOrThrow(resourceKey);
+        return access.lookupOrThrow(DestinyRegistries.ASPECT_REGISTRY_KEY).getValueOrThrow(resourceKey);
     }
 
     public Aspect get(Level level) {
@@ -27,9 +27,9 @@ public record RegisteredAspect(ResourceKey<Aspect> resourceKey) {
         return resourceKey.identifier().getPath();
     }
 
-    public static Codec<RegisteredAspect> CODEC = ResourceKey.codec(DestinyModRegistries.ASPECT_REGISTRY_KEY)
+    public static Codec<RegisteredAspect> CODEC = ResourceKey.codec(DestinyRegistries.ASPECT_REGISTRY_KEY)
             .xmap(RegisteredAspect::new, RegisteredAspect::resourceKey);
-    public static StreamCodec<ByteBuf, RegisteredAspect> STREAM_CODEC = ResourceKey.streamCodec(DestinyModRegistries.ASPECT_REGISTRY_KEY)
+    public static StreamCodec<ByteBuf, RegisteredAspect> STREAM_CODEC = ResourceKey.streamCodec(DestinyRegistries.ASPECT_REGISTRY_KEY)
             .map(RegisteredAspect::new, RegisteredAspect::resourceKey);
 }
 

@@ -133,7 +133,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             Vec3 lightPos = marchPulsePath(lastObservedDistance, currentDist, pos -> {
                 ClientAudioAndVFX.thermitePulseStep(level(), pos, forwardDir, rightDir, width, height);
             });
-            ClientAudioAndVFX.addFadingLight(lightPos, Math.round(width), 5);
+            ClientAudioAndVFX.addFadingLight(lightPos, Math.round(width)+1, 15);
 
             lastObservedDistance = currentDist;
         }

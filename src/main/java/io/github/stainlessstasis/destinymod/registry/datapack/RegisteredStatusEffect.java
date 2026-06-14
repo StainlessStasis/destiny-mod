@@ -1,8 +1,8 @@
 package io.github.stainlessstasis.destinymod.registry.datapack;
 
 import com.mojang.serialization.Codec;
-import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffect;
+import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.StreamCodec;
@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 
 public record RegisteredStatusEffect(ResourceKey<StatusEffect> resourceKey) {
     public StatusEffect get(RegistryAccess access) {
-        return access.lookupOrThrow(DestinyModRegistries.STATUS_EFFECT_REGISTRY_KEY).getValueOrThrow(resourceKey);
+        return access.lookupOrThrow(DestinyRegistries.STATUS_EFFECT_REGISTRY_KEY).getValueOrThrow(resourceKey);
     }
 
     public StatusEffect get(Level level) {
@@ -27,9 +27,9 @@ public record RegisteredStatusEffect(ResourceKey<StatusEffect> resourceKey) {
         return resourceKey.identifier().getPath();
     }
 
-    public static Codec<RegisteredStatusEffect> CODEC = ResourceKey.codec(DestinyModRegistries.STATUS_EFFECT_REGISTRY_KEY)
+    public static Codec<RegisteredStatusEffect> CODEC = ResourceKey.codec(DestinyRegistries.STATUS_EFFECT_REGISTRY_KEY)
             .xmap(RegisteredStatusEffect::new, RegisteredStatusEffect::resourceKey);
-    public static StreamCodec<ByteBuf, RegisteredStatusEffect> STREAM_CODEC = ResourceKey.streamCodec(DestinyModRegistries.STATUS_EFFECT_REGISTRY_KEY)
+    public static StreamCodec<ByteBuf, RegisteredStatusEffect> STREAM_CODEC = ResourceKey.streamCodec(DestinyRegistries.STATUS_EFFECT_REGISTRY_KEY)
             .map(RegisteredStatusEffect::new, RegisteredStatusEffect::resourceKey);
 }
 

@@ -4,6 +4,7 @@ import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
+import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -30,7 +31,7 @@ public class DestinyModDatagen {
     public static void onGatherData(GatherDataEvent.Client event) {
         event.createDatapackRegistryObjects(new RegistrySetBuilder()
                 // ABILITIES
-                .add(DestinyModRegistries.ABILITY_REGISTRY_KEY, bootstrap -> {
+                .add(DestinyRegistries.ABILITY_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Abilities.NONE.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.NONE, -1, -1, -1f, -1f, -1
                     ));
@@ -57,14 +58,14 @@ public class DestinyModDatagen {
                 })
 
                 // ASPECTS
-                .add(DestinyModRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
+                .add(DestinyRegistries.ASPECT_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                     bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1, AbilityProperties.HEATSEEKER.get()));
                     bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, 20, AbilityProperties.ANVIL_DROP.get()));
                 })
 
                 // STATUS EFFECTS
-                .add(DestinyModRegistries.STATUS_EFFECT_REGISTRY_KEY, bootstrap -> {
+                .add(DestinyRegistries.STATUS_EFFECT_REGISTRY_KEY, bootstrap -> {
                     bootstrap.register(StatusEffects.SCORCH.resourceKey(), new StatusEffect(false, AbilityProperties.SCORCH.get()));
                     bootstrap.register(StatusEffects.MELTING_POINT.resourceKey(), new StatusEffect(false, AbilityProperties.MELTING_POINT.get()));
                     bootstrap.register(StatusEffects.SOL_INVICTUS.resourceKey(), new StatusEffect(true, AbilityProperties.SOL_INVICTUS.get()));

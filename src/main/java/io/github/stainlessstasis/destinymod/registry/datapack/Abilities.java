@@ -1,12 +1,12 @@
 package io.github.stainlessstasis.destinymod.registry.datapack;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.data.DestinyModRegistries;
+import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import net.minecraft.resources.ResourceKey;
 
 public class Abilities {
     private static RegisteredAbility register(String name) {
-        return new RegisteredAbility(ResourceKey.create(DestinyModRegistries.ABILITY_REGISTRY_KEY, DestinyMod.id(name)));
+        return new RegisteredAbility(ResourceKey.create(DestinyRegistries.ABILITY_REGISTRY_KEY, DestinyMod.id(name)));
     }
 
     public static final RegisteredAbility NONE = register("none");
