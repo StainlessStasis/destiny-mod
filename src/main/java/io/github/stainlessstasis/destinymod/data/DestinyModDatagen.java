@@ -43,6 +43,9 @@ public class DestinyModDatagen {
                                     true, false, true, -1
                             )
                     ));
+                    bootstrap.register(Abilities.SOL_INVICTUS.resourceKey(), new Ability(
+                            AbilityType.PASSIVE, DestinyElement.NONE, -1, -1, -1, -1, -1
+                    ));
                     bootstrap.register(Abilities.SUNSPOT.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.SOLAR, -1, -1, 0.3f, 1f, 5
                     ));

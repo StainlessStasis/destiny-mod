@@ -13,6 +13,7 @@ public class DestinyKeywords {
     static {
         KEYWORDS.put(Abilities.THROWING_HAMMER.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
         KEYWORDS.put(Abilities.THERMITE_GRENADE.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
+        KEYWORDS.put(Abilities.SOL_INVICTUS.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
         KEYWORDS.put(Aspects.MELTING_POINT.getName(), List.of(DestinyKeyword.IGNITION));
         KEYWORDS.put(Aspects.HEATSEEKER.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
     }

@@ -17,10 +17,10 @@
 
   "tooltip.destinymod.throwing_hammer.title": "THROWING HAMMER",
   "tooltip.destinymod.throwing_hammer.subtitle": "Sunbreaker Melee",
-  "tooltip.destinymod.throwing_hammer.desc": "Throw a hammer forged from <keyword_solar:Solar> Light. Picking up <ability:Throwing Hammer> refunds melee energy.",
+  "tooltip.destinymod.throwing_hammer.desc": "Throw a hammer forged from <keyword_solar:Solar> Light which <keyword_solar:scorches> targets. Picking up <ability:Throwing Hammer> refunds melee energy.",
   "tooltip.destinymod.thermite_grenade.title": "THERMITE GRENADE",
   "tooltip.destinymod.thermite_grenade.subtitle": "Sunbreaker Grenade",
-  "tooltip.destinymod.thermite_grenade.desc": "Explodes into a burning trail of <keyword_solar:Solar> fire which pulses multiple times.",
+  "tooltip.destinymod.thermite_grenade.desc": "Explodes into a burning wave of <keyword_solar:scorching> fire which pulses multiple times.",
 
   "tooltip.destinymod.melting_point.title": "MELTING POINT",
   "tooltip.destinymod.melting_point.subtitle": "Sunbreaker Aspect",
@@ -34,7 +34,7 @@
 
   "tooltip.destinymod.sol_invictus.title": "SOL INVICTUS",
   "tooltip.destinymod.sol_invictus.subtitle": "Sunbreaker Passive",
-  "tooltip.destinymod.sol_invictus.desc": "Final blows from <keyword_solar:Solar> abilities, <keyword_solar:Scorch>, and <keyword_solar:Ignitions> have a chance to create a <keyword_solar:Sunspot>. Your abilities regenerate faster while standing in a <keyword_solar:Sunspot>. \n\n<keyword_solar:Sunspots> damage targets inside and apply <keyword_solar:Scorch>.",
+  "tooltip.destinymod.sol_invictus.desc": "Final blows from <keyword_solar:Solar> abilities and defeating <keyword_solar:scorched> targets has a chance to create a <keyword_solar:Sunspot>. Your abilities regenerate faster while standing in a <keyword_solar:Sunspot>. \n\n<keyword_solar:Sunspots> damage targets inside and apply <keyword_solar:Scorch>.",
 
   "subclass.destinymod.hunter": "Hunter Subclass",
   "subclass.destinymod.titan": "Titan Subclass",

@@ -10,8 +10,15 @@ public class Abilities {
     }
 
     public static final RegisteredAbility NONE = register("none");
+
+    // MAIN ABILITIES
     public static final RegisteredAbility THROWING_HAMMER = register("throwing_hammer");
     public static final RegisteredAbility THERMITE_GRENADE = register("thermite_grenade");
+
+    // PASSIVES
+    public static final RegisteredAbility SOL_INVICTUS = register("sol_invictus");
+
+    // MISC (sub abilities or abilities triggered via status effect)
     public static final RegisteredAbility SUNSPOT = register("sunspot");
     public static final RegisteredAbility IGNITION = register("ignition");
 }

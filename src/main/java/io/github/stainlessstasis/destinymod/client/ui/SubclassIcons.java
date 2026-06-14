@@ -23,7 +23,7 @@ public class SubclassIcons {
                 new AbilityTrack(Abilities.THROWING_HAMMER, List.of(Aspects.MELTING_POINT, Aspects.HEATSEEKER, Aspects.ANVIL_DROP)),
                 new AbilityTrack(Abilities.THERMITE_GRENADE, List.of()),
                 new AbilityTrack(Abilities.NONE, List.of()),
-                Abilities.NONE
+                Abilities.SOL_INVICTUS
         ));
     }
 

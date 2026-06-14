@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Horizontal;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
+import com.lowdragmc.lowdraglib2.gui.ui.elements.TextElement;
 import com.lowdragmc.lowdraglib2.gui.ui.event.HoverTooltips;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
 import dev.vfyjxf.taffy.style.*;
@@ -20,6 +21,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.network.serverbound.EquipAspectsPacket;
 import io.github.stainlessstasis.destinymod.tooltip.*;
@@ -58,6 +60,9 @@ public class SubclassScreen extends ModularUIScreen {
     public static final int HOVER_PADDING = 8;
     public static final float EQUIPPED_PANEL_BOTTOM_PERCENT = 5f;
     public static final float EQUIPPED_PANEL_GAP = 6f;
+    public static final float PASSIVE_ICON_SIZE = 96f;
+    public static final float PASSIVE_PANEL_LEFT_PERCENT = 1.5f;
+    public static final float PASSIVE_PANEL_BOTTOM_PERCENT = 5f;
 
     private final Subclass subclass;
     private final AspectsHolder equippedAspects;
@@ -82,7 +87,7 @@ public class SubclassScreen extends ModularUIScreen {
         final float aspectRatio = (float) Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getScreenHeight();
         equippedAspects.list.addAll(PlayerSubclassData.getAllEquippedRegisteredAspects(Minecraft.getInstance().player));
 
-        var root = new UIElement();
+        UIElement root = new UIElement();
         root.layout(layout -> layout
                 .widthPercent(100f)
                 .heightPercent(100f)
@@ -90,7 +95,7 @@ public class SubclassScreen extends ModularUIScreen {
         );
 
         // HEADER
-        var headerContainer = new UIElement();
+        UIElement headerContainer = new UIElement();
         headerContainer.layout(layout -> layout
                 .positionType(TaffyPosition.ABSOLUTE)
                 .flexDirection(FlexDirection.COLUMN)
@@ -101,7 +106,7 @@ public class SubclassScreen extends ModularUIScreen {
         );
 
         // header - subclassID name
-        var titleLabel = new Label()
+        TextElement titleLabel = new Label()
                 .setText(subclass.title())
                 .textStyle(style -> style
                         .textAlignHorizontal(Horizontal.LEFT)
@@ -113,7 +118,7 @@ public class SubclassScreen extends ModularUIScreen {
 
         // header - class subtitle
         Component subtitleText = Component.translatable("subclass.destinymod." + subclass.destinyClass().name().toLowerCase());
-        var subtitleLabel = new Label()
+        TextElement subtitleLabel = new Label()
                 .setText(subtitleText)
                 .textStyle(style -> style
                         .textAlignHorizontal(Horizontal.LEFT)
@@ -127,7 +132,7 @@ public class SubclassScreen extends ModularUIScreen {
         root.addChildren(headerContainer);
 
         // EQUIPPED ASPECTS TRACK
-        var bottomContainer = new UIElement();
+        UIElement bottomContainer = new UIElement();
         bottomContainer.layout(layout -> layout
                 .positionType(TaffyPosition.ABSOLUTE)
                 .leftPercent(0f)
@@ -140,7 +145,7 @@ public class SubclassScreen extends ModularUIScreen {
                 .heightAuto()
         );
 
-        var equippedRow = new UIElement();
+        UIElement equippedRow = new UIElement();
         equippedRow.layout(layout -> layout
                 .flexDirection(FlexDirection.ROW)
                 .justifyContent(AlignContent.CENTER)
@@ -159,7 +164,7 @@ public class SubclassScreen extends ModularUIScreen {
         final var iconSet = SubclassIcons.SUBCLASS_ICONS.get(subclass);
         final IGuiTexture cellBorder = new ColorBorderTexture(-1, Color.WHITE);
 
-        var rightPanel = new UIElement();
+        UIElement rightPanel = new UIElement();
         rightPanel.layout(layout -> layout
                 .positionType(TaffyPosition.ABSOLUTE)
                 .rightPercent(ABILITY_PANEL_RIGHT_PERCENT)
@@ -172,7 +177,7 @@ public class SubclassScreen extends ModularUIScreen {
         AbilityType[] types = {AbilityType.SUPER, AbilityType.MELEE, AbilityType.GRENADE, AbilityType.CLASS_ABILITY};
         for (AbilityType type : types) {
             var iconTrack = iconSet.getTrack(type);
-            var abilityRowTrack = new UIElement();
+            UIElement abilityRowTrack = new UIElement();
             abilityRowTrack.layout(layout -> layout
                     .flexDirection(FlexDirection.ROW)
                     .alignItems(AlignItems.START)
@@ -180,7 +185,7 @@ public class SubclassScreen extends ModularUIScreen {
             );
 
             // main ability icon (super, melee, grenade, class)
-            var mainIcon = new UIElement();
+            UIElement mainIcon = new UIElement();
             mainIcon.layout(layout -> layout
                     .width(iconSize)
                     .height(iconSize)
@@ -197,7 +202,7 @@ public class SubclassScreen extends ModularUIScreen {
             }
 
             // main ability border
-            var mainBorderLayer = new UIElement()
+            UIElement mainBorderLayer = new UIElement()
                     .style(style -> style.background(cellBorder));
             mainBorderLayer.layout(layout -> layout
                     .positionType(TaffyPosition.ABSOLUTE)
@@ -212,7 +217,7 @@ public class SubclassScreen extends ModularUIScreen {
                 boolean isBaseIcon = i == 1; // the base icon and the background are separate for abilities, since they can be charged or uncharged.
                 Identifier iconPath = iconTrack.getMainIcon(isBaseIcon);
                 if (iconPath != null) {
-                    var chargedLayer = new UIElement()
+                    UIElement chargedLayer = new UIElement()
                             .style(style -> style.background(SpriteTexture.of(iconPath)));
                     chargedLayer.layout(layout -> layout
                             .positionType(TaffyPosition.ABSOLUTE)
@@ -226,14 +231,14 @@ public class SubclassScreen extends ModularUIScreen {
             }
 
             // aspect grid stuff (shows up when hovering over main ability icon)
-            var aspectGrid = new UIElement();
+            UIElement aspectGrid = new UIElement();
             aspectGrid.layout(layout -> layout
                     .flexDirection(FlexDirection.COLUMN)
                     .gapRow(ASPECT_GRID_GAP_ROWS * guiScalar)
                     .gapColumn(ASPECT_GRID_GAP_COLS * guiScalar)
             );
 
-            var gridWrapper = new UIElement();
+            UIElement gridWrapper = new UIElement();
             gridWrapper.layout(layout -> layout
                     .positionType(TaffyPosition.ABSOLUTE)
                     .left(iconSize + (ASPECT_GRID_OFFSET_LEFT * guiScalar))
@@ -244,7 +249,7 @@ public class SubclassScreen extends ModularUIScreen {
 
             int cellIndex = -1;
             for (int row = 0; row < ASPECT_GRID_ROWS; row++) {
-                var gridRow = new UIElement();
+                UIElement gridRow = new UIElement();
                 gridRow.layout(layout -> layout.flexDirection(FlexDirection.ROW));
 
                 for (int col = 0; col < ASPECT_GRID_COLS; col++) {
@@ -253,7 +258,7 @@ public class SubclassScreen extends ModularUIScreen {
                         break;
                     }
 
-                    var gridCell = new UIElement();
+                    UIElement gridCell = new UIElement();
                     gridCell.layout(layout -> layout
                             .width(iconSize)
                             .height(iconSize)
@@ -273,7 +278,7 @@ public class SubclassScreen extends ModularUIScreen {
                     }
 
                     // aspect border
-                    var gridBorderLayer = new UIElement()
+                    UIElement gridBorderLayer = new UIElement()
                             .style(style -> style.background(cellBorder));
                     gridBorderLayer.layout(layout -> layout
                             .positionType(TaffyPosition.ABSOLUTE)
@@ -288,7 +293,7 @@ public class SubclassScreen extends ModularUIScreen {
                     if (cellIndex < iconTrack.totalAspects()) {
                         Identifier iconPath = iconTrack.getAspectIcon(cellIndex);
                         if (iconPath != null) {
-                            var aspectIconLayer = new UIElement()
+                            UIElement aspectIconLayer = new UIElement()
                                     .style(style -> style.background(SpriteTexture.of(iconPath)));
                             aspectIconLayer.layout(layout -> layout
                                     .positionType(TaffyPosition.ABSOLUTE)
@@ -313,7 +318,7 @@ public class SubclassScreen extends ModularUIScreen {
             final float totalBridgeWidth = gapToGrid + totalGridWidth;
             // the initial hover is only when the main ability icon is hovered over, but then this is added to expand the hoverable area
             // to cover the entirety of the grid, with a bit of padding
-            var hoverBridge = new UIElement()
+            UIElement hoverBridge = new UIElement()
                     .style(style -> style.background(new ColorRectTexture(subclass.destinyElement().getColorDark().withOpacity(0.1f))));
             hoverBridge.layout(layout -> layout
                     .positionType(TaffyPosition.ABSOLUTE)
@@ -348,19 +353,68 @@ public class SubclassScreen extends ModularUIScreen {
             abilityRowTrack.addChildren(gridWrapper, mainIcon);
             rightPanel.addChildren(abilityRowTrack);
         }
-
+        
         root.addChildren(rightPanel);
+
+        // PASSIVE ABILITY
+        float passiveIconSize = PASSIVE_ICON_SIZE * guiScalar;
+
+        if (iconSet.passiveAbility() != null && iconSet.passiveAbility() != Abilities.NONE) {
+            UIElement passiveContainer = new UIElement();
+            passiveContainer.layout(layout -> layout
+                    .positionType(TaffyPosition.ABSOLUTE)
+                    .leftPercent(PASSIVE_PANEL_LEFT_PERCENT)
+                    .bottomPercent(PASSIVE_PANEL_BOTTOM_PERCENT * aspectRatio)
+                    .width(passiveIconSize)
+                    .height(passiveIconSize)
+                    .flexDirection(FlexDirection.COLUMN)
+            );
+
+            UIElement passiveBorderLayer = new UIElement()
+                    .style(style -> style.background(cellBorder));
+            passiveBorderLayer.layout(layout -> layout
+                    .positionType(TaffyPosition.ABSOLUTE)
+                    .left(-1f)
+                    .top(-1f)
+                    .width(passiveIconSize + 2f)
+                    .height(passiveIconSize + 2f)
+            );
+            passiveContainer.addChild(passiveBorderLayer);
+
+            Identifier passiveIconPath = iconSet.getPassiveIcon();
+            if (passiveIconPath != null) {
+                UIElement passiveIconLayer = new UIElement()
+                        .style(style -> style.background(SpriteTexture.of(passiveIconPath)));
+                passiveIconLayer.layout(layout -> layout
+                        .positionType(TaffyPosition.ABSOLUTE)
+                        .widthPercent(100f)
+                        .heightPercent(100f)
+                        .left(0f)
+                        .top(0f)
+                );
+                passiveContainer.addChild(passiveIconLayer);
+            }
+
+            String passiveName = iconSet.passiveAbility().getName();
+            if (!passiveName.isEmpty()) {
+                passiveContainer.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
+                    event.hoverTooltips = buildHoverTooltips(passiveName, subclass.destinyElement());
+                });
+            }
+
+            root.addChild(passiveContainer);
+        }
 
         UI ui = UI.of(root);
         return ModularUI.of(ui);
     }
 
     private static UIElement buildAspectCell(Subclass subclass, AspectsHolder aspects, @Nullable RegisteredAspect aspect, float iconSize, float guiScalar, boolean showKeywords) {
-        var cell = new UIElement();
+        UIElement cell = new UIElement();
         cell.layout(layout -> layout.width(iconSize).height(iconSize));
 
         final IGuiTexture cellBorder = new ColorBorderTexture(-1, Color.WHITE);
-        var borderLayer = new UIElement().style(style -> style.background(cellBorder));
+        UIElement borderLayer = new UIElement().style(style -> style.background(cellBorder));
         borderLayer.layout(layout -> layout
                 .positionType(TaffyPosition.ABSOLUTE)
                 .left(-1f).top(-1f)
@@ -371,7 +425,7 @@ public class SubclassScreen extends ModularUIScreen {
         if (aspect != null) {
             Identifier iconPath = SubclassIcons.getHudTexture(aspect.getName());
             if (iconPath != null) {
-                var iconLayer = new UIElement().style(style -> style.background(SpriteTexture.of(iconPath)));
+                UIElement iconLayer = new UIElement().style(style -> style.background(SpriteTexture.of(iconPath)));
                 iconLayer.layout(layout -> layout
                         .positionType(TaffyPosition.ABSOLUTE)
                         .widthPercent(100f).heightPercent(100f)
