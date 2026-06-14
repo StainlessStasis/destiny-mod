@@ -19,12 +19,12 @@
     {
       "type": "thermite_grenade",
       "distancePerTick": 2.0,
-      "height": 5.0,
+      "height": 5.5,
       "maxDistance": 12.0,
       "maxStepHeight": 1.5,
       "pulseIntervalTicks": 20,
       "pulses": 4,
-      "width": 3.0
+      "width": 4.0
     }
   ],
   "scorch": 25

@@ -118,12 +118,38 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
         }
 
         if (currentDist > lastObservedDistance) {
+            float yawRad = (float) Math.toRadians(getYRot());
+            Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
+            Vec3 rightDir = new Vec3(-forwardDir.z, 0, forwardDir.x);
+            float halfWidth = getWidth() / 2f;
+            float height = getHeight();
+
             marchPulsePath(lastObservedDistance, currentDist, pos -> {
-                level().addParticle(
-                        ParticleTypes.FLAME,
-                        pos.x, pos.y + 0.1, pos.z,
-                        0.0, 0.05, 0.0
-                );
+                for (float wOffset = -halfWidth; wOffset <= halfWidth; wOffset += 0.5f) {
+                    Vec3 particlePos = pos.add(rightDir.scale(wOffset));
+
+                    level().addParticle(
+                            ParticleTypes.FLAME,
+                            particlePos.x, particlePos.y + 0.1, particlePos.z,
+                            0, 0, 0
+                    );
+                }
+
+                for (float hOffset = 0.5f; hOffset <= height; hOffset += 0.5f) {
+                    Vec3 leftEdge = pos.add(rightDir.scale(-halfWidth));
+                    Vec3 rightEdge = pos.add(rightDir.scale(halfWidth));
+
+                    level().addParticle(
+                            ParticleTypes.SMALL_FLAME,
+                            leftEdge.x, leftEdge.y + hOffset, leftEdge.z,
+                            0, 0, 0
+                    );
+                    level().addParticle(
+                            ParticleTypes.SMALL_FLAME,
+                            rightEdge.x, rightEdge.y + hOffset, rightEdge.z,
+                            0, 0, 0
+                    );
+                }
             });
             lastObservedDistance = currentDist;
         }

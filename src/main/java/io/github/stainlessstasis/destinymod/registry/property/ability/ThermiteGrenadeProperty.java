@@ -17,6 +17,6 @@ public record ThermiteGrenadeProperty(int pulses, int pulseIntervalTicks, float 
     ).apply(instance, ThermiteGrenadeProperty::new));
 
     public static ThermiteGrenadeProperty getDefault() {
-        return new ThermiteGrenadeProperty(4, 20, 2f, 12f, 1.5f, 3f, 5f);
+        return new ThermiteGrenadeProperty(4, 20, 2f, 12f, 1.5f, 4f, 5.5f);
     }
 }
