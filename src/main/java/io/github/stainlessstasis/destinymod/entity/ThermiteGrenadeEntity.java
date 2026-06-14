@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
@@ -129,41 +130,19 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             float yawRad = (float) Math.toRadians(getYRot());
             Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
             Vec3 rightDir = new Vec3(-forwardDir.z, 0, forwardDir.x);
-            float halfWidth = getWidth() / 2f;
-            float height = getHeight();
-
-            marchPulsePath(lastObservedDistance, currentDist, pos -> {
-                for (float wOffset = -halfWidth; wOffset <= halfWidth; wOffset += 0.5f) {
-                    Vec3 particlePos = pos.add(rightDir.scale(wOffset));
-
-                    level().addParticle(
-                            ParticleTypes.FLAME,
-                            particlePos.x, particlePos.y + 0.1, particlePos.z,
-                            0, 0, 0
-                    );
-                }
-
-                for (float hOffset = 0.5f; hOffset <= height; hOffset += 0.5f) {
-                    Vec3 leftEdge = pos.add(rightDir.scale(-halfWidth));
-                    Vec3 rightEdge = pos.add(rightDir.scale(halfWidth));
-
-                    level().addParticle(
-                            ParticleTypes.SMALL_FLAME,
-                            leftEdge.x, leftEdge.y + hOffset, leftEdge.z,
-                            0, 0, 0
-                    );
-                    level().addParticle(
-                            ParticleTypes.SMALL_FLAME,
-                            rightEdge.x, rightEdge.y + hOffset, rightEdge.z,
-                            0, 0, 0
-                    );
-                }
+            Vec3 lightPos = marchPulsePath(lastObservedDistance, currentDist, pos -> {
+                ClientAudioAndVFX.thermitePulseStep(level(), pos, forwardDir, rightDir, width, height);
             });
+            ClientAudioAndVFX.addFadingLight(lightPos, Math.round(width), 5);
+
             lastObservedDistance = currentDist;
         }
     }
 
-    private void marchPulsePath(float startDist, float endDist, PulseStepCallback callback) {
+    /**
+     * @return The final position along the step
+     */
+    private Vec3 marchPulsePath(float startDist, float endDist, PulseStepCallback callback) {
         float yawRad = (float) Math.toRadians(getYRot());
         Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
         Vec3 currentPos = position().add(forwardDir.scale(startDist));
@@ -224,6 +203,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             callback.onStep(currentPos);
             distanceThisStep += substep;
         }
+
+        return currentPos;
     }
 
     @FunctionalInterface

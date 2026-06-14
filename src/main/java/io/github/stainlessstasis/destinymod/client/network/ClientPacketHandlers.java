@@ -12,14 +12,13 @@ public class ClientPacketHandlers {
         if (!(context.player().level() instanceof ClientLevel level)) return;
 
         ThermiteGrenadeEntity grenade = ThermiteGrenadeEntity.createDefault(DestinyModEntities.THERMITE_GRENADE.get(), level);
-        int entityId = packet.entityId();
         double x = packet.pos().x();
         double y = packet.pos().y();
         double z = packet.pos().z();
 
         grenade.syncPacketPositionCodec(x, y, z);
         grenade.snapTo(x, y, z, packet.yRot(), 0);
-        grenade.setId(entityId);
+        grenade.setId(packet.entityId());
         grenade.setUUID(packet.uuid());
         grenade.setDeltaMovement(Vec3.ZERO);
         grenade.applyProperties(packet.properties());

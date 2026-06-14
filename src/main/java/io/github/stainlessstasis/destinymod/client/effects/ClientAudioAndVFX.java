@@ -246,6 +246,60 @@ public class ClientAudioAndVFX {
         }
     }
 
+    public static void thermitePulseStep(Level level, Vec3 pos, Vec3 forwardDir, Vec3 rightDir, float width, float height) {
+        var random = level.getRandom();
+        var particleEngine = Minecraft.getInstance().particleEngine;
+
+        DMColor solar = DMColor.SOLAR;
+        DMColor solarLight = DMColor.SOLAR_LIGHT;
+
+        if (random.nextFloat() < 0.15f) {
+            float randomPitch = random.nextFloat() * 0.2f;
+            level.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, 0.25f, 1.4f + randomPitch, true);
+        }
+
+        int densityMultiplier = 3;
+        for (int i = 0; i < densityMultiplier; i++) {
+            double widthBias = (random.nextFloat() - 0.5f) * width;
+            Vec3 groundPos = pos.add(rightDir.scale(widthBias));
+
+            double vx = -forwardDir.x * 0.04f + (random.nextFloat() - 0.5f) * 0.02f;
+            double vy = 0.04f + random.nextFloat() * 0.04f;
+            double vz = -forwardDir.z * 0.04f + (random.nextFloat() - 0.5f) * 0.02f;
+
+            Particle exhaust = particleEngine.createParticle(ParticleTypes.SMALL_FLAME, groundPos.x, groundPos.y + 0.05, groundPos.z, vx, vy, vz);
+            if (exhaust instanceof SingleQuadParticle qp) {
+                DMColor color = random.nextFloat() > 0.7f ? solarLight : solar;
+                qp.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                qp.scale(1.2f + random.nextFloat() * 0.4f);
+            }
+
+            double randomHeight = random.nextFloat() * height;
+            vx = (random.nextFloat() - 0.5f) * 0.01f;
+            vy = 0.08f + random.nextFloat() * 0.08f;
+            vz = (random.nextFloat() - 0.5f) * 0.01f;
+
+            Particle flame = particleEngine.createParticle(ParticleTypes.FLAME, groundPos.x, groundPos.y + randomHeight, groundPos.z, vx, vy, vz);
+            if (flame instanceof SingleQuadParticle particle) {
+                DMColor color = random.nextFloat() > 0.4f ? solar : solarLight;
+                particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                particle.scale(1.5f + random.nextFloat() * 0.5f);
+            }
+
+            if (random.nextFloat() < 0.35f) {
+                double spread = (random.nextFloat() - 0.5f) * 0.1f;
+                vx = rightDir.x * spread + (random.nextFloat() - 0.5f) * 0.05f;
+                vy = 0.12f + random.nextFloat() * 0.12f;
+                vz = rightDir.z * spread + (random.nextFloat() - 0.5f) * 0.05f;
+
+                Particle lava = particleEngine.createParticle(ParticleTypes.LAVA, groundPos.x, groundPos.y + 0.1, groundPos.z, vx, vy, vz);
+                if (lava instanceof SingleQuadParticle particle) {
+                    particle.setColor(solarLight.getRed(), solarLight.getGreen(), solarLight.getBlue());
+                }
+            }
+        }
+    }
+
     public record SpherePointContext(Vec3 direction, int index) {}
     public static void forEachPointOnSphere(int count, Consumer<SpherePointContext> action) {
         for (int i = 0; i < count; i++) {
