@@ -507,8 +507,10 @@ public class SubclassScreen extends ModularUIScreen {
         String title = Language.getInstance().getOrDefault("tooltip."+DestinyMod.MODID+"." + abilityName + ".title");
         String subtitle = Language.getInstance().getOrDefault("tooltip."+DestinyMod.MODID+"." + abilityName + ".subtitle");
 
-        var header = new HeaderComponent(title, subtitle, widthContext, element.getColor().withOpacity(0.95f));
-        var bar = new SeparatorComponent(widthContext, 1, element.getColorLight().get());
+        int headerColor = aspect != null ? element.getColorDark().withOpacity(0.95f) : element.getColor().withOpacity(0.95f);
+        var header = new HeaderComponent(title, subtitle, widthContext, headerColor);
+        int barColor = aspect != null ? element.getColor().get() : element.getColorLight().get();
+        var bar = new SeparatorComponent(widthContext, 1, barColor);
 
         Component desc = DescriptionComponentParser.parseTranslatable("tooltip."+DestinyMod.MODID+"." + abilityName + ".desc");
         Component finalDesc = Component.empty().append(desc).append(getCooldownComponent(abilityName));
