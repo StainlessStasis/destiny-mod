@@ -265,7 +265,7 @@ public class SubclassScreen extends ModularUIScreen {
                         RegisteredAspect aspect = iconTrack.aspects().get(cellIndex);
                         String aspectName = aspect.getName();
                         gridCell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement(), equippedAspects, aspect);
+                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement(), equippedAspects, aspect, true);
                         });
                         gridCell.addEventListener(UIEvents.CLICK, event -> {
                             onClickAspect(subclass, equippedAspects, aspect, guiScalar);
@@ -355,7 +355,7 @@ public class SubclassScreen extends ModularUIScreen {
         return ModularUI.of(ui);
     }
 
-    private static UIElement buildAspectCell(Subclass subclass, AspectsHolder aspects, @Nullable RegisteredAspect aspect, float iconSize, float guiScalar) {
+    private static UIElement buildAspectCell(Subclass subclass, AspectsHolder aspects, @Nullable RegisteredAspect aspect, float iconSize, float guiScalar, boolean showKeywords) {
         var cell = new UIElement();
         cell.layout(layout -> layout.width(iconSize).height(iconSize));
 
@@ -380,7 +380,7 @@ public class SubclassScreen extends ModularUIScreen {
             }
 
             cell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                event.hoverTooltips = buildHoverTooltips(aspect.getName(), subclass.destinyElement(), aspects, aspect);
+                event.hoverTooltips = buildHoverTooltips(aspect.getName(), subclass.destinyElement(), aspects, aspect, showKeywords);
             });
             cell.addEventListener(UIEvents.CLICK, event -> {
                 onClickAspect(subclass, aspects, aspect, guiScalar);
@@ -403,7 +403,7 @@ public class SubclassScreen extends ModularUIScreen {
 
         for (int i = 0; i < maxSlots; i++) {
             RegisteredAspect aspectAtSlot = (i < currentlyEquipped.size()) ? currentlyEquipped.get(i) : null;
-            UIElement card = buildAspectCell(subclass, aspects, aspectAtSlot, iconSize, guiScalar);
+            UIElement card = buildAspectCell(subclass, aspects, aspectAtSlot, iconSize, guiScalar, false);
             aspects.bottomBarContainer.addChild(card);
         }
 
@@ -437,10 +437,10 @@ public class SubclassScreen extends ModularUIScreen {
     }
 
     private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element) {
-        return buildHoverTooltips(abilityName, element, null, null);
+        return buildHoverTooltips(abilityName, element, null, null, true);
     }
 
-    private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element, @Nullable AspectsHolder aspects, @Nullable RegisteredAspect aspect) {
+    private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element, @Nullable AspectsHolder aspects, @Nullable RegisteredAspect aspect, boolean showKeywords) {
         // MAIN TOOLTIP
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
@@ -470,7 +470,7 @@ public class SubclassScreen extends ModularUIScreen {
         // KEYWORDS
         List<List<ClientTooltipComponent>> sideColumns = new ArrayList<>();
         List<DestinyKeyword> keywords = DestinyKeywords.getKeywordsFor(abilityName);
-        if (!keywords.isEmpty()) {
+        if (showKeywords && !keywords.isEmpty()) {
             int keywordBgColor = 0xEE111111;
             List<ClientTooltipComponent> column = new ArrayList<>();
 
