@@ -10,10 +10,16 @@ public class KeywordColumnsTooltipWrapper implements ClientTooltipComponent {
     private final List<ClientTooltipComponent> mainComponents;
     private final List<List<ClientTooltipComponent>> keywordColumns;
     private final int HORIZONTAL_PADDING = 8;
+    private final boolean flipHorizontal;
 
     public KeywordColumnsTooltipWrapper(List<ClientTooltipComponent> mainComponents, List<List<ClientTooltipComponent>> keywordColumns) {
+        this(mainComponents, keywordColumns, false);
+    }
+
+    public KeywordColumnsTooltipWrapper(List<ClientTooltipComponent> mainComponents, List<List<ClientTooltipComponent>> keywordColumns, boolean flipHorizontal) {
         this.mainComponents = mainComponents;
         this.keywordColumns = keywordColumns;
+        this.flipHorizontal = flipHorizontal;
     }
 
     @Override
@@ -38,22 +44,24 @@ public class KeywordColumnsTooltipWrapper implements ClientTooltipComponent {
 
     @Override
     public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
+        int mainWidth = mainComponents.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
         int totalKeywordsWidth = 0;
+
         for (List<ClientTooltipComponent> column : keywordColumns) {
             int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
             totalKeywordsWidth += colWidth + HORIZONTAL_PADDING;
         }
 
-        int mainX = x + totalKeywordsWidth;
+        int mainX = flipHorizontal ? x : x + totalKeywordsWidth;
+        int xOffset = flipHorizontal ? x + mainWidth + HORIZONTAL_PADDING : x;
+
         int currentY = y;
-        int mainWidth = mainComponents.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
         for (ClientTooltipComponent component : mainComponents) {
             int compHeight = component.getHeight(font);
             component.extractImage(font, mainX, currentY, mainWidth, compHeight, graphics);
             currentY += compHeight;
         }
 
-        int xOffset = x;
         for (List<ClientTooltipComponent> column : keywordColumns) {
             currentY = y;
             int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
@@ -70,20 +78,23 @@ public class KeywordColumnsTooltipWrapper implements ClientTooltipComponent {
 
     @Override
     public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
+        int mainWidth = mainComponents.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
         int totalKeywordsWidth = 0;
+
         for (List<ClientTooltipComponent> column : keywordColumns) {
             int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);
             totalKeywordsWidth += colWidth + HORIZONTAL_PADDING;
         }
 
-        int mainX = x + totalKeywordsWidth;
+        int mainX = flipHorizontal ? x : x + totalKeywordsWidth;
+        int xOffset = flipHorizontal ? x + mainWidth + HORIZONTAL_PADDING : x;
+
         int currentY = y;
         for (ClientTooltipComponent component : mainComponents) {
             component.extractText(graphics, font, mainX, currentY);
             currentY += component.getHeight(font);
         }
 
-        int xOffset = x;
         for (List<ClientTooltipComponent> column : keywordColumns) {
             currentY = y;
             int colWidth = column.stream().mapToInt(c -> c.getWidth(font)).max().orElse(0);

@@ -270,7 +270,7 @@ public class SubclassScreen extends ModularUIScreen {
                         RegisteredAspect aspect = iconTrack.aspects().get(cellIndex);
                         String aspectName = aspect.getName();
                         gridCell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement(), equippedAspects, aspect, true);
+                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement(), equippedAspects, aspect, true, false);
                         });
                         gridCell.addEventListener(UIEvents.CLICK, event -> {
                             onClickAspect(subclass, equippedAspects, aspect, guiScalar);
@@ -353,7 +353,7 @@ public class SubclassScreen extends ModularUIScreen {
             abilityRowTrack.addChildren(gridWrapper, mainIcon);
             rightPanel.addChildren(abilityRowTrack);
         }
-        
+
         root.addChildren(rightPanel);
 
         // PASSIVE ABILITY
@@ -398,7 +398,7 @@ public class SubclassScreen extends ModularUIScreen {
             String passiveName = iconSet.passiveAbility().getName();
             if (!passiveName.isEmpty()) {
                 passiveContainer.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                    event.hoverTooltips = buildHoverTooltips(passiveName, subclass.destinyElement());
+                    event.hoverTooltips = buildHoverTooltipsFlipped(passiveName, subclass.destinyElement());
                 });
             }
 
@@ -434,7 +434,7 @@ public class SubclassScreen extends ModularUIScreen {
             }
 
             cell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                event.hoverTooltips = buildHoverTooltips(aspect.getName(), subclass.destinyElement(), aspects, aspect, showKeywords);
+                event.hoverTooltips = buildHoverTooltips(aspect.getName(), subclass.destinyElement(), aspects, aspect, showKeywords, false);
             });
             cell.addEventListener(UIEvents.CLICK, event -> {
                 onClickAspect(subclass, aspects, aspect, guiScalar);
@@ -491,10 +491,14 @@ public class SubclassScreen extends ModularUIScreen {
     }
 
     private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element) {
-        return buildHoverTooltips(abilityName, element, null, null, true);
+        return buildHoverTooltips(abilityName, element, null, null, true, false);
     }
 
-    private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element, @Nullable AspectsHolder aspects, @Nullable RegisteredAspect aspect, boolean showKeywords) {
+    private static HoverTooltips buildHoverTooltipsFlipped(String abilityName, DestinyElement element) {
+        return buildHoverTooltips(abilityName, element, null, null, true, true);
+    }
+
+    private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element, @Nullable AspectsHolder aspects, @Nullable RegisteredAspect aspect, boolean showKeywords, boolean flipHorizontal) {
         // MAIN TOOLTIP
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
@@ -548,7 +552,7 @@ public class SubclassScreen extends ModularUIScreen {
         }
 
         // FINALIZE
-        var wrapper = new KeywordColumnsTooltipWrapper(mainTooltip, sideColumns);
+        var wrapper = new KeywordColumnsTooltipWrapper(mainTooltip, sideColumns, flipHorizontal);
         return HoverTooltips.create(wrapper);
     }
 
