@@ -20,6 +20,7 @@ import io.github.stainlessstasis.destinymod.client.tooltip.*;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
@@ -40,6 +41,7 @@ import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +119,7 @@ public class SubclassScreen extends ModularUIScreen {
         titleLabel.layout(layout -> layout.height(TITLE_SIZE * guiScalar));
 
         // header - class subtitle
-        Component subtitleText = Component.translatable("subclass.destinymod." + subclass.destinyClass().name().toLowerCase());
+        Component subtitleText = Component.translatable("subclass."+DestinyMod.MODID+"." + subclass.destinyClass().name().toLowerCase());
         TextElement subtitleLabel = new Label()
                 .setText(subtitleText)
                 .textStyle(style -> style
@@ -502,19 +504,20 @@ public class SubclassScreen extends ModularUIScreen {
         // MAIN TOOLTIP
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
-        String title = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".title");
-        String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".subtitle");
+        String title = Language.getInstance().getOrDefault("tooltip."+DestinyMod.MODID+"." + abilityName + ".title");
+        String subtitle = Language.getInstance().getOrDefault("tooltip."+DestinyMod.MODID+"." + abilityName + ".subtitle");
 
         var header = new HeaderComponent(title, subtitle, widthContext, element.getColor().withOpacity(0.95f));
         var bar = new SeparatorComponent(widthContext, 1, element.getColorLight().get());
 
-        Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
-        var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
+        Component desc = DescriptionComponentParser.parseTranslatable("tooltip."+DestinyMod.MODID+"." + abilityName + ".desc");
+        Component finalDesc = Component.empty().append(desc).append(getCooldownComponent(abilityName));
+        var description = new DescriptionComponent(finalDesc, widthContext, 0xEE222222);
 
         String hintText = "";
         if (aspects != null && aspect != null) {
             String equipped = aspects.list.contains(aspect) ? "unequip" : "equip";
-            hintText = Language.getInstance().getOrDefault("tooltip.destinymod.action.click_to_" + equipped);
+            hintText = Language.getInstance().getOrDefault("tooltip."+DestinyMod.MODID+".action.click_to_" + equipped);
         }
         var actionHint = new ActionHintComponent(hintText, widthContext);
 
@@ -554,6 +557,24 @@ public class SubclassScreen extends ModularUIScreen {
         // FINALIZE
         var wrapper = new KeywordColumnsTooltipWrapper(mainTooltip, sideColumns, flipHorizontal);
         return HoverTooltips.create(wrapper);
+    }
+
+    private static Component getCooldownComponent(String abilityName) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return Component.empty();
+
+        Ability ability = Abilities.get(abilityName).get(player);
+        int totalSeconds = (int) Math.ceil(ability.cooldownTicks()/20f);
+        if (totalSeconds <= 0) {
+            return Component.empty();
+        }
+
+        Duration duration = Duration.ofSeconds(totalSeconds);
+        long minutes = duration.toMinutes();
+        long seconds = duration.toSecondsPart();
+        String formattedTime = String.format("%d:%02d", minutes, seconds);
+        String desc = Language.getInstance().getOrDefault("tooltip."+DestinyMod.MODID+".cooldown") + formattedTime;
+        return DescriptionComponentParser.parse(desc);
     }
 
     @Override
