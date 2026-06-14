@@ -1,10 +1,12 @@
 package io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade;
 
+import com.mojang.math.Constants;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.ThermiteGrenadeEntity;
 import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
@@ -24,9 +26,19 @@ public class GrenadeBehaviors {
 
     public static final DeferredHolder<GrenadeBehavior, GrenadeBehavior> THERMITE = register("thermite", () -> (entity, context) ->  {
         if (!(entity.level() instanceof ServerLevel level)) return;
-        Vec3 pos = context != null ? context.result().getLocation() : entity.position();
         LivingEntity owner = entity.getOwner() instanceof LivingEntity _owner ? _owner : null;
-        ThermiteGrenadeEntity grenade = new ThermiteGrenadeEntity(DestinyModEntities.THERMITE_GRENADE.get(), level, pos, owner);
+
+        Vec3 pos = entity.position();
+        float yaw = entity.getYRot();
+        if (context != null) {
+            pos = context.result().getLocation();
+            Vec3 vel = context.sourceVelocity();
+            if (vel.horizontalDistanceSqr() > Constants.EPSILON) {
+                yaw = (float) Math.toDegrees(Mth.atan2(-vel.x, vel.z));
+            }
+        }
+
+        ThermiteGrenadeEntity grenade = new ThermiteGrenadeEntity(DestinyModEntities.THERMITE_GRENADE.get(), level, pos, yaw, owner);
         level.addFreshEntity(grenade);
     });
 

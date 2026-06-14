@@ -45,8 +45,8 @@ public class DestinyModEntities {
                     ))
     );
 
-    public static final Supplier<EntityType<@NotNull ThrownGrenadeEntity>> GENERIC_GRENADE = ENTITY_TYPES.register(
-            "generic_grenade",
+    public static final Supplier<EntityType<@NotNull ThrownGrenadeEntity>> THROWN_GRENADE = ENTITY_TYPES.register(
+            "thrown_grenade",
             () -> EntityType.Builder.of(
                             ThrownGrenadeEntity::createDefault,
                             MobCategory.MISC
@@ -56,7 +56,7 @@ public class DestinyModEntities {
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(
                             Registries.ENTITY_TYPE,
-                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "generic_grenade")
+                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "thrown_grenade")
                     ))
     );
 

@@ -1,5 +1,9 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.util.GeckoLibUtil;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.BouncingProjectile;
@@ -30,10 +34,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public class ThrownGrenadeEntity extends ThrowableProjectile implements BouncingProjectile, DestinyAbility {
+public class ThrownGrenadeEntity extends ThrowableProjectile implements GeoEntity, BouncingProjectile, DestinyAbility {
     private static final EntityDataAccessor<String> GRENADE_BEHAVIOR_ID = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> ABILITY_ID = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.STRING);
 
+    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private final Set<UUID> collidedThisTick = new HashSet<>();
     protected Ability ability;
 
@@ -42,7 +47,7 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
     }
 
     public ThrownGrenadeEntity(Level level, LivingEntity owner, ItemStack __) {
-        super(DestinyModEntities.GENERIC_GRENADE.get(), owner.getX(), owner.getEyeY()-0.1, owner.getZ(), level);
+        super(DestinyModEntities.THROWN_GRENADE.get(), owner.getX(), owner.getEyeY()-0.1, owner.getZ(), level);
         setOwner(owner);
     }
 
@@ -182,5 +187,13 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements Bouncing
             }
         }
         return this.ability;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {}
+
+    @Override
+    public @NonNull AnimatableInstanceCache getAnimatableInstanceCache() {
+        return geoCache;
     }
 }

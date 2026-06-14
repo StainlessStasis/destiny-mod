@@ -642,9 +642,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     }
 
     @Override
-    public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
-
-    }
+    public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {}
 
     @Override
     public @NotNull AnimatableInstanceCache getAnimatableInstanceCache() {

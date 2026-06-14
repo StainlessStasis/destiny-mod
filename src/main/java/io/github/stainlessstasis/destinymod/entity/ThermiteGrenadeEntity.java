@@ -1,5 +1,9 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.util.GeckoLibUtil;
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
@@ -52,12 +56,10 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
         return new ThermiteGrenadeEntity(entityType, level);
     }
 
-    public ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, @Nullable LivingEntity owner) {
+    public ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, float yaw, @Nullable LivingEntity owner) {
         super(type, level, pos, owner, Abilities.THERMITE_GRENADE.get(level));
         this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(this::applyProperties);
-        if (owner != null) {
-            setYRot(owner.getYRot());
-        }
+        setYRot(yaw);
     }
 
     public void applyProperties(ThermiteGrenadeProperty props) {
