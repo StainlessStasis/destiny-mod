@@ -1,16 +1,13 @@
 package io.github.stainlessstasis.destinymod.network.clientbound;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
-import io.github.stainlessstasis.destinymod.entity.ThermiteGrenadeEntity;
+import io.github.stainlessstasis.destinymod.client.network.ClientPacketHandlers;
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3fc;
@@ -32,22 +29,7 @@ public record ThermiteGrenadeSpawnPacket(int entityId, UUID uuid, Vector3fc pos,
 
     public static class Handler {
         public static void handle(final ThermiteGrenadeSpawnPacket packet, final IPayloadContext context) {
-            context.enqueueWork(() -> {
-                if (context.player().level() instanceof net.minecraft.client.multiplayer.ClientLevel level) {
-                    ThermiteGrenadeEntity grenade = ThermiteGrenadeEntity.createDefault(DestinyModEntities.THERMITE_GRENADE.get(), context.player().level());
-                    int entityId = packet.entityId();
-                    double x = packet.pos().x();
-                    double y = packet.pos.y();
-                    double z = packet.pos.z();
-                    grenade.syncPacketPositionCodec(x, y, z);
-                    grenade.snapTo(x, y, z, packet.yRot(), 0);
-                    grenade.setId(entityId);
-                    grenade.setUUID(packet.uuid());
-                    grenade.setDeltaMovement(Vec3.ZERO);
-                    grenade.applyProperties(packet.properties());
-                    level.addEntity(grenade);
-                }
-            });
+            context.enqueueWork(() -> ClientPacketHandlers.handleThermiteGrenadeSpawn(packet, context));
         }
     }
 
