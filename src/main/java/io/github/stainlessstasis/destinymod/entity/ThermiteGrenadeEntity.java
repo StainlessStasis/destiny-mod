@@ -3,14 +3,20 @@ package io.github.stainlessstasis.destinymod.entity;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
+import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -28,16 +35,16 @@ import java.util.function.Predicate;
 
 public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private static final EntityDataAccessor<Integer> CURRENT_PULSE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> MAX_PULSES = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> PULSE_INTERVAL = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> DISTANCE_PER_TICK = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> MAX_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> MAX_STEP_HEIGHT = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> TRAVELED_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> WIDTH = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     public static final float SUBSTEP_DISTANCE = 0.25f;
 
+    private int maxPulses;
+    private int pulseInterval;
+    private float distancePerTick;
+    private float maxDistance;
+    private float maxStepHeight;
+    private float width;
+    private float height;
     private final Set<Entity> hitEntitiesThisPulse = new HashSet<>();
     private float lastObservedDistance = 0f;
     private int lastObservedPulse = 0;
@@ -53,20 +60,22 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     public ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, @Nullable LivingEntity owner) {
         super(type, level, pos, owner, Abilities.THERMITE_GRENADE.get(level));
         if (! level.isClientSide()) {
-            this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(props -> {
-                setCurrentPulse(0);
-                setMaxPulses(props.pulses());
-                setPulseInterval(props.pulseIntervalTicks());
-                setDistancePerTick(props.distancePerTick());
-                setMaxDistance(props.maxDistance());
-                setMaxStepHeight(props.maxStepHeight());
-                setWidth(props.width());
-                setHeight(props.height());
-            });
+            this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(this::applyProperties);
         }
         if (owner != null) {
             setYRot(owner.getYRot());
         }
+    }
+
+    public void applyProperties(ThermiteGrenadeProperty props) {
+        setCurrentPulse(0);
+        this.maxPulses = props.pulses();
+        this.pulseInterval = props.pulseIntervalTicks();
+        this.distancePerTick = props.distancePerTick();
+        this.maxDistance = props.maxDistance();
+        this.maxStepHeight = props.maxStepHeight();
+        this.width = props.width();
+        this.height = props.height();
     }
 
     @Override
@@ -181,8 +190,36 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                     break; // wall is too high to step up
                 }
             } else {
-                // path is clear
-                currentPos = nextPos;
+                // nothing is in the way, but we need to check if it can step down
+                BlockPos floorPos = blockPos.below();
+                BlockState floorState = level().getBlockState(floorPos);
+
+                float dropChecked = 1f;
+                boolean foundFloor = false;
+                double solidFloorY = currentPos.y;
+
+                while (dropChecked <= Math.ceil(maxStep) + 1f) {
+                    if (!floorState.isAir() && floorState.isCollisionShapeFullBlock(level(), floorPos)) {
+                        double floorTopY = floorPos.getY() + floorState.getShape(level(), floorPos).max(Direction.Axis.Y);
+                        double dropHeight = currentPos.y - floorTopY;
+
+                        if (dropHeight <= maxStep) {
+                            solidFloorY = floorTopY;
+                            foundFloor = true;
+                        }
+                        break; // hit a block
+                    }
+
+                    floorPos = floorPos.below();
+                    floorState = level().getBlockState(floorPos);
+                    dropChecked += 1f;
+                }
+
+                if (foundFloor) {
+                    currentPos = new Vec3(nextPos.x, solidFloorY, nextPos.z);
+                } else {
+                    break;
+                }
             }
 
             callback.onStep(currentPos);
@@ -237,92 +274,35 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                     .invulnerabilityTicks(0)
                     .element(this.ability.element())
                     .execute();
-            // TODO: scorch
+            StatusEffectManager.applyScorch(target, getOwner(), this.ability.scorch());
         }
+    }
+
+    @Override
+    public @NonNull Packet<ClientGamePacketListener> getAddEntityPacket(@NonNull ServerEntity serverEntity) {
+        ThermiteGrenadeProperty props = this.ability.getProperty(ThermiteGrenadeProperty.class).orElseGet(ThermiteGrenadeProperty::getDefault);
+        ThermiteGrenadeSpawnPacket packet = new ThermiteGrenadeSpawnPacket(
+                getId(), getUUID(), new Vector3f((float)getX(), (float)getY(), (float)getZ()), getYRot(), props
+        );
+        return (Packet<ClientGamePacketListener>)(Packet<?>)packet.toVanillaClientbound();
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(CURRENT_PULSE, 0);
-        builder.define(MAX_PULSES, 0);
-        builder.define(PULSE_INTERVAL, 0);
-        builder.define(DISTANCE_PER_TICK, 0f);
-        builder.define(MAX_DISTANCE, 0f);
-        builder.define(MAX_STEP_HEIGHT, 0f);
         builder.define(TRAVELED_DISTANCE, 0f);
-        builder.define(WIDTH, 0f);
-        builder.define(HEIGHT, 0f);
     }
 
-    public int getCurrentPulse() {
-        return entityData.get(CURRENT_PULSE);
-    }
+    public int getCurrentPulse() { return entityData.get(CURRENT_PULSE); }
+    public void setCurrentPulse(int pulse) { entityData.set(CURRENT_PULSE, pulse); }
+    public float getTraveledDistance() { return entityData.get(TRAVELED_DISTANCE); }
+    public void setTraveledDistance(float distance) { entityData.set(TRAVELED_DISTANCE, distance); }
 
-    public void setCurrentPulse(int pulse) {
-        entityData.set(CURRENT_PULSE, pulse);
-    }
-
-    public int getMaxPulses() {
-        return entityData.get(MAX_PULSES);
-    }
-
-    public void setMaxPulses(int maxPulses) {
-        entityData.set(MAX_PULSES, maxPulses);
-    }
-
-    public int getPulseInterval() {
-        return entityData.get(PULSE_INTERVAL);
-    }
-
-    public void setPulseInterval(int intervalTicks) {
-        entityData.set(PULSE_INTERVAL, intervalTicks);
-    }
-
-    public float getDistancePerTick() {
-        return entityData.get(DISTANCE_PER_TICK);
-    }
-
-    public void setDistancePerTick(float distancePerTick) {
-        entityData.set(DISTANCE_PER_TICK, distancePerTick);
-    }
-
-    public float getMaxDistance() {
-        return entityData.get(MAX_DISTANCE);
-    }
-
-    public void setMaxDistance(float maxDistance) {
-        entityData.set(MAX_DISTANCE, maxDistance);
-    }
-
-    public float getMaxStepHeight() {
-        return entityData.get(MAX_STEP_HEIGHT);
-    }
-
-    public void setMaxStepHeight(float maxStepHeight) {
-        entityData.set(MAX_STEP_HEIGHT, maxStepHeight);
-    }
-
-    public float getTraveledDistance() {
-        return entityData.get(TRAVELED_DISTANCE);
-    }
-
-    public void setTraveledDistance(float distance) {
-        entityData.set(TRAVELED_DISTANCE, distance);
-    }
-
-    public float getWidth() {
-        return entityData.get(WIDTH);
-    }
-
-    public void setWidth(float width) {
-        entityData.set(WIDTH, width);
-    }
-
-    public float getHeight() {
-        return entityData.get(HEIGHT);
-    }
-
-    public void setHeight(float height) {
-        entityData.set(HEIGHT, height);
-    }
+    public int getMaxPulses() { return maxPulses; }
+    public int getPulseInterval() { return pulseInterval; }
+    public float getDistancePerTick() { return distancePerTick; }
+    public float getMaxDistance() { return maxDistance; }
+    public float getMaxStepHeight() { return maxStepHeight; }
+    public float getWidth() { return width; }
+    public float getHeight() { return height; }
 }
