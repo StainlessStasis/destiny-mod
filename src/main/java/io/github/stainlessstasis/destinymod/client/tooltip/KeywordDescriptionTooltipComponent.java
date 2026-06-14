@@ -65,7 +65,7 @@ public class KeywordDescriptionTooltipComponent implements ClientTooltipComponen
         graphics.fill(renderX, y - 2, renderX + 4 + getWidth(font), y + getHeight(font) - 2, this.backgroundColor);
 
         var pose = graphics.pose();
-        int currentY = y + 2;
+        int currentY = y + 4;
 
         pose.pushMatrix();
         pose.translate(x + 2, currentY);

@@ -13,7 +13,10 @@ import dev.vfyjxf.taffy.style.*;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
+import io.github.stainlessstasis.destinymod.client.keyword.DestinyKeyword;
+import io.github.stainlessstasis.destinymod.client.keyword.DestinyKeywords;
 import io.github.stainlessstasis.destinymod.client.tooltip.*;
+import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -188,7 +191,7 @@ public class SubclassScreen extends ModularUIScreen {
                 String name = iconTrack.mainAbility().getName();
                 if (!name.isEmpty()) {
                     mainIcon.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                        event.hoverTooltips = buildHoverTooltips(name, subclass.destinyElement().getColor(), subclass.destinyElement().getColorLight());
+                        event.hoverTooltips = buildHoverTooltips(name, subclass.destinyElement());
                     });
                 }
             }
@@ -262,7 +265,7 @@ public class SubclassScreen extends ModularUIScreen {
                         RegisteredAspect aspect = iconTrack.aspects().get(cellIndex);
                         String aspectName = aspect.getName();
                         gridCell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor(), equippedAspects, aspect);
+                            event.hoverTooltips = buildHoverTooltips(aspectName, subclass.destinyElement(), equippedAspects, aspect);
                         });
                         gridCell.addEventListener(UIEvents.CLICK, event -> {
                             onClickAspect(subclass, equippedAspects, aspect, guiScalar);
@@ -377,7 +380,7 @@ public class SubclassScreen extends ModularUIScreen {
             }
 
             cell.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
-                event.hoverTooltips = buildHoverTooltips(aspect.getName(), subclass.destinyElement().getColorDark(), subclass.destinyElement().getColor(), aspects, aspect);
+                event.hoverTooltips = buildHoverTooltips(aspect.getName(), subclass.destinyElement(), aspects, aspect);
             });
             cell.addEventListener(UIEvents.CLICK, event -> {
                 onClickAspect(subclass, aspects, aspect, guiScalar);
@@ -433,18 +436,19 @@ public class SubclassScreen extends ModularUIScreen {
         rebuildBottomBar(subclass, aspects, guiScalar);
     }
 
-    private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor, DMColor separatorBarColor) {
-        return buildHoverTooltips(abilityName, headerColor, separatorBarColor, null, null);
+    private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element) {
+        return buildHoverTooltips(abilityName, element, null, null);
     }
 
-    private static HoverTooltips buildHoverTooltips(String abilityName, DMColor headerColor, DMColor separatorBarColor, @Nullable AspectsHolder aspects, @Nullable RegisteredAspect aspect) {
+    private static HoverTooltips buildHoverTooltips(String abilityName, DestinyElement element, @Nullable AspectsHolder aspects, @Nullable RegisteredAspect aspect) {
+        // MAIN TOOLTIP
         TooltipWidthContext widthContext = new TooltipWidthContext();
 
         String title = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".title");
         String subtitle = Language.getInstance().getOrDefault("tooltip.destinymod." + abilityName + ".subtitle");
 
-        var header = new HeaderComponent(title, subtitle, widthContext, headerColor.withOpacity(0.95f));
-        var bar = new SeparatorComponent(widthContext, 1, separatorBarColor.get());
+        var header = new HeaderComponent(title, subtitle, widthContext, element.getColor().withOpacity(0.95f));
+        var bar = new SeparatorComponent(widthContext, 1, element.getColorLight().get());
 
         Component desc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod." + abilityName + ".desc");
         var description = new DescriptionComponent(desc, widthContext, 0xEE222222);
@@ -465,26 +469,31 @@ public class SubclassScreen extends ModularUIScreen {
 
         // KEYWORDS
         List<List<ClientTooltipComponent>> sideColumns = new ArrayList<>();
-        List<ClientTooltipComponent> column = new ArrayList<>();
+        List<DestinyKeyword> keywords = DestinyKeywords.getKeywordsFor(abilityName);
+        if (!keywords.isEmpty()) {
+            int keywordBgColor = 0xEE111111;
+            List<ClientTooltipComponent> column = new ArrayList<>();
 
-        int keywordBgColor = 0xEE111111;
-        int solarTitleColor = DMColor.SOLAR.get();
+            for (int i = 0; i < keywords.size(); i++) {
+                DestinyKeyword keyword = keywords.get(i);
+                TooltipWidthContext kwWidth = new TooltipWidthContext();
 
-        TooltipWidthContext kwWidth1 = new TooltipWidthContext();
-        Component scorchTitle = Component.literal(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.scorch.title"));
-        Component scorchDesc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.scorch.desc");
+                column.add(new KeywordDescriptionTooltipComponent(
+                        keyword.getTitle(),
+                        keyword.getDescription(),
+                        kwWidth,
+                        keywordBgColor,
+                        keyword.getTitleColor()
+                ));
 
-        column.add(new KeywordDescriptionTooltipComponent(scorchTitle, scorchDesc, kwWidth1, keywordBgColor, solarTitleColor));
-        column.add(new SeparatorTooltipComponent(kwWidth1, 1, DMColor.LIGHT_GRAY.get()));
+                if (i < keywords.size() - 1) {
+                    column.add(new SeparatorTooltipComponent(kwWidth, 1, DMColor.LIGHT_GRAY.get()));
+                }
+            }
+            sideColumns.add(column);
+        }
 
-        TooltipWidthContext kwWidth2 = new TooltipWidthContext();
-        Component ignitionTitle = Component.literal(Language.getInstance().getOrDefault("tooltip.destinymod.keyword.ignition.title"));
-        Component ignitionDesc = DescriptionComponentParser.parseTranslatable("tooltip.destinymod.keyword.ignition.desc");
-
-        column.add(new KeywordDescriptionTooltipComponent(ignitionTitle, ignitionDesc, kwWidth2, keywordBgColor, solarTitleColor));
-
-        sideColumns.add(column);
-
+        // FINALIZE
         var wrapper = new KeywordColumnsTooltipWrapper(mainTooltip, sideColumns);
         return HoverTooltips.create(wrapper);
     }

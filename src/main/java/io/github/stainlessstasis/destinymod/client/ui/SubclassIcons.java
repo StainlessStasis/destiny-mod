@@ -8,6 +8,7 @@ import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
+import io.github.stainlessstasis.destinymod.util.AbilityUtil;
 import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
@@ -27,14 +28,6 @@ public class SubclassIcons {
         ));
     }
 
-    private static String getAbilityName(RegisteredAbility ability) {
-        return ability.resourceKey().identifier().getPath();
-    }
-
-    private static String getAspectName(RegisteredAspect aspect) {
-        return aspect.resourceKey().identifier().getPath();
-    }
-
     public static Identifier getHudTexture(String name) {
         if (name == null || name.isEmpty()) return null;
         return DestinyMod.id("textures/gui/sprites/destiny_ui/" + name + ".png");
@@ -44,12 +37,12 @@ public class SubclassIcons {
         public Identifier getMainIcon(boolean charged) {
             if (mainAbility == null || mainAbility == Abilities.NONE) return null;
             String suffix = charged ? "_charged" : "";
-            return getHudTexture(getAbilityName(mainAbility) + suffix);
+            return getHudTexture(AbilityUtil.getAbilityName(mainAbility) + suffix);
         }
 
         public Identifier getAspectIcon(int aspectIndex) {
             if (aspectIndex < 0 || aspectIndex >= aspects.size()) return null;
-            return getHudTexture(getAspectName(aspects.get(aspectIndex)));
+            return getHudTexture(AbilityUtil.getAspectName(aspects.get(aspectIndex)));
         }
 
         public int totalAspects() {
@@ -75,7 +68,7 @@ public class SubclassIcons {
         }
 
         public Identifier getPassiveIcon() {
-            return getHudTexture(getAbilityName(passiveAbility));
+            return getHudTexture(AbilityUtil.getAbilityName(passiveAbility));
         }
     }
 }
