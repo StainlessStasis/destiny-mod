@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private static final EntityDataAccessor<Integer> CURRENT_PULSE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.INT);
@@ -33,6 +34,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private static final EntityDataAccessor<Float> MAX_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> MAX_STEP_HEIGHT = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> TRAVELED_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> WIDTH = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     public static final float SUBSTEP_DISTANCE = 0.25f;
 
     private final Set<Entity> hitEntitiesThisPulse = new HashSet<>();
@@ -57,6 +60,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                 setDistancePerTick(props.distancePerTick());
                 setMaxDistance(props.maxDistance());
                 setMaxStepHeight(props.maxStepHeight());
+                setWidth(props.width());
+                setHeight(props.height());
             });
         }
         if (owner != null) {
@@ -165,12 +170,38 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     }
 
     private void damageEntitiesAtPosition(Vec3 pos, Set<Entity> hitEntities) {
-        AABB damageArea = new AABB(
-                pos.x - 0.75, pos.y - 0.5, pos.z - 0.75,
-                pos.x + 0.75, pos.y + 1.5, pos.z + 0.75
+        float width = getWidth();
+        float halfWidth = width / 2f;
+        float height = getHeight();
+        float yPadding = 0.25f;
+
+        double searchRadius = Math.sqrt(halfWidth * halfWidth + SUBSTEP_DISTANCE * SUBSTEP_DISTANCE);
+        AABB searchArea = new AABB(
+                pos.x - searchRadius, pos.y - yPadding, pos.z - searchRadius,
+                pos.x + searchRadius, pos.y + height, pos.z + searchRadius
         );
 
-        List<LivingEntity> targets = CombatUtils.getEntitiesInArea(damageArea, level(), LivingEntity.class, getOwner(), hitEntities, null);
+        float yawRad = (float) Math.toRadians(getYRot());
+        Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
+        Vec3 rightDir = new Vec3(-forwardDir.z, 0, forwardDir.x);
+
+        Predicate<LivingEntity> areaFilter = target -> {
+            Vec3 relativePos = target.position().subtract(pos);
+
+            double distanceAlongWidth = relativePos.dot(rightDir);
+            if (Math.abs(distanceAlongWidth) > halfWidth) {
+                return false;
+            }
+
+            double distanceAlongLength = relativePos.dot(forwardDir);
+            if (Math.abs(distanceAlongLength) > (SUBSTEP_DISTANCE / 2f)) {
+                return false;
+            }
+
+            return relativePos.y >= -yPadding && relativePos.y <= height;
+        };
+
+        List<LivingEntity> targets = CombatUtils.getEntitiesInArea(searchArea, level(), LivingEntity.class, getOwner(), hitEntities, areaFilter);
         for (LivingEntity target : targets) {
             DestinyDamageBuilder.create(DMDamageTypes.GRENADE_ABILITY, target)
                     .damage(this.ability.damage())
@@ -193,6 +224,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
         builder.define(MAX_DISTANCE, 0f);
         builder.define(MAX_STEP_HEIGHT, 0f);
         builder.define(TRAVELED_DISTANCE, 0f);
+        builder.define(WIDTH, 0f);
+        builder.define(HEIGHT, 0f);
     }
 
     public int getCurrentPulse() {
@@ -249,5 +282,21 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
     public void setTraveledDistance(float distance) {
         entityData.set(TRAVELED_DISTANCE, distance);
+    }
+
+    public float getWidth() {
+        return entityData.get(WIDTH);
+    }
+
+    public void setWidth(float width) {
+        entityData.set(WIDTH, width);
+    }
+
+    public float getHeight() {
+        return entityData.get(HEIGHT);
+    }
+
+    public void setHeight(float height) {
+        entityData.set(HEIGHT, height);
     }
 }
