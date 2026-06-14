@@ -6,6 +6,7 @@ import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageB
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -54,6 +55,9 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                 setMaxStepHeight(props.maxStepHeight());
             });
         }
+        if (owner != null) {
+            setYRot(owner.getYRot());
+        }
     }
 
     @Override
@@ -85,6 +89,23 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private void executeServerPulseLogic() {
         if (level().isClientSide()) return;
 
+        Set<Entity> hitEntities = new HashSet<>();
+        marchPulsePath(pos -> damageEntitiesAtPosition(pos, hitEntities));
+    }
+
+    private void spawnClientPulseVisuals(int pulse) {
+        if (!level().isClientSide()) return;
+
+        marchPulsePath(pos -> {
+            level().addParticle(
+                    ParticleTypes.FLAME,
+                    pos.x, pos.y + 0.1, pos.z,
+                    0.0, 0.05, 0.0
+            );
+        });
+    }
+
+    private void marchPulsePath(PulseStepCallback callback) {
         float yawRad = (float) Math.toRadians(getYRot());
         Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
         Vec3 currentPos = this.position();
@@ -116,13 +137,18 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                 currentPos = nextPos;
             }
 
-            damageEntitiesAtPosition(currentPos, hitEntities);
+            callback.onStep(currentPos);
             distanceThisPulse += substep;
 
             if (position().distanceTo(currentPos) >= maxDistance) {
                 break;
             }
         }
+    }
+
+    @FunctionalInterface
+    public interface PulseStepCallback {
+        void onStep(Vec3 position);
     }
 
     private void damageEntitiesAtPosition(Vec3 pos, Set<Entity> hitEntities) {
@@ -143,10 +169,6 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                     .execute();
             // TODO: scorch
         }
-    }
-
-    private void spawnClientPulseVisuals(int pulse) {
-
     }
 
     @Override
