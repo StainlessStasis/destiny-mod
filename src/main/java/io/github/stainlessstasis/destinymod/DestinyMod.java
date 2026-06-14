@@ -3,7 +3,6 @@ package io.github.stainlessstasis.destinymod;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
-import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
@@ -75,11 +74,6 @@ public class DestinyMod {
                     AnvilDropEffectsPacket.TYPE,
                     AnvilDropEffectsPacket.STREAM_CODEC,
                     AnvilDropEffectsPacket.Handler::handle
-            );
-            registrar.playToClient(
-                    ThermiteGrenadeSpawnPacket.TYPE,
-                    ThermiteGrenadeSpawnPacket.STREAM_CODEC,
-                    ThermiteGrenadeSpawnPacket.Handler::handle
             );
         }
     }
