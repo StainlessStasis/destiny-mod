@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -59,9 +60,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
     public ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, @Nullable LivingEntity owner) {
         super(type, level, pos, owner, Abilities.THERMITE_GRENADE.get(level));
-        if (! level.isClientSide()) {
-            this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(this::applyProperties);
-        }
+        this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(this::applyProperties);
         if (owner != null) {
             setYRot(owner.getYRot());
         }
