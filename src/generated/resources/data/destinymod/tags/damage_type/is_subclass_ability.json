@@ -1,8 +1,6 @@
 {
   "values": [
-    "destinymod:melee_ability",
-    "destinymod:grenade_ability",
-    "destinymod:class_ability",
-    "destinymod:super"
+    "destinymod:throwing_hammer",
+    "destinymod:thermite_grenade"
   ]
 }
