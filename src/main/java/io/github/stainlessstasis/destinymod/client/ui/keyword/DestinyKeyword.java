@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.client.keyword;
+package io.github.stainlessstasis.destinymod.client.ui.keyword;
 
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.tooltip.component.DescriptionComponentParser;

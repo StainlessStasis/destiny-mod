@@ -33,7 +33,7 @@
   "tooltip.destinymod.anvil_drop.desc": "<ability:Throwing Hammer> is much slower and heavier, but deals significantly more damage. \n\n<ability:Throwing Hammer> hits trigger a small <keyword_solar:Solar> explosion which grows stronger based on its falling velocity.",
   "tooltip.destinymod.rekindled_flames.title": "REKINDLED FLAMES",
   "tooltip.destinymod.rekindled_flames.subtitle": "Sunbreaker Aspect",
-  "tooltip.destinymod.rekindled_flames.desc": "<ability:Thermite Grenades> pulse faster and travel farther. Damaging <keyword_solar:Scorched> targets adds additional pulses to the grenade.",
+  "tooltip.destinymod.rekindled_flames.desc": "<ability:Thermite Grenade> pulses faster and travels farther. Damaging <keyword_solar:Scorched> targets with <ability:Thermite Grenade> adds additional pulses to its duration.",
 
   "tooltip.destinymod.sol_invictus.title": "SOL INVICTUS",
   "tooltip.destinymod.sol_invictus.subtitle": "Sunbreaker Passive",
