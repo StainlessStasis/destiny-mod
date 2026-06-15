@@ -18,10 +18,11 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
 public class ThrownGrenadeRenderer<S extends EntityRenderState & GeoRenderState> extends GeoEntityRenderer<ThrownGrenadeEntity, @NonNull S> {
-    public static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/entity/hammer_of_sol.png");
+    public static final Identifier TEXTURE_LOCATION = Identifier.fromNamespaceAndPath(DestinyMod.MODID, "textures/entity/thrown_grenade.png");
 
     public ThrownGrenadeRenderer(EntityRendererProvider.Context context, EntityType<ThrownGrenadeEntity> entityType) {
         super(context, entityType);
+        withRenderLayer(new AutoGlowingGeoLayer<>(this));
     }
 
     public ThrownGrenadeRenderer(EntityRendererProvider.Context context) {
