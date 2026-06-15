@@ -1,9 +1,9 @@
 {
   "values": [
-    "destinymod:sunspot",
-    "destinymod:throwing_hammer",
-    "destinymod:scorch",
     "destinymod:ignition",
+    "destinymod:sunspot",
+    "destinymod:scorch",
+    "destinymod:throwing_hammer",
     "destinymod:thermite_grenade"
   ]
 }

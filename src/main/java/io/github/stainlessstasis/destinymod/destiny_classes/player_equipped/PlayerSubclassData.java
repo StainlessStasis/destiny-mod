@@ -111,7 +111,7 @@ public class PlayerSubclassData {
 
     public static List<RegisteredAspect> getAllEquippedRegisteredAspects(Player player) {
         List<RegisteredAspect> allAspects = new ArrayList<>();
-        for (AbilityType abilityType : AbilityType.values()) {
+        for (AbilityType abilityType : AbilityType.getCombatTypes()) {
             allAspects.addAll(getRegisteredAspectsForAbility(player, abilityType));
         }
         return allAspects;

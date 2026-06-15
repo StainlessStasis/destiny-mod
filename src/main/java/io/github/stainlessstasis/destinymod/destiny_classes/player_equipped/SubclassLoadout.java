@@ -18,7 +18,7 @@ public class SubclassLoadout {
     public static final SubclassLoadout NONE;
     static {
         HashMap<AbilityType, AbilityLoadout> none = new HashMap<>();
-        for (AbilityType type : AbilityType.values()) {
+        for (AbilityType type : AbilityType.getCombatTypes()) {
             none.put(type, AbilityLoadout.NONE);
         }
         NONE = new SubclassLoadout(none, 0);
@@ -91,7 +91,7 @@ public class SubclassLoadout {
         Map<AbilityType, List<RegisteredAspect>> groupedAspects = aspects.stream()
                 .collect(Collectors.groupingBy(registeredAspect -> registeredAspect.get(player).abilityType()));
 
-        for (AbilityType type : AbilityType.values()) {
+        for (AbilityType type : AbilityType.getCombatTypes()) {
             List<RegisteredAspect> aspectsForType = groupedAspects.getOrDefault(type, List.of());
 
             AbilityLoadout currentLoadout = this.getAbilityLoadout(type);

@@ -6,6 +6,8 @@ import io.github.stainlessstasis.destinymod.registry.damage_type.RegisteredDamag
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -32,6 +34,10 @@ public class DMDamageTypeTagProvider extends DamageTypeTagsProvider {
 
             if (abilityType == AbilityType.DEBUFF) {
                 tag(DMDamageTypes.Tags.IS_DEBUFF).add(resourceKey);
+            }
+
+            for (TagKey<DamageType> tag : registeredDamageType.additionalTags()) {
+                tag(tag).add(resourceKey);
             }
         }
     }
