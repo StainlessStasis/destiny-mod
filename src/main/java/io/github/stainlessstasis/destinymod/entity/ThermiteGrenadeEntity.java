@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
@@ -39,7 +40,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private float maxStepHeight;
     private float width;
     private float height;
-    private final Set<Entity> hitEntitiesThisPulse = new HashSet<>();
+    private final Set<UUID> hitEntitiesThisPulse = new HashSet<>();
     private float lastObservedDistance = 0f;
     private int lastObservedPulse = 0;
 
@@ -210,7 +211,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
     private record MarchResult(Vec3 finalPos, boolean isBlocked) {}
 
-    private void damageEntitiesAtPosition(Vec3 pos, Set<Entity> hitEntities) {
+    private void damageEntitiesAtPosition(Vec3 pos, Set<UUID> hitEntities) {
         float width = getWidth();
         float halfWidth = width / 2f;
         float height = getHeight();
@@ -253,6 +254,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                     .element(this.ability.element())
                     .execute();
             StatusEffectManager.applyScorch(target, getOwner(), this.ability.scorch());
+
+            this.hitEntitiesThisPulse.add(target.getUUID());
         }
     }
 

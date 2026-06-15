@@ -22,7 +22,9 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
+import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.network.serverbound.EquipAspectsPacket;
 import io.github.stainlessstasis.destinymod.tooltip.*;
@@ -44,6 +46,8 @@ import java.awt.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SubclassScreen extends ModularUIScreen {
     public static final float TITLE_SIZE = 36f;
@@ -565,8 +569,15 @@ public class SubclassScreen extends ModularUIScreen {
         Player player = Minecraft.getInstance().player;
         if (player == null) return Component.empty();
 
-        Ability ability = Abilities.get(abilityName).get(player);
-        int totalSeconds = (int) Math.ceil(ability.cooldownTicks()/20f);
+        Optional<Ability> ability = Abilities.get(abilityName).getOptional(player);
+        Optional<Aspect> aspect = Aspects.get(abilityName).getOptional(player);
+        AtomicInteger cooldownTicks = new AtomicInteger();
+        cooldownTicks.set(-1);
+        ability.ifPresent(a -> cooldownTicks.set(a.cooldownTicks()));
+        aspect.ifPresent(a -> cooldownTicks.set(a.cooldownTicks()));
+        if (cooldownTicks.get() < 0) return Component.empty();
+
+        int totalSeconds = (int) Math.ceil(cooldownTicks.get()/20f);
         if (totalSeconds <= 0) {
             return Component.empty();
         }

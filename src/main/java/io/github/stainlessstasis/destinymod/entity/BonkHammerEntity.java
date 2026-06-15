@@ -450,21 +450,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         if (velocity.lengthSqr() <= Constants.EPSILON) return null;
 
         AABB searchArea = this.getBoundingBox().inflate(getHomingRange());
-        List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, searchArea, entity -> {
-            if (entity == this.getOwner() || !entity.isAlive()) return false;
-            if (this.collidedThisTick.contains(entity.getUUID())) return false;
-
-            boolean isOwned = false;
-            if (this.getOwner() instanceof Entity _owner) {
-                if (entity instanceof TraceableEntity traceable && traceable.getOwner() == _owner) {
-                    isOwned = true;
-                }
-                if (entity instanceof OwnableEntity ownable && ownable.getOwner() == _owner) {
-                    isOwned = true;
-                }
-            }
-            return !isOwned;
-        });
+        List<LivingEntity> targets = CombatUtils.getEntitiesInArea(searchArea, level(), LivingEntity.class, getOwner(), collidedThisTick, null);
 
         LivingEntity bestTarget = null;
         double bestScore = -1;

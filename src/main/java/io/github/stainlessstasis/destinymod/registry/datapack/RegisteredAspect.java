@@ -4,25 +4,42 @@ import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
 import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public record RegisteredAspect(ResourceKey<Aspect> resourceKey) {
     public Aspect get(RegistryAccess access) {
         return access.lookupOrThrow(DestinyRegistries.ASPECT_REGISTRY_KEY).getValueOrThrow(resourceKey);
     }
-
     public Aspect get(Level level) {
         return get(level.registryAccess());
     }
-
     public Aspect get(Entity entity) {
         return get(entity.level().registryAccess());
     }
 
+    public Optional<Aspect> getOptional(RegistryAccess access) {
+        return access.lookupOrThrow(DestinyRegistries.ASPECT_REGISTRY_KEY)
+                .get(resourceKey)
+                .map(Holder.Reference::value);
+    }
+    public Optional<Aspect> getOptional(Level level) {
+        return getOptional(level.registryAccess());
+    }
+    public Optional<Aspect> getOptional(Entity entity) {
+        return getOptional(entity.level().registryAccess());
+    }
+
+    public Identifier getID() {
+        return resourceKey.identifier();
+    }
     public String getName() {
         return resourceKey.identifier().getPath();
     }
