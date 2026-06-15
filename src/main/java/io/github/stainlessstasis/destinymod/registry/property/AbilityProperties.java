@@ -67,7 +67,7 @@ public class AbilityProperties {
                     1.5f, 5f, 0.5f, 2f)
     );
     public static final Supplier<RekindledFlamesProperty> REKINDLED_FLAMES = register("rekindled_flames", RekindledFlamesProperty.class, RekindledFlamesProperty.CODEC,
-            () ->  new RekindledFlamesProperty(1.3f, 1.3f, 2, 3)
+            () ->  new RekindledFlamesProperty(1.5f, 1.3f, 2, 3)
     );
 
     // STATUS EFFECTS

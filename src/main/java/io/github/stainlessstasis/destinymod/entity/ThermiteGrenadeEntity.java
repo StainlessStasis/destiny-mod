@@ -21,7 +21,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -54,6 +53,11 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private final Set<UUID> hitEntitiesThisPulse = new HashSet<>();
     private float lastObservedDistance = 0f;
     private int lastObservedPulse = 0;
+
+    private boolean hasRekindledFlames = false;
+    private int hitsPerAdditionalPulse = 0;
+    private int hitsUntilAdditionalPulse = 0;
+    private int additionalPulses = 0;
 
     private ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level) {
         super(type, level, Abilities.THERMITE_GRENADE.get(level));
@@ -93,7 +97,12 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             Aspect aspect = registeredAspect.get(level());
 
             aspect.getProperty(RekindledFlamesProperty.class).ifPresent(prop -> {
-                System.out.println(prop.pulseSpeedPercent());
+                hasRekindledFlames = true;
+                pulseInterval = Math.round(pulseInterval / prop.pulseSpeedPercent());
+                maxDistance = Math.round(maxDistance * prop.maxDistanceMultiplier());
+                hitsPerAdditionalPulse = prop.hitsPerAdditionalPulse();
+                hitsUntilAdditionalPulse = prop.hitsPerAdditionalPulse();
+                additionalPulses = prop.maxAdditionalPulses();
             });
         }
     }
@@ -285,6 +294,19 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             StatusEffectManager.applyScorch(target, getOwner(), this.ability.scorch());
 
             this.hitEntitiesThisPulse.add(target.getUUID());
+            triggerRekindledFlames();
+        }
+    }
+
+    private void triggerRekindledFlames() {
+        if (!hasRekindledFlames) return;
+        if (additionalPulses <= 0) return;
+
+        hitsUntilAdditionalPulse--;
+        if (hitsUntilAdditionalPulse <= 0) {
+            hitsUntilAdditionalPulse = hitsPerAdditionalPulse;
+            additionalPulses--;
+            maxPulses++;
         }
     }
 

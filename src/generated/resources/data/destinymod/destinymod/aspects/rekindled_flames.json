@@ -6,7 +6,7 @@
       "hitsPerAdditionalPulse": 2,
       "maxAdditionalPulses": 3,
       "maxDistanceMultiplier": 1.3,
-      "pulseSpeedPercent": 1.3
+      "pulseSpeedPercent": 1.5
     }
   ],
   "subclassID": "destinymod:sunbreaker"
