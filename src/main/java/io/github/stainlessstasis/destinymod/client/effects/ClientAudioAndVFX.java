@@ -246,19 +246,36 @@ public class ClientAudioAndVFX {
         }
     }
 
-    public static void thermitePulseStep(Level level, Vec3 pos, Vec3 forwardDir, Vec3 rightDir, float width, float height) {
+    public static void thermitePulseStep(Level level, Vec3 pos, Vec3 forwardDir, Vec3 rightDir, float width, float height, boolean isFirstStep) {
         var random = level.getRandom();
         var particleEngine = Minecraft.getInstance().particleEngine;
 
+        // SOUNDS
+        if (isFirstStep) {
+            level.playLocalSound(pos.x, pos.y, pos.z,
+                    SoundEvents.FLINTANDSTEEL_USE, SoundSource.AMBIENT,
+                    1f, 0.5f + random.nextFloat() * 0.1f, false);
+            level.playLocalSound(pos.x, pos.y, pos.z,
+                    SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT,
+                    1f, 0.7f + random.nextFloat() * 0.1f, false);
+            level.playLocalSound(pos.x, pos.y, pos.z,
+                    SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT,
+                    1f, 1.2f + random.nextFloat() * 0.1f, false);
+            level.playLocalSound(pos.x, pos.y, pos.z,
+                    SoundEvents.FIRE_AMBIENT, SoundSource.AMBIENT,
+                    1f, 1.1f + random.nextFloat() * 0.2f, false);
+        } else {
+            if (random.nextFloat() < 0.07f) {
+                level.playLocalSound(pos.x, pos.y, pos.z,
+                        SoundEvents.LAVA_EXTINGUISH, SoundSource.AMBIENT,
+                        0.5f, 1.2f + random.nextFloat() * 0.3f, false);
+            }
+        }
+
+        // PARTICLES
         DMColor solarDark = DMColor.SOLAR_DARK;
         DMColor solar = DMColor.SOLAR;
         DMColor solarLight = DMColor.SOLAR_LIGHT;
-
-        if (random.nextFloat() < 0.15f) {
-            float randomPitch = random.nextFloat() * 0.2f;
-            level.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.FIRECHARGE_USE, SoundSource.AMBIENT, 0.25f, 1.4f + randomPitch, true);
-        }
-
         int density = 4;
         for (int i = 0; i < density; i++) {
             double widthBias = (random.nextFloat() - 0.5f) * width;

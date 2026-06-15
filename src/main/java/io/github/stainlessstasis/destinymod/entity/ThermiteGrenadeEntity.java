@@ -102,7 +102,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
             if (currentDist < maxDist) {
                 float nextDist = Math.min(currentDist + getDistancePerTick(), maxDist);
-                MarchResult result = marchPulsePath(currentDist, nextDist, pos -> damageEntitiesAtPosition(pos, this.hitEntitiesThisPulse));
+                MarchResult result = marchPulsePath(currentDist, nextDist, (pos, _) -> damageEntitiesAtPosition(pos, this.hitEntitiesThisPulse));
                 if (result.isBlocked()) {
                     setTraveledDistance(maxDist);
                 } else {
@@ -127,10 +127,10 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             float yawRad = (float) Math.toRadians(getYRot());
             Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
             Vec3 rightDir = new Vec3(-forwardDir.z, 0, forwardDir.x);
-            MarchResult result = marchPulsePath(lastObservedDistance, currentDist, pos -> {
-                ClientAudioAndVFX.thermitePulseStep(level(), pos, forwardDir, rightDir, width, height);
+            MarchResult result = marchPulsePath(lastObservedDistance, currentDist, (pos, firstStep) -> {
+                ClientAudioAndVFX.thermitePulseStep(level(), pos, forwardDir, rightDir, width, height, firstStep);
             });
-            ClientAudioAndVFX.addFadingLight(result.finalPos(), Math.round(width)+1, 15);
+            ClientAudioAndVFX.addFadingLight(result.finalPos(), Math.round(width)+1, 20);
 
             lastObservedDistance = currentDist;
         }
@@ -197,7 +197,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                 }
             }
 
-            callback.onStep(currentPos);
+            boolean isFirstStep = (startDist == 0f) && (distanceThisStep == 0f);
+            callback.onStep(currentPos, isFirstStep);
             distanceThisStep += substep;
         }
 
@@ -206,7 +207,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
     @FunctionalInterface
     public interface PulseStepCallback {
-        void onStep(Vec3 position);
+        void onStep(Vec3 position, boolean isFirstStep);
     }
 
     private record MarchResult(Vec3 finalPos, boolean isBlocked) {}
