@@ -11,7 +11,7 @@
   "tooltip.destinymod.action.click_to_unequip": "Click to unequip",
 
   "tooltip.destinymod.keyword.scorch.title": "Scorch",
-  "tooltip.destinymod.keyword.scorch.desc": "The target is singed by destructive <keyword_solar:Solar> Light, taking damage over time. Damage increases as the target accumulates more <keyword_solar:Scorch> stacks.\n\nAfter enough <keyword_solar:Scorch> stacks are applied to the target, they <keyword_solar:ignite>.",
+  "tooltip.destinymod.keyword.scorch.desc": "The target is singed by destructive <keyword_solar:Solar> Light, taking damage over time. Damage increases as the target accumulates more <keyword_solar:Scorch> stacks.\n\nAfter enough <keyword_solar:Scorch> stacks are applied to the target, they <keyword_solar:Ignite>.",
   "tooltip.destinymod.keyword.ignition.title": "Ignition",
   "tooltip.destinymod.keyword.ignition.desc": "A large <keyword_solar:Solar> explosion which deals damage in an area around the target.",
 
@@ -30,7 +30,10 @@
   "tooltip.destinymod.heatseeker.desc": "<ability:Throwing Hammer> homes in on targets and applies significantly more <keyword_solar:Scorch>.",
   "tooltip.destinymod.anvil_drop.title": "ANVIL DROP",
   "tooltip.destinymod.anvil_drop.subtitle": "Sunbreaker Aspect",
-  "tooltip.destinymod.anvil_drop.desc": "<ability:Throwing Hammer> is much slower and heavier, but deals significantly more damage. \n\n<ability:Throwing Hammer> hits trigger a small <keyword_solar:Solar> explosion which grows stronger based on its falling velocity. The explosion has a brief cooldown.",
+  "tooltip.destinymod.anvil_drop.desc": "<ability:Throwing Hammer> is much slower and heavier, but deals significantly more damage. \n\n<ability:Throwing Hammer> hits trigger a small <keyword_solar:Solar> explosion which grows stronger based on its falling velocity.",
+  "tooltip.destinymod.rekindled_flames.title": "REKINDLED FLAMES",
+  "tooltip.destinymod.rekindled_flames.subtitle": "Sunbreaker Aspect",
+  "tooltip.destinymod.rekindled_flames.desc": "<ability:Thermite Grenades> pulse faster and travel farther. Damaging <keyword_solar:Scorched> targets adds additional pulses to the grenade.",
 
   "tooltip.destinymod.sol_invictus.title": "SOL INVICTUS",
   "tooltip.destinymod.sol_invictus.subtitle": "Sunbreaker Passive",

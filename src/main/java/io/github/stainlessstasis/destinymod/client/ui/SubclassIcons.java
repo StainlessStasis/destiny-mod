@@ -21,7 +21,7 @@ public class SubclassIcons {
         SUBCLASS_ICONS.put(Subclasses.SUNBREAKER, new SubclassIconSet(
                 new AbilityTrack(Abilities.NONE, List.of()),
                 new AbilityTrack(Abilities.THROWING_HAMMER, List.of(Aspects.MELTING_POINT, Aspects.HEATSEEKER, Aspects.ANVIL_DROP)),
-                new AbilityTrack(Abilities.THERMITE_GRENADE, List.of()),
+                new AbilityTrack(Abilities.THERMITE_GRENADE, List.of(Aspects.REKINDLED_FLAMES)),
                 new AbilityTrack(Abilities.NONE, List.of()),
                 Abilities.SOL_INVICTUS
         ));
