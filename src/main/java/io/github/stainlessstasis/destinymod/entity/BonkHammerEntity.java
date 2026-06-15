@@ -18,7 +18,7 @@ import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
@@ -382,7 +382,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         if (entity instanceof LivingEntity mob) {
             Level level = this.level();
             if (level instanceof ServerLevel serverLevel) {
-                DestinyDamageBuilder builder = DestinyDamageBuilder.create(DMDamageTypes.MELEE_ABILITY, mob)
+                DestinyDamageBuilder builder = DestinyDamageBuilder.create(DMDamageTypes.THROWING_HAMMER.resourceKey(), mob)
                         .directSource(this)
                         .attacker(currentOwner != null ? currentOwner : this)
                         .element(ability.element())
@@ -499,7 +499,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         float lerp = Mth.clamp((float) (downwardSpeed / Math.abs(TERMINAL_VELOCITY)), 0f, 1f);
         float radius = Mth.lerp(lerp, getAnvilDropRadiusMin(), getAnvilDropRadiusMax());
         float damage = getDamage() * Mth.lerp(lerp, getAnvilDropDamagePercentMin(), getAnvilDropDamagePercentMax());
-        CombatUtils.triggerExplosion(level, getEyePosition(), radius, damage, DMDamageTypes.MELEE_ABILITY, DestinyElement.SOLAR, this, owner);
+        CombatUtils.triggerExplosion(level, getEyePosition(), radius, damage, DMDamageTypes.THROWING_HAMMER.resourceKey(), DestinyElement.SOLAR, this, owner);
         PacketDistributor.sendToPlayersTrackingEntity(this, new AnvilDropEffectsPacket(getEyePosition().toVector3f(), radius));
     }
 

@@ -1,6 +1,8 @@
 package io.github.stainlessstasis.destinymod.data;
 
-import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.RegisteredDamageType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
@@ -15,22 +17,22 @@ public class DMDamageTypeTagProvider extends DamageTypeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NonNull Provider registries) {
-        tag(DMDamageTypes.Tags.IS_SUBCLASS_ABILITY)
-                .add(DMDamageTypes.MELEE_ABILITY)
-                .add(DMDamageTypes.GRENADE_ABILITY)
-                .add(DMDamageTypes.CLASS_ABILITY)
-                .add(DMDamageTypes.SUPER);
+        for (RegisteredDamageType registeredDamageType : DMDamageTypes.getDamageTypes()) {
+            var resourceKey = registeredDamageType.resourceKey();
+            AbilityType abilityType = registeredDamageType.abilityType();
 
-        tag(DMDamageTypes.Tags.IS_ABILITY)
-                .add(DMDamageTypes.MELEE_ABILITY)
-                .add(DMDamageTypes.GRENADE_ABILITY)
-                .add(DMDamageTypes.CLASS_ABILITY)
-                .add(DMDamageTypes.SUPER)
-                .add(DMDamageTypes.SCORCH)
-                .add(DMDamageTypes.IGNITION)
-                .add(DMDamageTypes.SUNSPOT);
+            if (abilityType == AbilityType.MELEE || abilityType == AbilityType.GRENADE
+                || abilityType == AbilityType.CLASS_ABILITY || abilityType == AbilityType.SUPER) {
+                tag(DMDamageTypes.Tags.IS_SUBCLASS_ABILITY).add(resourceKey);
+            }
 
-        tag(DMDamageTypes.Tags.IS_DEBUFF)
-                .add(DMDamageTypes.SCORCH);
+            if (abilityType != AbilityType.NONE) {
+                tag(DMDamageTypes.Tags.IS_ABILITY).add(resourceKey);
+            }
+
+            if (abilityType == AbilityType.DEBUFF) {
+                tag(DMDamageTypes.Tags.IS_DEBUFF).add(resourceKey);
+            }
+        }
     }
 }

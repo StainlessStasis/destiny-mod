@@ -2,7 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.ability.misc_solar;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
-import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
@@ -22,7 +22,7 @@ public class Ignition {
         float damage = ability.damage();
         float range = property.range();
 
-        CombatUtils.triggerExplosion(level, entity.getEyePosition(), range, damage, DMDamageTypes.IGNITION, DestinyElement.SOLAR, directEntity, causingEntity);
+        CombatUtils.triggerExplosion(level, entity.getEyePosition(), range, damage, DMDamageTypes.IGNITION.resourceKey(), DestinyElement.SOLAR, directEntity, causingEntity);
         PacketDistributor.sendToPlayersTrackingEntity(entity, new IgnitionEffectsPacket(entity.getEyePosition().toVector3f(), range));
     }
 }

@@ -5,13 +5,16 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.NonNull;
 
 public enum AbilityType implements StringRepresentable {
     MELEE("melee"),
     GRENADE("grenade"),
     CLASS_ABILITY("class"),
     SUPER("super"),
-    PASSIVE("passive");
+    PASSIVE("passive"),
+    DEBUFF("debuff"),
+    NONE("none");
 
     public static final Codec<AbilityType> CODEC = StringRepresentable.fromEnum(AbilityType::values);
     public static final StreamCodec<ByteBuf, AbilityType> STREAM_CODEC = ByteBufCodecs.BYTE.map(
@@ -25,7 +28,7 @@ public enum AbilityType implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NonNull String getSerializedName() {
         return this.name;
     }
 

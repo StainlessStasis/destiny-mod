@@ -7,7 +7,7 @@ import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.misc_solar.Ignition;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.registry.datapack.StatusEffects;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.ScorchProperty;
@@ -101,7 +101,7 @@ public class Scorch extends OwnableStatusEffect {
             LivingEntity owner = getOwner(level);
             float damageMultiplier = 1f + (this.stacks*2f/property.ignitionThreshold());
             float damage = property.damage() * damageMultiplier;
-            DestinyDamageBuilder.create(DMDamageTypes.SCORCH, entity)
+            DestinyDamageBuilder.create(DMDamageTypes.SCORCH.resourceKey(), entity)
                     .directSource(owner)
                     .attacker(owner)
                     .element(DestinyElement.SOLAR)

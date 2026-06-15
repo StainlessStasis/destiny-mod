@@ -5,7 +5,7 @@ import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
-import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
@@ -283,7 +283,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
         List<LivingEntity> targets = CombatUtils.getEntitiesInArea(searchArea, level(), LivingEntity.class, getOwner(), hitEntities, areaFilter);
         for (LivingEntity target : targets) {
-            DestinyDamageBuilder.create(DMDamageTypes.GRENADE_ABILITY, target)
+            DestinyDamageBuilder.create(DMDamageTypes.THERMITE_GRENADE.resourceKey(), target)
                     .damage(this.ability.damage())
                     .knockback(false)
                     .directSource(this)

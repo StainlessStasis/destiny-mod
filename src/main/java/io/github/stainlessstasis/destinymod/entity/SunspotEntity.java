@@ -2,20 +2,14 @@ package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -76,7 +70,7 @@ public class SunspotEntity extends AbstractAbilityEntity {
 
             attackCooldowns.put(victim, tickCount + HIT_INTERVAL);
 
-            DestinyDamageBuilder.create(DMDamageTypes.SUNSPOT, victim)
+            DestinyDamageBuilder.create(DMDamageTypes.SUNSPOT.resourceKey(), victim)
                     .directSource(owner)
                     .attacker(owner)
                     .element(ability.element())
