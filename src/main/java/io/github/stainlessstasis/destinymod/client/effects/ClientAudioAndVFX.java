@@ -268,12 +268,23 @@ public class ClientAudioAndVFX {
             double vy = 0.005f + random.nextFloat() * 0.01f;
             double vz = (random.nextFloat() - 0.5f) * 0.03f;
 
-            Particle smoke = particleEngine.createParticle(ParticleTypes.SWEEP_ATTACK, groundPos.x, groundPos.y + 0.02, groundPos.z, vx, vy, vz);
-            if (smoke instanceof SingleQuadParticle particle) {
+            Particle sweep = particleEngine.createParticle(ParticleTypes.SWEEP_ATTACK, groundPos.x, groundPos.y + 0.05, groundPos.z, vx, vy, vz);
+            if (sweep instanceof SingleQuadParticle particle) {
                 DMColor color = random.nextFloat() > 0.7f ? solarDark : solar;
                 particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
                 particle.setLifetime((int) (random.nextFloat()*6));
                 particle.scale(random.nextFloat()*1.5f);
+            }
+
+            vx = (random.nextFloat() - 0.5f) * 0.03f;
+            vz = (random.nextFloat() - 0.5f) * 0.03f;
+
+            Particle smoke = particleEngine.createParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, groundPos.x, groundPos.y, groundPos.z, vx, 0, vz);
+            if (smoke instanceof SingleQuadParticle particle) {
+                DMColor color = random.nextFloat() > 0.2f ? solarLight : solar;
+                particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
+                particle.setLifetime((int) (20 + (random.nextFloat()*40)));
+                particle.scale(random.nextFloat()*2f);
             }
 
             vx = -forwardDir.x * 0.04f + (random.nextFloat() - 0.5f) * 0.02f;
@@ -285,18 +296,20 @@ public class ClientAudioAndVFX {
                 DMColor color = random.nextFloat() > 0.7f ? solarLight : solar;
                 particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
                 particle.scale(1.2f + random.nextFloat() * 0.4f);
+                particle.setLifetime((int) (6 + (random.nextFloat()*12)));
             }
 
             double biasedHeight = Math.pow(random.nextFloat(), 1.5) * height;
             vx = (random.nextFloat() - 0.5f) * 0.01f;
-            vy = 0.08f + random.nextFloat() * 0.08f;
+            vy = 0.2f + random.nextFloat() * 0.1f;
             vz = (random.nextFloat() - 0.5f) * 0.01f;
 
             Particle flame = particleEngine.createParticle(ParticleTypes.FLAME, groundPos.x, groundPos.y + biasedHeight, groundPos.z, vx, vy, vz);
             if (flame instanceof SingleQuadParticle particle) {
                 DMColor color = random.nextFloat() > 0.4f ? solar : solarLight;
                 particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
-                particle.scale(1.5f + random.nextFloat() * 0.5f);
+                particle.scale(1.5f + random.nextFloat() * 0.75f);
+                particle.setLifetime((int) (10 + (random.nextFloat()*10)));
             }
 
             if (random.nextFloat() < 0.35f) {

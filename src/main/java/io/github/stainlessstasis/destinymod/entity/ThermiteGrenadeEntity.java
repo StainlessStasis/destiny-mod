@@ -1,9 +1,5 @@
 package io.github.stainlessstasis.destinymod.entity;
 
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.util.GeckoLibUtil;
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
@@ -105,8 +101,12 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
             if (currentDist < maxDist) {
                 float nextDist = Math.min(currentDist + getDistancePerTick(), maxDist);
-                marchPulsePath(currentDist, nextDist, pos -> damageEntitiesAtPosition(pos, this.hitEntitiesThisPulse));
-                setTraveledDistance(nextDist);
+                MarchResult result = marchPulsePath(currentDist, nextDist, pos -> damageEntitiesAtPosition(pos, this.hitEntitiesThisPulse));
+                if (result.isBlocked()) {
+                    setTraveledDistance(maxDist);
+                } else {
+                    setTraveledDistance(nextDist);
+                }
             }
         }
     }
@@ -126,25 +126,23 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             float yawRad = (float) Math.toRadians(getYRot());
             Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
             Vec3 rightDir = new Vec3(-forwardDir.z, 0, forwardDir.x);
-            Vec3 lightPos = marchPulsePath(lastObservedDistance, currentDist, pos -> {
+            MarchResult result = marchPulsePath(lastObservedDistance, currentDist, pos -> {
                 ClientAudioAndVFX.thermitePulseStep(level(), pos, forwardDir, rightDir, width, height);
             });
-            ClientAudioAndVFX.addFadingLight(lightPos, Math.round(width)+1, 15);
+            ClientAudioAndVFX.addFadingLight(result.finalPos(), Math.round(width)+1, 15);
 
             lastObservedDistance = currentDist;
         }
     }
 
-    /**
-     * @return The final position along the step
-     */
-    private Vec3 marchPulsePath(float startDist, float endDist, PulseStepCallback callback) {
+    private MarchResult marchPulsePath(float startDist, float endDist, PulseStepCallback callback) {
         float yawRad = (float) Math.toRadians(getYRot());
         Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
         Vec3 currentPos = position().add(forwardDir.scale(startDist));
         float maxStep = getMaxStepHeight();
         float totalStepDistance = endDist - startDist;
         float distanceThisStep = 0f;
+        boolean isBlocked = false;
 
         while (distanceThisStep < totalStepDistance) {
             float substep = Math.min(SUBSTEP_DISTANCE, totalStepDistance - distanceThisStep);
@@ -161,6 +159,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                 if (stepHeightNeeded <= maxStep) {
                     currentPos = new Vec3(nextPos.x, obstacleTopY, nextPos.z);
                 } else {
+                    isBlocked = true;
                     break; // wall is too high to step up
                 }
             } else {
@@ -192,6 +191,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                 if (foundFloor) {
                     currentPos = new Vec3(nextPos.x, solidFloorY, nextPos.z);
                 } else {
+                    isBlocked = true;
                     break;
                 }
             }
@@ -200,13 +200,15 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             distanceThisStep += substep;
         }
 
-        return currentPos;
+        return new MarchResult(currentPos, isBlocked);
     }
 
     @FunctionalInterface
     public interface PulseStepCallback {
         void onStep(Vec3 position);
     }
+
+    private record MarchResult(Vec3 finalPos, boolean isBlocked) {}
 
     private void damageEntitiesAtPosition(Vec3 pos, Set<Entity> hitEntities) {
         float width = getWidth();
