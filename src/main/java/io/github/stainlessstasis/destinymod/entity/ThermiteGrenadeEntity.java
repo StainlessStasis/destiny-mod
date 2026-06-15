@@ -1,24 +1,35 @@
 package io.github.stainlessstasis.destinymod.entity;
 
+import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
+import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
+import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
+import io.github.stainlessstasis.destinymod.registry.property.aspect.RekindledFlamesProperty;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -46,7 +57,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
     private ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level) {
         super(type, level, Abilities.THERMITE_GRENADE.get(level));
-        this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(this::applyProperties);
+        init();
     }
 
     public static ThermiteGrenadeEntity createDefault(EntityType<? extends AbstractAbilityEntity> entityType, Level level) {
@@ -55,8 +66,15 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
     public ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, float yaw, @Nullable LivingEntity owner) {
         super(type, level, pos, owner, Abilities.THERMITE_GRENADE.get(level));
-        this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(this::applyProperties);
+        init();
         setYRot(yaw);
+    }
+
+    private void init() {
+        this.ability.getProperty(ThermiteGrenadeProperty.class).ifPresent(this::applyProperties);
+        if (! level().isClientSide() && getOwner() instanceof Player player) {
+            applyAspects(PlayerSubclassData.getAllEquippedRegisteredAspects(player));
+        }
     }
 
     public void applyProperties(ThermiteGrenadeProperty props) {
@@ -68,6 +86,16 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
         this.maxStepHeight = props.maxStepHeight();
         this.width = props.width();
         this.height = props.height();
+    }
+
+    public void applyAspects(List<RegisteredAspect> aspects) {
+        for (RegisteredAspect registeredAspect : aspects) {
+            Aspect aspect = registeredAspect.get(level());
+
+            aspect.getProperty(RekindledFlamesProperty.class).ifPresent(prop -> {
+                System.out.println(prop.pulseSpeedPercent());
+            });
+        }
     }
 
     @Override
@@ -111,7 +139,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             }
         }
     }
-    
+
     private void spawnClientPulseVisuals() {
         if (!level().isClientSide()) return;
 
@@ -258,6 +286,21 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
 
             this.hitEntitiesThisPulse.add(target.getUUID());
         }
+    }
+
+    @Override
+    public @NonNull Packet<ClientGamePacketListener> getAddEntityPacket(@NonNull ServerEntity serverEntity) {
+        if (! (getOwner() instanceof Player player)) {
+            DestinyMod.LOGGER.error("Error occurred while syncing ThermiteGrenadeEntity to client: owner is not present, or is not a player. " +
+                    "Defaulting to vanilla add entity packet. No aspect IDs will be synced.");
+            return super.getAddEntityPacket(serverEntity);
+        }
+
+        List<RegisteredAspect> aspects = PlayerSubclassData.getAllEquippedRegisteredAspects(player);
+        ThermiteGrenadeSpawnPacket packet = new ThermiteGrenadeSpawnPacket(
+                getId(), getUUID(), new Vector3f((float)getX(), (float)getY(), (float)getZ()), getYRot(), aspects
+        );
+        return (Packet<ClientGamePacketListener>)(Packet<?>)packet.toVanillaClientbound();
     }
 
     @Override
