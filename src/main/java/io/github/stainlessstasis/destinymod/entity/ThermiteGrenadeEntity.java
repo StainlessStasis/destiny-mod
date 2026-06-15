@@ -111,7 +111,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             }
         }
     }
-
+    
     private void spawnClientPulseVisuals() {
         if (!level().isClientSide()) return;
 

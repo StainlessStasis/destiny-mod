@@ -7,6 +7,7 @@ import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionPr
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.AnvilDropProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.HeatseekerProperty;
+import io.github.stainlessstasis.destinymod.registry.property.aspect.RekindledFlamesProperty;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.MeltingPointProperty;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.ScorchProperty;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.SolInvictusProperty;
@@ -64,6 +65,9 @@ public class AbilityProperties {
     public static final Supplier<AnvilDropProperty> ANVIL_DROP = register("anvil_drop", AnvilDropProperty.class, AnvilDropProperty.CODEC,
             () ->  new AnvilDropProperty(2.5f, 0.7f, 1.65f,
                     1.5f, 5f, 0.5f, 2f)
+    );
+    public static final Supplier<RekindledFlamesProperty> REKINDLED_FLAMES = register("rekindled_flames", RekindledFlamesProperty.class, RekindledFlamesProperty.CODEC,
+            () ->  new RekindledFlamesProperty(1.3f, 1.3f, 2, 3)
     );
 
     // STATUS EFFECTS

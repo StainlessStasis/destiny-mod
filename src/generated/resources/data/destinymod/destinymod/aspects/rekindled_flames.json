@@ -1,4 +1,13 @@
 {
   "abilityType": "grenade",
+  "properties": [
+    {
+      "type": "rekindled_flames",
+      "hitsPerAdditionalPulse": 2,
+      "maxAdditionalPulses": 3,
+      "maxDistanceMultiplier": 1.3,
+      "pulseSpeedPercent": 1.3
+    }
+  ],
   "subclassID": "destinymod:sunbreaker"
 }

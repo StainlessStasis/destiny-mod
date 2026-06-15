@@ -62,7 +62,7 @@ public class DestinyModDatagen {
                     bootstrap.register(Aspects.MELTING_POINT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1));
                     bootstrap.register(Aspects.HEATSEEKER.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, -1, AbilityProperties.HEATSEEKER.get()));
                     bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, 20, AbilityProperties.ANVIL_DROP.get()));
-                    bootstrap.register(Aspects.REKINDLED_FLAMES.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.GRENADE, -1));
+                    bootstrap.register(Aspects.REKINDLED_FLAMES.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.GRENADE, -1, AbilityProperties.REKINDLED_FLAMES.get()));
                 })
 
                 // STATUS EFFECTS
