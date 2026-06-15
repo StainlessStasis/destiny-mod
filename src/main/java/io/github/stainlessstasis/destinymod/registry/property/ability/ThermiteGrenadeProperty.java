@@ -19,18 +19,7 @@ public record ThermiteGrenadeProperty(int pulses, int pulseIntervalTicks, float 
             Codec.FLOAT.fieldOf("height").forGetter(ThermiteGrenadeProperty::height)
     ).apply(instance, ThermiteGrenadeProperty::new));
 
-    public static final StreamCodec<ByteBuf, ThermiteGrenadeProperty> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, ThermiteGrenadeProperty::pulses,
-            ByteBufCodecs.VAR_INT, ThermiteGrenadeProperty::pulseIntervalTicks,
-            ByteBufCodecs.FLOAT, ThermiteGrenadeProperty::distancePerTick,
-            ByteBufCodecs.FLOAT, ThermiteGrenadeProperty::maxDistance,
-            ByteBufCodecs.FLOAT, ThermiteGrenadeProperty::maxStepHeight,
-            ByteBufCodecs.FLOAT, ThermiteGrenadeProperty::width,
-            ByteBufCodecs.FLOAT, ThermiteGrenadeProperty::height,
-            ThermiteGrenadeProperty::new
-    );
-
     public static ThermiteGrenadeProperty getDefault() {
-        return new ThermiteGrenadeProperty(4, 20, 2f, 12f, 1.5f, 4f, 5.5f);
+        return new ThermiteGrenadeProperty(4, 30, 2.5f, 15f, 1.5f, 3.5f, 4.75f);
     }
 }
