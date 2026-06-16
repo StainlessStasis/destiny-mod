@@ -23,9 +23,25 @@ public class DMDamageTypeTagProvider extends DamageTypeTagsProvider {
             var resourceKey = registeredDamageType.resourceKey();
             AbilityType abilityType = registeredDamageType.abilityType();
 
-            if (abilityType == AbilityType.MELEE || abilityType == AbilityType.GRENADE
-                || abilityType == AbilityType.CLASS_ABILITY || abilityType == AbilityType.SUPER) {
+            boolean isMelee = abilityType == AbilityType.MELEE;
+            boolean isGrenade = abilityType == AbilityType.GRENADE;
+            boolean isClass = abilityType == AbilityType.CLASS_ABILITY;
+            boolean isSuper = abilityType == AbilityType.SUPER;
+            if (isMelee || isGrenade || isClass || isSuper) {
                 tag(DMDamageTypes.Tags.IS_SUBCLASS_ABILITY).add(resourceKey);
+            }
+
+            if (isMelee) {
+                tag(DMDamageTypes.Tags.IS_MELEE_ABILITY).add(resourceKey);
+            }
+            if (isGrenade) {
+                tag(DMDamageTypes.Tags.IS_GRENADE_ABILITY).add(resourceKey);
+            }
+            if (isClass) {
+                tag(DMDamageTypes.Tags.IS_CLASS_ABILITY).add(resourceKey);
+            }
+            if (isSuper) {
+                tag(DMDamageTypes.Tags.IS_SUPER_ABILITY).add(resourceKey);
             }
 
             if (abilityType != AbilityType.NONE) {
