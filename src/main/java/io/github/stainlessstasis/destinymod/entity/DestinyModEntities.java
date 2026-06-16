@@ -16,8 +16,8 @@ import java.util.function.Supplier;
 public class DestinyModEntities {
     private static final DeferredRegister.Entities ENTITY_TYPES = DeferredRegister.createEntities(DestinyMod.MODID);
 
-    public static final Supplier<EntityType<@NotNull VfxEntity>> VFX_BLOCK_DISPLAY = ENTITY_TYPES.register(
-            "vfx_block_display",
+    public static final Supplier<EntityType<@NotNull VfxEntity>> VFX_ENTITY = ENTITY_TYPES.register(
+            "vfx_entity",
             () -> EntityType.Builder.of(
                             VfxEntity::createDefault,
                             MobCategory.MISC
@@ -29,7 +29,7 @@ public class DestinyModEntities {
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(
                             Registries.ENTITY_TYPE,
-                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "vfx_block_display")
+                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "vfx_entity")
                     ))
     );
 

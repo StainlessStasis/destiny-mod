@@ -1,6 +1,8 @@
 package io.github.stainlessstasis.destinymod.client.input;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.client.AnimationTest;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.client.ui.SubclassScreen;
@@ -45,6 +47,11 @@ public class InputHandler {
         if (key == DestinyModKeybinds.GRENADE.get().getKey().getValue()) {
             player.swing(InteractionHand.MAIN_HAND);
             ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.GRENADE));
+        }
+
+        // TODO: remove this
+        if (key == InputConstants.KEY_LALT) {
+            AnimationTest.run();
         }
 
         if (key == DestinyModKeybinds.SUBCLASS_SCREEN.get().getKey().getValue()) {

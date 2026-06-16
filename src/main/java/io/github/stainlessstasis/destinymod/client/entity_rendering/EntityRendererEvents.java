@@ -46,7 +46,7 @@ public class EntityRendererEvents {
         event.registerEntityRenderer(DestinyModEntities.SUNSPOT.get(), DummyEntityRenderer::new);
         event.registerEntityRenderer(DestinyModEntities.THROWN_GRENADE.get(), ThrownGrenadeRenderer::new);
         event.registerEntityRenderer(DestinyModEntities.THERMITE_GRENADE.get(), DummyEntityRenderer::new);
-        event.registerEntityRenderer(DestinyModEntities.VFX_BLOCK_DISPLAY.get(), VfxEntityRenderer::new);
+        event.registerEntityRenderer(DestinyModEntities.VFX_ENTITY.get(), VfxEntityRenderer::new);
     }
 
     @SubscribeEvent

@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import org.jspecify.annotations.NonNull;
 
 public class VfxEntityRenderer extends EntityRenderer<VfxEntity, VfxEntityRenderState> {
     protected final BlockModelResolver blockModelResolver;
@@ -21,12 +22,12 @@ public class VfxEntityRenderer extends EntityRenderer<VfxEntity, VfxEntityRender
     }
 
     @Override
-    public VfxEntityRenderState createRenderState() {
+    public @NonNull VfxEntityRenderState createRenderState() {
         return new VfxEntityRenderState();
     }
 
     @Override
-    public void extractRenderState(VfxEntity entity, VfxEntityRenderState state, float partialTicks) {
+    public void extractRenderState(@NonNull VfxEntity entity, @NonNull VfxEntityRenderState state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
 
         VfxAnimation anim = entity.getCurrentAnimation();
@@ -46,7 +47,7 @@ public class VfxEntityRenderer extends EntityRenderer<VfxEntity, VfxEntityRender
     }
 
     @Override
-    public void submit(VfxEntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(@NonNull VfxEntityRenderState state, @NonNull PoseStack poseStack, @NonNull SubmitNodeCollector collector, @NonNull CameraRenderState camera) {
         super.submit(state, poseStack, collector, camera);
         poseStack.pushPose();
 
