@@ -58,6 +58,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private int hitsPerAdditionalPulse = 0;
     private int hitsUntilAdditionalPulse = 0;
     private int additionalPulses = 0;
+    private float damageMultiplier = 1f;
+    private float scorchMultiplier = 1f;
 
     private ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level) {
         super(type, level, Abilities.THERMITE_GRENADE.get(level));
@@ -284,14 +286,14 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
         List<LivingEntity> targets = CombatUtils.getEntitiesInArea(searchArea, level(), LivingEntity.class, getOwner(), hitEntities, areaFilter);
         for (LivingEntity target : targets) {
             DestinyDamageBuilder.create(DMDamageTypes.THERMITE_GRENADE.resourceKey(), target)
-                    .damage(this.ability.damage())
+                    .damage(this.ability.damage() * this.damageMultiplier)
                     .knockback(false)
                     .directSource(this)
                     .attacker(getOwner())
                     .invulnerabilityTicks(0)
                     .element(this.ability.element())
                     .executeDamage();
-            StatusEffectManager.applyScorch(target, getOwner(), DMDamageTypes.THERMITE_GRENADE, this.ability.scorch());
+            StatusEffectManager.applyScorch(target, getOwner(), DMDamageTypes.THERMITE_GRENADE, (int) (this.ability.scorch() * this.scorchMultiplier));
 
             this.hitEntitiesThisPulse.add(target.getUUID());
             triggerRekindledFlames();
@@ -343,4 +345,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     public float getMaxStepHeight() { return maxStepHeight; }
     public float getWidth() { return width; }
     public float getHeight() { return height; }
+    public float getDamageMultiplier() {return damageMultiplier;}
+    public void setDamageMultiplier(float damageMultiplier) {this.damageMultiplier = damageMultiplier;}
+    public float getScorchMultiplier() {return scorchMultiplier;}
+    public void setScorchMultiplier(float scorchMultiplier) {this.scorchMultiplier = scorchMultiplier;}
 }
