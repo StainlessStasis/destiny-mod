@@ -5,6 +5,7 @@ import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
+import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
@@ -49,18 +50,23 @@ public class CombatSandbox {
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
         DamageSource source = event.getSource();
+        DestinyModDamageSource dmSource = (DestinyModDamageSource) source;
         LivingEntity victim = event.getEntity();
         float randomActivationChance = victim.getRandom().nextFloat();
 
-        if (source.getEntity() instanceof Player player) {
-            final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
+        if (! (source.getEntity() instanceof Player player)) return;
+        final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
 
-            boolean canSpawnSunspot = StatusEffectManager.isActive(victim, Scorch.class) || (source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT.resourceKey()));
-            if (canSpawnSunspot && randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER) {
-                Vec3 spawnPos = findGroundPosition(victim);
-                SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
-                player.level().addFreshEntity(sunspotEntity);
-            }
+        boolean canSpawnSunspot = StatusEffectManager.isActive(victim, Scorch.class) || (source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT.resourceKey()));
+        if (canSpawnSunspot && randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER) {
+            Vec3 spawnPos = findGroundPosition(victim);
+            SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
+            player.level().addFreshEntity(sunspotEntity);
+        }
+
+        if (source.is(DMDamageTypes.SCORCH.resourceKey())) {
+            System.out.println("IS SCORCH");
+            System.out.println("ATTRIBUTED DAMAGE TYPE: "+dmSource.destinymod$getAttributedDamageType());
         }
     }
 

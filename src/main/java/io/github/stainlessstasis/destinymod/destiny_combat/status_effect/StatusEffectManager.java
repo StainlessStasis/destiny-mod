@@ -4,6 +4,8 @@ import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.RegisteredDamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -47,9 +49,11 @@ public class StatusEffectManager {
         return (T) entity.getData(attachment);
     }
 
-    public static void applyScorch(LivingEntity target, @Nullable LivingEntity attacker, int stacks) {
+    public static void applyScorch(LivingEntity target, @Nullable LivingEntity attacker, @Nullable RegisteredDamageType attributedDamageType, int stacks) {
         Scorch scorch = getAndRegisterEffect(target, Scorch.class, DestinyModAttachments.SCORCH);
-        scorch.setOwner(attacker);
+        scorch.setAttacker(attacker);
+        if (attributedDamageType == null) attributedDamageType = DMDamageTypes.NONE;
+        scorch.setAttributedDamageType(attributedDamageType);
         scorch.addStacks(target, stacks);
     }
 

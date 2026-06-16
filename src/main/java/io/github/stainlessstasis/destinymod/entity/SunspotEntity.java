@@ -77,8 +77,8 @@ public class SunspotEntity extends AbstractAbilityEntity {
                     .damage(ability.damage())
                     .invulnerabilityTicks(0)
                     .knockback(false)
-                    .execute();
-            StatusEffectManager.applyScorch(victim, owner, ability.scorch());
+                    .executeDamage();
+            StatusEffectManager.applyScorch(victim, owner, DMDamageTypes.SUNSPOT, ability.scorch());
         }
     }
 

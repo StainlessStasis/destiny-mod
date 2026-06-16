@@ -34,6 +34,7 @@ public class DMDamageTypes {
         return Set.copyOf(DAMAGE_TYPES);
     }
 
+    public static final RegisteredDamageType NONE = register("none");
     public static final RegisteredDamageType THROWING_HAMMER = register("throwing_hammer", AbilityType.MELEE);
     public static final RegisteredDamageType THERMITE_GRENADE = register("thermite_grenade", AbilityType.GRENADE);
     public static final RegisteredDamageType SCORCH = register("scorch", AbilityType.DEBUFF);

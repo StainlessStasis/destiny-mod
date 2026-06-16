@@ -290,8 +290,8 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
                     .attacker(getOwner())
                     .invulnerabilityTicks(0)
                     .element(this.ability.element())
-                    .execute();
-            StatusEffectManager.applyScorch(target, getOwner(), this.ability.scorch());
+                    .executeDamage();
+            StatusEffectManager.applyScorch(target, getOwner(), DMDamageTypes.THERMITE_GRENADE, this.ability.scorch());
 
             this.hitEntitiesThisPulse.add(target.getUUID());
             triggerRekindledFlames();

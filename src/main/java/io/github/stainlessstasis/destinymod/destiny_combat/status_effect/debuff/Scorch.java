@@ -11,7 +11,7 @@ import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.registry.datapack.StatusEffects;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.ScorchProperty;
-import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.OwnableStatusEffect;
+import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.AttributableStatusEffect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.IStatusEffect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.netty.buffer.ByteBuf;
@@ -26,7 +26,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 
 import java.util.function.Supplier;
 
-public class Scorch extends OwnableStatusEffect {
+public class Scorch extends AttributableStatusEffect {
     private int stacks = 0;
     private int decayDelay = 0;
 
@@ -102,13 +102,14 @@ public class Scorch extends OwnableStatusEffect {
             float damageMultiplier = 1f + (this.stacks*2f/property.ignitionThreshold());
             float damage = property.damage() * damageMultiplier;
             DestinyDamageBuilder.create(DMDamageTypes.SCORCH.resourceKey(), entity)
+                    .attributedDamageType(getAttributedDamageType())
                     .directSource(owner)
                     .attacker(owner)
                     .element(DestinyElement.SOLAR)
                     .damage(damage)
                     .invulnerabilityTicks(0)
                     .knockback(false)
-                    .execute();
+                    .executeDamage();
         }
     }
 

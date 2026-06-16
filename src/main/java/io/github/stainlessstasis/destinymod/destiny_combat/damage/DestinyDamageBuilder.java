@@ -2,6 +2,8 @@ package io.github.stainlessstasis.destinymod.destiny_combat.damage;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
+import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.RegisteredDamageType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -14,6 +16,7 @@ public class DestinyDamageBuilder {
     private final ResourceKey<DamageType> damageTypeKey;
     private final LivingEntity victim;
 
+    private RegisteredDamageType attributedDamageType = DMDamageTypes.NONE;
     private @Nullable Entity directEntity;
     private @Nullable Entity causingEntity;
     private DestinyElement element = DestinyElement.NONE;
@@ -28,6 +31,16 @@ public class DestinyDamageBuilder {
 
     public static DestinyDamageBuilder create(ResourceKey<DamageType> damageTypeKey, LivingEntity victim) {
         return new DestinyDamageBuilder(damageTypeKey, victim);
+    }
+
+    /**
+     * The root damage type indirectly causing the damage.
+     * E.g. when a thermite grenade applies scorch, the attributed damage type will be the grenade's own damage type,
+     * but the direct damage type of this damage source will be the scorch, since scorch is actually applying the damage.
+     */
+    public DestinyDamageBuilder attributedDamageType(RegisteredDamageType attributedDamageType) {
+        this.attributedDamageType = attributedDamageType;
+        return this;
     }
 
     /**
@@ -76,6 +89,7 @@ public class DestinyDamageBuilder {
 
         ((DestinyModDamageSource) source).destinymod$setElement(element);
         ((DestinyModDamageSource) source).destinymod$setHasKnockback(hasKnockback);
+        ((DestinyModDamageSource) source).destinymod$setAttributedDamageType(attributedDamageType);
 
         return source;
     }
@@ -83,7 +97,7 @@ public class DestinyDamageBuilder {
     /**
      * Damages the victim entity only if the victim's level is serverside. Does nothing on the client
      */
-    public boolean execute() {
+    public boolean executeDamage() {
         if (!(victim.level() instanceof ServerLevel level)) {
             return false;
         }

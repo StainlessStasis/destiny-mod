@@ -38,14 +38,14 @@ public interface IStatusEffect {
             Supplier<AttachmentType<Boolean>> clientAttachment
     ) {}
 
-    default @Nullable EntityReference<LivingEntity> getOwnerReference() {
+    default @Nullable EntityReference<LivingEntity> getAttackerReference() {
         return null;
     }
     default Optional<LivingEntity> getOwnerOptional(Level level) {
         return Optional.ofNullable(getOwner(level));
     }
     default @Nullable LivingEntity getOwner(Level level) {
-        EntityReference<LivingEntity> ref = this.getOwnerReference();
+        EntityReference<LivingEntity> ref = this.getAttackerReference();
         return ref == null ? null : EntityReference.getLivingEntity(ref, level);
     }
 }

@@ -390,7 +390,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                         .invulnerabilityTicks(0)
                         .knockback(true);
                 DamageSource damageSource = builder.buildDamageSource();
-                builder.execute();
+                builder.executeDamage();
 
                 if (hasMeltingPoint()) {
                     StatusEffectManager.applyMeltingPoint(mob);
@@ -403,7 +403,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                 if (hasHeatseeker()) {
                     scorchToApply += getBonusScorch();
                 }
-                StatusEffectManager.applyScorch(mob, owner, scorchToApply);
+                StatusEffectManager.applyScorch(mob, owner, DMDamageTypes.THROWING_HAMMER, scorchToApply);
             }
 
             this.doPostHurtEffects(mob);
