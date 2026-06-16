@@ -276,7 +276,7 @@ public class ClientAudioAndVFX {
         DMColor solarDark = DMColor.SOLAR_DARK;
         DMColor solar = DMColor.SOLAR;
         DMColor solarLight = DMColor.SOLAR_LIGHT;
-        int density = 4;
+        int density = 2;
         for (int i = 0; i < density; i++) {
             double widthBias = (random.nextFloat() - 0.5f) * width;
             Vec3 groundPos = pos.add(rightDir.scale(widthBias));
@@ -310,23 +310,11 @@ public class ClientAudioAndVFX {
             ClientTaskScheduler.INSTANCE.runTaskLater(2, new CancellableRunnable() {
                 @Override
                 protected void execute() {
-                    double vx = (random.nextFloat() - 0.5f) * 0.03f;
-                    double vy;
-                    double vz = (random.nextFloat() - 0.5f) * 0.03f;
-
-                    Particle smoke = particleEngine.createParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, groundPos.x, groundPos.y, groundPos.z, vx, 0, vz);
-                    if (smoke instanceof SingleQuadParticle particle) {
-                        DMColor color = random.nextFloat() > 0.2f ? solarLight : solar;
-                        particle.setColor(color.getRed(), color.getGreen(), color.getBlue());
-                        particle.setLifetime((int) (10 + (random.nextFloat()*25)));
-                        particle.scale(random.nextFloat()*2f);
-                    }
-
                     if (random.nextFloat() < 0.7f) {
                         double biasedHeight = Math.pow(random.nextFloat(), 1.5) * (height / 2);
-                        vx = (random.nextFloat() - 0.5f) * 0.01f;
-                        vy = 0.05f + random.nextFloat() * 0.25f;
-                        vz = (random.nextFloat() - 0.5f) * 0.01f;
+                        double vx = (random.nextFloat() - 0.5f) * 0.01f;
+                        double vy = 0.05f + random.nextFloat() * 0.25f;
+                        double vz = (random.nextFloat() - 0.5f) * 0.01f;
 
                         Particle flame = particleEngine.createParticle(ParticleTypes.FLAME, groundPos.x, groundPos.y + biasedHeight, groundPos.z, vx, vy, vz);
                         if (flame instanceof SingleQuadParticle particle) {
