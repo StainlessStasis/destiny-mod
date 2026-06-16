@@ -23,6 +23,9 @@ public class DestinyModEntities {
                             MobCategory.MISC
                     )
                     .noSave()
+                    .noSummon()
+                    .fireImmune()
+                    .canSpawnFarFromPlayer()
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(
                             Registries.ENTITY_TYPE,
