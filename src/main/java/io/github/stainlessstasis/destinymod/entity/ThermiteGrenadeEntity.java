@@ -41,6 +41,7 @@ import java.util.function.Predicate;
 public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private static final EntityDataAccessor<Integer> CURRENT_PULSE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> TRAVELED_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> HAS_THERMAL_VENT = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
     public static final float SUBSTEP_DISTANCE = 0.25f;
 
     private int maxPulses;
@@ -167,7 +168,7 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
             Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
             Vec3 rightDir = new Vec3(-forwardDir.z, 0, forwardDir.x);
             MarchResult result = marchPulsePath(lastObservedDistance, currentDist, (pos, firstStep) -> {
-                ClientAudioAndVFX.thermitePulseStep(level(), pos, forwardDir, rightDir, width, height, firstStep);
+                ClientAudioAndVFX.thermitePulseStep(level(), pos, forwardDir, rightDir, width, height, firstStep, hasThermalVent());
             });
             ClientAudioAndVFX.addFadingLight(result.finalPos(), Math.round(width)+1, 20);
 
@@ -331,12 +332,15 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(CURRENT_PULSE, 0);
         builder.define(TRAVELED_DISTANCE, 0f);
+        builder.define(HAS_THERMAL_VENT, false);
     }
 
     public int getCurrentPulse() { return entityData.get(CURRENT_PULSE); }
     public void setCurrentPulse(int pulse) { entityData.set(CURRENT_PULSE, pulse); }
     public float getTraveledDistance() { return entityData.get(TRAVELED_DISTANCE); }
     public void setTraveledDistance(float distance) { entityData.set(TRAVELED_DISTANCE, distance); }
+    public boolean hasThermalVent() {return entityData.get(HAS_THERMAL_VENT);}
+    public void setHasThermalVent(boolean thermalVent) {entityData.set(HAS_THERMAL_VENT, thermalVent);}
 
     public int getMaxPulses() { return maxPulses; }
     public int getPulseInterval() { return pulseInterval; }

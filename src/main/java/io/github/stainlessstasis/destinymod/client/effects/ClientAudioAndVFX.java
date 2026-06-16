@@ -246,7 +246,7 @@ public class ClientAudioAndVFX {
         }
     }
 
-    public static void thermitePulseStep(Level level, Vec3 pos, Vec3 forwardDir, Vec3 rightDir, float width, float height, boolean isFirstStep) {
+    public static void thermitePulseStep(Level level, Vec3 pos, Vec3 forwardDir, Vec3 rightDir, float width, float height, boolean isFirstStep, boolean hasThermalVent) {
         var random = level.getRandom();
         var particleEngine = Minecraft.getInstance().particleEngine;
 
@@ -276,7 +276,7 @@ public class ClientAudioAndVFX {
         DMColor solarDark = DMColor.SOLAR_DARK;
         DMColor solar = DMColor.SOLAR;
         DMColor solarLight = DMColor.SOLAR_LIGHT;
-        int density = 2;
+        int density = hasThermalVent ? 2 : 3;
         for (int i = 0; i < density; i++) {
             double widthBias = (random.nextFloat() - 0.5f) * width;
             Vec3 groundPos = pos.add(rightDir.scale(widthBias));

@@ -66,6 +66,7 @@ public class GrenadeBehaviors {
             yaw = Mth.wrapDegrees(yaw);
 
             ThermiteGrenadeEntity grenade = new ThermiteGrenadeEntity(DestinyModEntities.THERMITE_GRENADE.get(), level, pos, yaw, player);
+            grenade.setHasThermalVent(true);
             grenade.setDamageMultiplier(props.waveDamageMultiplier());
             grenade.setScorchMultiplier(props.waveScorchMultiplier());
             level.addFreshEntity(grenade);
