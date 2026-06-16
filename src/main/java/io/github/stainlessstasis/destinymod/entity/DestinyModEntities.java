@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.VfxEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -14,6 +15,21 @@ import java.util.function.Supplier;
 
 public class DestinyModEntities {
     private static final DeferredRegister.Entities ENTITY_TYPES = DeferredRegister.createEntities(DestinyMod.MODID);
+
+    public static final Supplier<EntityType<@NotNull VfxEntity>> VFX_BLOCK_DISPLAY = ENTITY_TYPES.register(
+            "vfx_block_display",
+            () -> EntityType.Builder.of(
+                            VfxEntity::createDefault,
+                            MobCategory.MISC
+                    )
+                    .noSave()
+                    .clientTrackingRange(8)
+                    .build(ResourceKey.create(
+                            Registries.ENTITY_TYPE,
+                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "vfx_block_display")
+                    ))
+    );
+
     public static final Supplier<EntityType<@NotNull BonkHammerEntity>> HAMMER_OF_SOL = ENTITY_TYPES.register(
             "hammer_of_sol",
             () -> EntityType.Builder.of(
