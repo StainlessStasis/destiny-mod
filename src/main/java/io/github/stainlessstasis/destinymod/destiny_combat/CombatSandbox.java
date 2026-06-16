@@ -63,12 +63,13 @@ public class CombatSandbox {
         final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
 
         // SUNSPOTS
-        boolean canSpawnSunspot = StatusEffectManager.isActive(victim, Scorch.class)
-                || (source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT.resourceKey()))
+        boolean isScorchActive = StatusEffectManager.isActive(victim, Scorch.class);
+        boolean isNonSunspotAbilityDamage = source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT.resourceKey());
+        boolean canSpawnSunspot = (isScorchActive || isNonSunspotAbilityDamage)
                 && subclass == Subclasses.SUNBREAKER
                 && randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance();
 
-        boolean canSpawnFromBlazingPyre = tryActivateBlazingPyre(player, dmSource);
+        boolean canSpawnFromBlazingPyre = tryActivateBlazingPyre(player, source, dmSource);
 
         if (canSpawnSunspot || canSpawnFromBlazingPyre) {
             Vec3 spawnPos = findGroundPosition(victim);
@@ -77,15 +78,17 @@ public class CombatSandbox {
         }
     }
 
-    private static boolean tryActivateBlazingPyre(Player player, DestinyModDamageSource dmSource) {
+    private static boolean tryActivateBlazingPyre(Player player, DamageSource source, DestinyModDamageSource dmSource) {
         if (! PlayerSubclassData.isAspectEquipped(player, Aspects.BLAZING_PYRE)) return false;
-        if (dmSource.destinymod$getAttributedDamageType() != DMDamageTypes.THERMITE_GRENADE) return false;
+
+        boolean isDirect = source.is(DMDamageTypes.THERMITE_GRENADE.resourceKey());
+        boolean isAttributed = dmSource.destinymod$getAttributedDamageType() == DMDamageTypes.THERMITE_GRENADE;
+        if (!isDirect && !isAttributed) return false;
 
         var propOptional = PlayerSubclassData.getEquippedProperty(player, BlazingPyreProperty.class);
-        PlayerSubclassData.getEquippedProperty(player, BlazingPyreProperty.class).ifPresent(prop -> {
+        propOptional.ifPresent(prop -> {
             RegisteredAbility ability = PlayerSubclassData.getRegisteredGrenade(player);
             AbilityCooldownManager.reduceCooldownPercent(player, ability, prop.energyRefundPercent());
-            System.out.println("HAS BLAZING PYRE");
         });
 
         return propOptional.isPresent();
