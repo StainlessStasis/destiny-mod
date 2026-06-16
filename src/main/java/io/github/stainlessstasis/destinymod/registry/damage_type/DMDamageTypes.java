@@ -8,12 +8,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class DMDamageTypes {
-    private static final Set<RegisteredDamageType> DAMAGE_TYPES = new HashSet<>();
+    private static final List<RegisteredDamageType> DAMAGE_TYPES = new ArrayList<>();
 
     private static RegisteredDamageType register(String name, AbilityType abilityType, @Nullable Collection<TagKey<DamageType>> additionalTags) {
         var resourceKey = ResourceKey.create(Registries.DAMAGE_TYPE, DestinyMod.id(name));

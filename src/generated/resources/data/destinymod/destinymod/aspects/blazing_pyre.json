@@ -1,0 +1,10 @@
+{
+  "abilityType": "grenade",
+  "properties": [
+    {
+      "type": "blazing_pyre",
+      "energyRefundPercent": 0.1
+    }
+  ],
+  "subclassID": "destinymod:sunbreaker"
+}
