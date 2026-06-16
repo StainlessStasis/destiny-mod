@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceKey;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Aspects {
     private static final Map<Identifier, RegisteredAspect> BY_ID = new HashMap<>();
@@ -18,10 +20,12 @@ public class Aspects {
         return aspect;
     }
 
+    public static Set<RegisteredAspect> getAll() {
+        return BY_ID.values().stream().collect(Collectors.toUnmodifiableSet());
+    }
     public static RegisteredAspect get(Identifier id) {
         return BY_ID.getOrDefault(id, NONE);
     }
-
     public static RegisteredAspect get(String name) {
         return get(DestinyMod.id(name));
     }
@@ -32,4 +36,5 @@ public class Aspects {
     public static final RegisteredAspect ANVIL_DROP = register("anvil_drop");
     public static final RegisteredAspect REKINDLED_FLAMES = register("rekindled_flames");
     public static final RegisteredAspect BLAZING_PYRE = register("blazing_pyre");
+    public static final RegisteredAspect THERMAL_VENT = register("thermal_vent");
 }

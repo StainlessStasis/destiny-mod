@@ -37,6 +37,9 @@
   "tooltip.destinymod.blazing_pyre.title": "BLAZING PYRE",
   "tooltip.destinymod.blazing_pyre.subtitle": "Sunbreaker Aspect",
   "tooltip.destinymod.blazing_pyre.desc": "Targets are defeated by <ability:Thermite Grenade> refund a small amount of grenade energy, and a <keyword_solar:Sunspot> is guaranteed.",
+  "tooltip.destinymod.thermal_vent.title": "THERMAL VENT",
+  "tooltip.destinymod.thermal_vent.subtitle": "Sunbreaker Aspect",
+  "tooltip.destinymod.thermal_vent.desc": "<ability:Thermite Grenade> splits into multiple waves, drastically increasing area coverage. <keyword_solar:Scorch> stacks and total damage are increased, and divided among each wave.",
 
   "tooltip.destinymod.sol_invictus.title": "SOL INVICTUS",
   "tooltip.destinymod.sol_invictus.subtitle": "Sunbreaker Passive",

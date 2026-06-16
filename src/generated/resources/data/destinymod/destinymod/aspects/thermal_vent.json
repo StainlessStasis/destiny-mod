@@ -1,0 +1,13 @@
+{
+  "abilityType": "grenade",
+  "properties": [
+    {
+      "type": "thermal_vent",
+      "angleBetweenWaves": 30.0,
+      "bonusWaves": 2,
+      "waveDamageMultiplier": 0.5,
+      "waveScorchMultiplier": 0.5
+    }
+  ],
+  "subclassID": "destinymod:sunbreaker"
+}

@@ -5,10 +5,7 @@ import com.mojang.serialization.MapCodec;
 import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;
 import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
-import io.github.stainlessstasis.destinymod.registry.property.aspect.AnvilDropProperty;
-import io.github.stainlessstasis.destinymod.registry.property.aspect.BlazingPyreProperty;
-import io.github.stainlessstasis.destinymod.registry.property.aspect.HeatseekerProperty;
-import io.github.stainlessstasis.destinymod.registry.property.aspect.RekindledFlamesProperty;
+import io.github.stainlessstasis.destinymod.registry.property.aspect.*;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.MeltingPointProperty;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.ScorchProperty;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.SolInvictusProperty;
@@ -72,6 +69,9 @@ public class AbilityProperties {
     );
     public static final Supplier<BlazingPyreProperty> BLAZING_PYRE = register("blazing_pyre", BlazingPyreProperty.class, BlazingPyreProperty.CODEC,
             () ->  new BlazingPyreProperty(0.1f)
+    );
+    public static final Supplier<ThermalVentProperty> THERMAL_VENT = register("thermal_vent", ThermalVentProperty.class, ThermalVentProperty.CODEC,
+            () ->  new ThermalVentProperty(2, 30f, 0.5f, 0.5f)
     );
 
     // STATUS EFFECTS

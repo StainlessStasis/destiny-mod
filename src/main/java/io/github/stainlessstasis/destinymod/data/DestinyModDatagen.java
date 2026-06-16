@@ -63,6 +63,7 @@ public class DestinyModDatagen {
                     bootstrap.register(Aspects.ANVIL_DROP.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.MELEE, 20, AbilityProperties.ANVIL_DROP.get()));
                     bootstrap.register(Aspects.REKINDLED_FLAMES.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.GRENADE, -1, AbilityProperties.REKINDLED_FLAMES.get()));
                     bootstrap.register(Aspects.BLAZING_PYRE.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.GRENADE, -1, AbilityProperties.BLAZING_PYRE.get()));
+                    bootstrap.register(Aspects.THERMAL_VENT.resourceKey(), new Aspect(Subclasses.SUNBREAKER.getID(), AbilityType.GRENADE, -1, AbilityProperties.THERMAL_VENT.get()));
                 })
 
                 // STATUS EFFECTS

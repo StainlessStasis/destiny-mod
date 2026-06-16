@@ -17,6 +17,7 @@ public class DestinyKeywords {
         KEYWORDS.put(Aspects.MELTING_POINT.getName(), List.of(DestinyKeyword.IGNITION));
         KEYWORDS.put(Aspects.HEATSEEKER.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
         KEYWORDS.put(Aspects.REKINDLED_FLAMES.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
+        KEYWORDS.put(Aspects.THERMAL_VENT.getName(), List.of(DestinyKeyword.SCORCH, DestinyKeyword.IGNITION));
     }
 
     public static List<DestinyKeyword> getKeywordsFor(String name) {
