@@ -1,9 +1,11 @@
 package io.github.stainlessstasis.destinymod.destiny_combat;
 
+import com.google.gson.internal.GsonTypes;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
+import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.Scorch;
 import io.github.stainlessstasis.destinymod.mixin_api.DestinyModDamageSource;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
@@ -12,6 +14,9 @@ import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusE
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
+import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
+import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
+import io.github.stainlessstasis.destinymod.registry.property.aspect.BlazingPyreProperty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -57,12 +62,33 @@ public class CombatSandbox {
         if (! (source.getEntity() instanceof Player player)) return;
         final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
 
-        boolean canSpawnSunspot = StatusEffectManager.isActive(victim, Scorch.class) || (source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT.resourceKey()));
-        if (canSpawnSunspot && randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance() && subclass == Subclasses.SUNBREAKER) {
+        // SUNSPOTS
+        boolean canSpawnSunspot = StatusEffectManager.isActive(victim, Scorch.class)
+                || (source.is(DMDamageTypes.Tags.IS_ABILITY) && !source.is(DMDamageTypes.SUNSPOT.resourceKey()))
+                && subclass == Subclasses.SUNBREAKER
+                && randomActivationChance <= Abilities.SUNSPOT.get(player).activationChance();
+
+        boolean canSpawnFromBlazingPyre = tryActivateBlazingPyre(player, dmSource);
+
+        if (canSpawnSunspot || canSpawnFromBlazingPyre) {
             Vec3 spawnPos = findGroundPosition(victim);
             SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
             player.level().addFreshEntity(sunspotEntity);
         }
+    }
+
+    private static boolean tryActivateBlazingPyre(Player player, DestinyModDamageSource dmSource) {
+        if (! PlayerSubclassData.isAspectEquipped(player, Aspects.BLAZING_PYRE)) return false;
+        if (dmSource.destinymod$getAttributedDamageType() != DMDamageTypes.THERMITE_GRENADE) return false;
+
+        var propOptional = PlayerSubclassData.getEquippedProperty(player, BlazingPyreProperty.class);
+        PlayerSubclassData.getEquippedProperty(player, BlazingPyreProperty.class).ifPresent(prop -> {
+            RegisteredAbility ability = PlayerSubclassData.getRegisteredGrenade(player);
+            AbilityCooldownManager.reduceCooldownPercent(player, ability, prop.energyRefundPercent());
+            System.out.println("HAS BLAZING PYRE");
+        });
+
+        return propOptional.isPresent();
     }
 
     private static Vec3 findGroundPosition(LivingEntity victim) {

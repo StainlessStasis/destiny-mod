@@ -6,6 +6,7 @@ import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhy
 import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
 import io.github.stainlessstasis.destinymod.registry.property.ability.ThermiteGrenadeProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.AnvilDropProperty;
+import io.github.stainlessstasis.destinymod.registry.property.aspect.BlazingPyreProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.HeatseekerProperty;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.RekindledFlamesProperty;
 import io.github.stainlessstasis.destinymod.registry.property.status_effect.MeltingPointProperty;
@@ -68,6 +69,9 @@ public class AbilityProperties {
     );
     public static final Supplier<RekindledFlamesProperty> REKINDLED_FLAMES = register("rekindled_flames", RekindledFlamesProperty.class, RekindledFlamesProperty.CODEC,
             () ->  new RekindledFlamesProperty(1.5f, 1.3f, 2, 3)
+    );
+    public static final Supplier<BlazingPyreProperty> BLAZING_PYRE = register("blazing_pyre", BlazingPyreProperty.class, BlazingPyreProperty.CODEC,
+            () ->  new BlazingPyreProperty(0.1f)
     );
 
     // STATUS EFFECTS

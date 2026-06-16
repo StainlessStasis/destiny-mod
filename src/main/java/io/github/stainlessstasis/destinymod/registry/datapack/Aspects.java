@@ -31,4 +31,5 @@ public class Aspects {
     public static final RegisteredAspect HEATSEEKER = register("heatseeker");
     public static final RegisteredAspect ANVIL_DROP = register("anvil_drop");
     public static final RegisteredAspect REKINDLED_FLAMES = register("rekindled_flames");
+    public static final RegisteredAspect BLAZING_PYRE = register("blazing_pyre");
 }
