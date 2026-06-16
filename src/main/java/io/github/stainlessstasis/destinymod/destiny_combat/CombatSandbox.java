@@ -29,18 +29,18 @@ public class CombatSandbox {
     @SubscribeEvent
     public static void onLivingDamage(LivingIncomingDamageEvent event) {
         DamageSource source = event.getSource();
+        DestinyModDamageSource dmSource = (DestinyModDamageSource) source;
         LivingEntity victim = event.getEntity();
         float randomActivationChance = victim.getRandom().nextFloat();
         float damageMultiplier = 1f;
 
-        if (source.getEntity() instanceof Player player) {
-            final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
+        if (! (source.getEntity() instanceof Player player)) return;
+        final Subclass subclass = PlayerSubclassData.getEquippedSubclass(player);
 
-            if (victim.getData(DestinyModAttachments.IS_MELTING_POINT_ACTIVE)) {
-                var instance = StatusEffectManager.getInstance(victim, MeltingPoint.class);
-                if (instance != null) {
-                    damageMultiplier += instance.getProperty(victim.level()).additionalDamagePercent();
-                }
+        if (victim.getData(DestinyModAttachments.IS_MELTING_POINT_ACTIVE)) {
+            var instance = StatusEffectManager.getInstance(victim, MeltingPoint.class);
+            if (instance != null) {
+                damageMultiplier += instance.getProperty(victim.level()).additionalDamagePercent();
             }
         }
 
@@ -62,11 +62,6 @@ public class CombatSandbox {
             Vec3 spawnPos = findGroundPosition(victim);
             SunspotEntity sunspotEntity = new SunspotEntity(DestinyModEntities.SUNSPOT.get(), player.level(), spawnPos, player);
             player.level().addFreshEntity(sunspotEntity);
-        }
-
-        if (source.is(DMDamageTypes.SCORCH.resourceKey())) {
-            System.out.println("IS SCORCH");
-            System.out.println("ATTRIBUTED DAMAGE TYPE: "+dmSource.destinymod$getAttributedDamageType());
         }
     }
 

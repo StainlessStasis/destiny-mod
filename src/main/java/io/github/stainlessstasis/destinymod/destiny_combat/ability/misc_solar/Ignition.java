@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.ability.misc_solar;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
+import io.github.stainlessstasis.destinymod.registry.damage_type.RegisteredDamageType;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.property.AbilityProperties;
 import io.github.stainlessstasis.destinymod.registry.property.ability.IgnitionProperty;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
 public class Ignition {
-    public static void ignite(LivingEntity entity, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
+    public static void ignite(LivingEntity entity, @Nullable Entity directEntity, @Nullable Entity causingEntity, @Nullable RegisteredDamageType attributedDamageType) {
         if (!(entity.level() instanceof ServerLevel level)) return;
 
         var ability = Abilities.IGNITION.get(entity);

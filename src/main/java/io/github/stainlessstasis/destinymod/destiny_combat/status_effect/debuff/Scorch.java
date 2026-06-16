@@ -78,7 +78,7 @@ public class Scorch extends AttributableStatusEffect {
         }
         if (this.stacks >= ignitionThreshold && entity.level() instanceof ServerLevel level) {
             LivingEntity owner = getOwner(level);
-            Ignition.ignite(entity, owner, owner);
+            Ignition.ignite(entity, owner, owner, getAttributedDamageType());
             this.clear(entity);
             return;
         }

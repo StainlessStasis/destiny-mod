@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
+import io.github.stainlessstasis.destinymod.registry.damage_type.RegisteredDamageType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageType;
@@ -22,15 +23,15 @@ import java.util.function.Predicate;
 
 public class CombatUtils {
     public static void triggerExplosion(ServerLevel level, Vec3 pos, float radius, float maxDamage, ResourceKey<DamageType> damageType, DestinyElement element) {
-        triggerExplosion(level, pos, radius, maxDamage, damageType, element, null, null, null);
+        triggerExplosion(level, pos, radius, maxDamage, damageType, element, null, null, null, null);
     }
     public static void triggerExplosion(ServerLevel level, Vec3 pos, float radius, float maxDamage, ResourceKey<DamageType> damageType, DestinyElement element, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
-        triggerExplosion(level, pos, radius, maxDamage, damageType, element, directEntity, causingEntity, null);
+        triggerExplosion(level, pos, radius, maxDamage, damageType, element, directEntity, causingEntity, null, null);
     }
     public static void triggerExplosion(ServerLevel level, Vec3 pos, float radius, float maxDamage,
                                         ResourceKey<DamageType> damageType, DestinyElement element,
                                         @Nullable Entity directEntity, @Nullable Entity causingEntity,
-                                        @Nullable Consumer<LivingEntity> victimLogic)
+                                        @Nullable RegisteredDamageType attributedDamageType, @Nullable Consumer<LivingEntity> victimLogic)
     {
         float radiusSq = radius * radius;
         AABB searchArea = AABB.ofSize(pos, 1f, 1f, 1f).inflate(radius);
@@ -46,6 +47,7 @@ public class CombatUtils {
             if (damage <= 0.01f) continue;
 
             DestinyDamageBuilder.create(damageType, victim)
+                    .attributedDamageType(attributedDamageType)
                     .directSource(directEntity)
                     .attacker(causingEntity)
                     .element(element)
