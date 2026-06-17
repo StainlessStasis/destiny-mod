@@ -13,27 +13,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VfxAnimationBuilder {
-    private static final KeyframedChannel<Vector3f, Vector3f> DEFAULT_TRANSLATION = new KeyframedChannel<>(
+    public static final KeyframedChannel<Vector3f, Vector3f> DEFAULT_TRANSLATION = new KeyframedChannel<>(
             List.of(new Keyframe<>(0f, new Vector3f(0f), Easing.LINEAR),
                     new Keyframe<>(1f, new Vector3f(0f), Easing.LINEAR)),
             Interpolators::lerpVector3f
     );
-    private static final KeyframedChannel<Vector3f, Vector3f> DEFAULT_SCALE = new KeyframedChannel<>(
+    public static final KeyframedChannel<Vector3f, Vector3f> DEFAULT_SCALE = new KeyframedChannel<>(
             List.of(new Keyframe<>(0f, new Vector3f(1f), Easing.LINEAR),
                     new Keyframe<>(1f, new Vector3f(1f), Easing.LINEAR)),
             Interpolators::lerpVector3f
     );
-    private static final KeyframedChannel<Vector3f, Quaternionf> DEFAULT_ROTATION = new KeyframedChannel<>(
+    public static final KeyframedChannel<Vector3f, Quaternionf> DEFAULT_ROTATION = new KeyframedChannel<>(
             List.of(new Keyframe<>(0f, new Vector3f(0f), Easing.LINEAR),
                     new Keyframe<>(1f, new Vector3f(0f), Easing.LINEAR)),
             Interpolators::lerpDegrees
     );
-    private static final KeyframedChannel<Vector3f, Vector3f> DEFAULT_OVERLAY_COLOR = new KeyframedChannel<>(
+    public static final KeyframedChannel<Vector3f, Vector3f> DEFAULT_OVERLAY_COLOR = new KeyframedChannel<>(
             List.of(new Keyframe<>(0f, new Vector3f(1f), Easing.LINEAR),
                     new Keyframe<>(1f, new Vector3f(1f), Easing.LINEAR)),
             Interpolators::lerpVector3f
     );
-    private static final KeyframedChannel<Float, float[]> DEFAULT_OVERLAY_INTENSITY = new KeyframedChannel<>(
+    public static final KeyframedChannel<Float, float[]> DEFAULT_OVERLAY_INTENSITY = new KeyframedChannel<>(
             List.of(new Keyframe<>(0f, 0f, Easing.LINEAR),
                     new Keyframe<>(1f, 0f, Easing.LINEAR)),
             Interpolators::lerpFloat
