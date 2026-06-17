@@ -338,7 +338,7 @@ public class ClientAudioAndVFX {
         }
 
         // BLOCK DISPLAYS
-        if (random.nextFloat() < 0.4f) {
+        if (random.nextFloat() < 0.5f) {
             ClientLevel clientLevel = (ClientLevel) level;
 
             BlockState[][] colorSequences = {
@@ -347,15 +347,14 @@ public class ClientAudioAndVFX {
                     {Blocks.GILDED_BLACKSTONE.defaultBlockState(), Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.OBSIDIAN.defaultBlockState()}
             };
 
-            int debrisCount = isFirstStep ? 4 : 1 + (int) (random.nextFloat() * 2);
-
+            int debrisCount = 2 + (int) (random.nextFloat() * 2);
             for (int i = 0; i < debrisCount; i++) {
                 double widthBias = (random.nextFloat() - 0.5) * width;
                 Vec3 spawnPos = pos.add(rightDir.scale(widthBias));
 
                 BlockState[] sequence = colorSequences[(int) (random.nextFloat() * colorSequences.length)];
 
-                float peakHeight = 0.1f + (random.nextFloat() * 0.15f);
+                float peakHeight = 0.05f + (random.nextFloat() * 0.1f);
                 float startScale = 0.5f + (random.nextFloat() * 0.2f);
                 float peakScale = 1.2f + (random.nextFloat() * 0.3f);
 
@@ -365,7 +364,7 @@ public class ClientAudioAndVFX {
 
                 float fireTransition = 0.2f + (random.nextFloat() * 0.15f);
                 float smokeTransition = 0.6f + (random.nextFloat() * 0.15f);
-                int duration = 35 + (int) (random.nextFloat() * 20);
+                int duration = 45 + (int) (random.nextFloat() * 5);
 
                 VfxEntity entity = new VfxEntity(DestinyModEntities.VFX_ENTITY.get(), clientLevel);
                 entity.setPos(spawnPos);
@@ -376,20 +375,21 @@ public class ClientAudioAndVFX {
                             .addKeyframe(fireTransition, sequence[1])
                             .addKeyframe(smokeTransition, sequence[2])
                             .end(sequence[2])
-                        .translation(new Vector3f(0, -1f, 0))
-                            .addKeyframe(0.05f, new Vector3f(0, peakHeight, 0), Easing.EASE_IN_EXPO)
-                            .holdKeyframe(0.2f)
-                            .addKeyframe(0.9f, new Vector3f(0, -0.5f, 0), Easing.EASE_OUT_QUAD)
-                            .end(new Vector3f(0, -2f, 0), Easing.EASE_OUT_EXPO)
+                        .translation(new Vector3f(0, 0.1f, 0))
+                            .holdKeyframe(0.05f)
+                            .addKeyframe(0.075f, new Vector3f(0, peakHeight, 0), Easing.EASE_IN_EXPO)
+                            .holdKeyframe(0.4f)
+                            .addKeyframe(0.9f, new Vector3f(0, peakHeight-0.25f, 0), Easing.EASE_OUT_QUAD)
+                            .end(new Vector3f(0, -1f, 0), Easing.EASE_IN_BACK)
                         .rotation(new Vector3f(randomYaw, randomPitch, randomRoll))
                             .end(Easing.LINEAR)
                         .scale(new Vector3f(startScale))
-                            .addKeyframe(0.1f, new Vector3f(peakScale), Easing.EASE_IN_EXPO)
-                            .addKeyframe(0.8f, new Vector3f(peakScale*0.5f), Easing.LINEAR)
+                            .addKeyframe(0.05f, new Vector3f(peakScale), Easing.EASE_IN_EXPO)
+                            .addKeyframe(0.95f, new Vector3f(peakScale*0.8f), Easing.LINEAR)
                             .end(new Vector3f(peakScale * 0.1f), Easing.EASE_OUT_EXPO)
                         .overlay(new Vector3f(1f, 0.5f, 0f), 0.9F)
                             .addColorKeyframe(0.20f, new Vector3f(1f, 0.3f, 0f), Easing.LINEAR)
-                            .addColorKeyframe(0.75f, new Vector3f(0.12f, 0.03f, 0.03f), Easing.EASE_IN_QUAD)
+                            .addColorKeyframe(0.55f, new Vector3f(0.12f, 0.03f, 0.03f), Easing.EASE_IN_QUAD)
                             .addIntensityKeyframe(0.75f, 0.4f, Easing.EASE_IN_QUAD)
                             .end(new Vector3f(0f), Easing.LINEAR, 0f, Easing.EASE_OUT_QUAD)
                         .build(duration);
