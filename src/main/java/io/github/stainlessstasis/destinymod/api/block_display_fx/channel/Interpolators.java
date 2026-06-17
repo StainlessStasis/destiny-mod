@@ -7,12 +7,12 @@ import org.joml.Vector3f;
 public final class Interpolators {
     private Interpolators() {}
 
-    public static void lerpVector3f(Vector3f start, Vector3f end, float t, Vector3f destination) {
-        start.lerp(end, t, destination);
+    public static void lerpFloat(Float start, Float end, float t, float[] destination) {
+        destination[0] = Mth.lerp(t, start, end);
     }
 
-    public static void lerpQuaternionf(Quaternionf start, Quaternionf end, float t, Quaternionf destination) {
-        start.slerp(end, t, destination);
+    public static void lerpVector3f(Vector3f start, Vector3f end, float t, Vector3f destination) {
+        start.lerp(end, t, destination);
     }
 
     public static void lerpDegrees(Vector3f start, Vector3f end, float t, Quaternionf destination) {
@@ -24,5 +24,9 @@ public final class Interpolators {
                 (float) Math.toRadians(x),
                 (float) Math.toRadians(z)
         );
+    }
+
+    public static void lerpQuaternionf(Quaternionf start, Quaternionf end, float t, Quaternionf destination) {
+        start.slerp(end, t, destination);
     }
 }

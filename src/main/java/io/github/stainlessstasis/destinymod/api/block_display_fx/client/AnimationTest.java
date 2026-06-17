@@ -32,7 +32,7 @@ public class AnimationTest {
         VfxAnimation anim = new VfxAnimationBuilder()
                 .translation(new Vector3f(0, 0, 0))
                     .addKeyframe(0.25f, new Vector3f(0, 3, 0), Easing.EASE_OUT_QUAD)
-                    .addKeyframe(0.5f, new Vector3f(2, 3, 0), Easing.EASE_IN_OUT_QUAD)
+                    .addKeyframe(0.5f, new Vector3f(2, -3, 0), Easing.EASE_IN_OUT_QUAD)
                     .addKeyframe(0.75f, new Vector3f(2, 0, 0), Easing.EASE_IN_QUAD)
                     .end(new Vector3f(0, 0, 0), Easing.EASE_OUT_BOUNCE)
                 .scale(new Vector3f(0.5f))
@@ -41,7 +41,11 @@ public class AnimationTest {
                 .rotation(new Vector3f(0, 0, 0))
                     .addKeyframe(0.5f, new Vector3f(0, 180, 0), Easing.EASE_IN_OUT_QUAD)
                     .end(new Vector3f(0, 360, 0), Easing.EASE_OUT_QUAD)
-                .build(120); // 6 seconds
+                .overlay(new Vector3f(1, 0.3f, 0), 0.9f)
+                    .addColorKeyframe(0.5f, new Vector3f(0.2f, 0.8f, 0.7f), Easing.EASE_IN_QUAD)
+                    .addIntensityKeyframe(0.8f, 0.5f, Easing.EASE_OUT_QUAD)
+                    .end(new Vector3f(0.1f), Easing.LINEAR, 0f, Easing.EASE_IN_QUAD)
+                .build(120);
 
         entity.playAnimation(anim);
     }
