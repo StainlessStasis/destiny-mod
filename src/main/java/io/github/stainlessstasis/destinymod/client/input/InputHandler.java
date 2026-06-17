@@ -51,7 +51,7 @@ public class InputHandler {
 
         // TODO: remove this
         if (key == InputConstants.KEY_LALT) {
-            AnimationTest.run();
+            AnimationTest.runKeyframeTest();
         }
 
         if (key == DestinyModKeybinds.SUBCLASS_SCREEN.get().getKey().getValue()) {

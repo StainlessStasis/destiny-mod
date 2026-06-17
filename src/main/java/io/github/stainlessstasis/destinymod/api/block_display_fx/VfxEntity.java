@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.destinymod.api.block_display_fx;
 
-import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.VfxAnimation;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimation;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -33,10 +33,10 @@ public class VfxEntity extends Entity {
         return new VfxEntity(type, level);
     }
 
-    public void playAnimation(VfxAnimation animation, int durationTicks) {
+    public void playAnimation(VfxAnimation animation) {
         this.currentAnimation = animation;
         this.animationStartTick = this.tickCount;
-        this.animationDurationTicks = durationTicks;
+        this.animationDurationTicks = animation.durationTicks();
     }
 
     public float getAnimationProgress(float partialTick) {

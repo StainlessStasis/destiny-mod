@@ -1,9 +1,8 @@
 package io.github.stainlessstasis.destinymod.api.block_display_fx.client;
 
 import io.github.stainlessstasis.destinymod.api.block_display_fx.VfxEntity;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.RotationDegreesChannel;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.Vector3fChannel;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.VfxAnimation;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimationBuilder;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimation;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.easing.Easing;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import net.minecraft.client.Minecraft;
@@ -18,7 +17,36 @@ import org.joml.Vector3f;
 public class AnimationTest {
     private static final int COUNT = 5000;
 
-    public static void run() {
+    public static void runKeyframeTest() {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) return;
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) return;
+
+        VfxEntity entity = new VfxEntity(DestinyModEntities.VFX_ENTITY.get(), level);
+        Vec3 pos = player.getEyePosition().add(player.getLookAngle().normalize().scale(4f));
+        entity.setPos(pos);
+        entity.setBlockState(Blocks.MAGMA_BLOCK.defaultBlockState());
+        level.addEntity(entity);
+
+        VfxAnimation anim = new VfxAnimationBuilder()
+                .translation(new Vector3f(0, 0, 0))
+                    .addKeyframe(0.25f, new Vector3f(0, 3, 0), Easing.EASE_OUT_QUAD)
+                    .addKeyframe(0.5f, new Vector3f(2, 3, 0), Easing.EASE_IN_OUT_QUAD)
+                    .addKeyframe(0.75f, new Vector3f(2, 0, 0), Easing.EASE_IN_QUAD)
+                    .end(new Vector3f(0, 0, 0), Easing.EASE_OUT_BOUNCE)
+                .scale(new Vector3f(0.5f))
+                    .addKeyframe(0.5f, new Vector3f(1.5f), Easing.EASE_OUT_ELASTIC)
+                    .end(new Vector3f(0.5f), Easing.EASE_IN_QUAD)
+                .rotation(new Vector3f(0, 0, 0))
+                    .addKeyframe(0.5f, new Vector3f(0, 180, 0), Easing.EASE_IN_OUT_QUAD)
+                    .end(new Vector3f(0, 360, 0), Easing.EASE_OUT_QUAD)
+                .build(120); // 6 seconds
+
+        entity.playAnimation(anim);
+    }
+
+    public static void runCoolEasings() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         ClientLevel level = Minecraft.getInstance().level;
@@ -31,30 +59,23 @@ public class AnimationTest {
         level.addEntity(entity);
         float scale = 0.5f;
 
-        VfxAnimation anim = new VfxAnimation(
-                new Vector3fChannel(
-                        new Vector3f(0, 0, 0),
-                        new Vector3f(
-                                (float)(Math.random() * 4 - 2),
-                                (float)(Math.random() * 4),
-                                (float)(Math.random() * 4 - 2)
-                        ),
-                        Easing.EASE_IN_QUAD
-                ),
-                new Vector3fChannel(
-                        new Vector3f(scale),
-                        new Vector3f(scale*5f),
-                        Easing.EASE_IN_OUT_ELASTIC
-                ),
-                new RotationDegreesChannel(
-                        new Vector3f(0, 0, 0),
-                        new Vector3f((float) (Math.random()*30), 360 + (float) (Math.random()*360), (float) (Math.random()*30)),
-                        Easing.EASE_OUT_EXPO
-                )
-        );
-
-        int duration = 60;
-        entity.playAnimation(anim, duration);
+        VfxAnimation anim = new VfxAnimationBuilder()
+                .translation(new Vector3f(0, 0, 0))
+                .end(new Vector3f(
+                        (float)(Math.random() * 4 - 2),
+                        (float)(Math.random() * 4),
+                        (float)(Math.random() * 4 - 2)
+                ), Easing.EASE_IN_QUAD)
+                .scale(new Vector3f(scale))
+                .end(new Vector3f(scale * 5f), Easing.EASE_IN_OUT_ELASTIC)
+                .rotation(new Vector3f(0, 0, 0))
+                .end(new Vector3f(
+                        (float)(Math.random() * 30),
+                        360 + (float)(Math.random() * 360),
+                        (float)(Math.random() * 30)
+                ), Easing.EASE_OUT_EXPO)
+                .build(60);
+        entity.playAnimation(anim);
     }
 
     public static void runPerformanceTest() {
@@ -89,34 +110,28 @@ public class AnimationTest {
             entity.setBlockState(blocks[i % blocks.length]);
             level.addEntity(entity);
 
-            VfxAnimation anim = new VfxAnimation(
-                    new Vector3fChannel(
-                            new Vector3f(0, 0, 0),
-                            new Vector3f(
-                                    (float)(Math.random() * 4 - 2),
-                                    (float)(Math.random() * 4),
-                                    (float)(Math.random() * 4 - 2)
-                            ),
-                            Easing.random(player.getRandom())
-                    ),
-                    new Vector3fChannel(
-                            new Vector3f(0.5f, 0.5f, 0.5f),
-                            new Vector3f(
-                                    (float)(Math.random() * 1.5f + 0.5f),
-                                    (float)(Math.random() * 1.5f + 0.5f),
-                                    (float)(Math.random() * 1.5f + 0.5f)
-                            ),
-                            Easing.random(player.getRandom())
-                    ),
-                    new RotationDegreesChannel(
-                            new Vector3f(0, 0, 0),
-                            new Vector3f((float) (Math.random()*720), (float) (Math.random()*720), (float) (Math.random()*720)),
-                            Easing.random(player.getRandom())
-                    )
-            );
-
             int duration = 1800 + (int)(Math.random() * 900);
-            entity.playAnimation(anim, duration);
+            VfxAnimation anim = new VfxAnimationBuilder()
+                    .translation(new Vector3f(0, 0, 0))
+                    .end(new Vector3f(
+                            (float)(Math.random() * 4 - 2),
+                            (float)(Math.random() * 4),
+                            (float)(Math.random() * 4 - 2)
+                    ), Easing.random(player.getRandom()))
+                    .scale(new Vector3f(0.5f, 0.5f, 0.5f))
+                    .end(new Vector3f(
+                            (float)(Math.random() * 1.5f + 0.5f),
+                            (float)(Math.random() * 1.5f + 0.5f),
+                            (float)(Math.random() * 1.5f + 0.5f)
+                    ), Easing.random(player.getRandom()))
+                    .rotation(new Vector3f(0, 0, 0))
+                    .end(new Vector3f(
+                            (float)(Math.random() * 720),
+                            (float)(Math.random() * 720),
+                            (float)(Math.random() * 720)
+                    ), Easing.random(player.getRandom()))
+                    .build(duration);
+            entity.playAnimation(anim);
         }
 
         Minecraft.getInstance().player.sendSystemMessage(Component.literal("Spawned " + COUNT + " VFX entities"));
