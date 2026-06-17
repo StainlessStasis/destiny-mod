@@ -12,12 +12,55 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 public class AnimationTest {
     private static final int COUNT = 5000;
 
     public static void run() {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) return;
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) return;
+
+        VfxEntity entity = new VfxEntity(DestinyModEntities.VFX_ENTITY.get(), level);
+        Vec3 pos = player.getEyePosition().add(player.getLookAngle().normalize().scale(3f));
+        entity.setPos(pos);
+        entity.setBlockState(Blocks.MAGMA_BLOCK.defaultBlockState());
+        level.addEntity(entity);
+
+        VfxAnimation anim = new VfxAnimation(
+                new Vector3fChannel(
+                        new Vector3f(0, 0, 0),
+                        new Vector3f(
+                                (float)(Math.random() * 4 - 2),
+                                (float)(Math.random() * 4),
+                                (float)(Math.random() * 4 - 2)
+                        ),
+                        Easing.EASE_IN_QUAD
+                ),
+                new Vector3fChannel(
+                        new Vector3f(0.5f, 0.5f, 0.5f),
+                        new Vector3f(
+                                (float)(Math.random() * 1.5f + 0.5f),
+                                (float)(Math.random() * 1.5f + 0.5f),
+                                (float)(Math.random() * 1.5f + 0.5f)
+                        ),
+                        Easing.EASE_IN_QUAD
+                ),
+                new RotationDegreesChannel(
+                        new Vector3f(0, 0, 0),
+                        new Vector3f((float) (Math.random()*30), 360 + (float) (Math.random()*360), (float) (Math.random()*30)),
+                        Easing.EASE_IN_QUAD
+                )
+        );
+
+        int duration = 60;
+        entity.playAnimation(anim, duration);
+    }
+
+    public static void runPerformanceTest() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         ClientLevel level = Minecraft.getInstance().level;
