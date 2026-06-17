@@ -25,14 +25,13 @@ public class AnimationTest {
 
         Vec3 center = player.getEyePosition().add(player.getLookAngle().normalize().scale(6f));
 
-        int ringCount = 32;
-        int duration = 45;
+        int ringCount = 48;
+        int duration = 20;
 
         BlockState[][] colorSequences = {
                 { Blocks.SHROOMLIGHT.defaultBlockState(), Blocks.ORANGE_CONCRETE.defaultBlockState(), Blocks.GRAY_STAINED_GLASS.defaultBlockState() },
-                { Blocks.SHROOMLIGHT.defaultBlockState(), Blocks.RED_CONCRETE.defaultBlockState(), Blocks.BLACK_STAINED_GLASS.defaultBlockState() },
-                { Blocks.GLOWSTONE.defaultBlockState(), Blocks.ORANGE_CONCRETE.defaultBlockState(), Blocks.GRAY_STAINED_GLASS.defaultBlockState() },
-                { Blocks.GLOWSTONE.defaultBlockState(), Blocks.YELLOW_CONCRETE.defaultBlockState(), Blocks.GRAY_STAINED_GLASS.defaultBlockState() },
+                { Blocks.SHROOMLIGHT.defaultBlockState(), Blocks.ORANGE_STAINED_GLASS.defaultBlockState(), Blocks.WHITE_STAINED_GLASS.defaultBlockState() },
+                { Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.RED_STAINED_GLASS.defaultBlockState(), Blocks.BLACK_STAINED_GLASS.defaultBlockState() },
         };
 
         for (int i = 0; i < ringCount; i++) {
@@ -61,21 +60,21 @@ public class AnimationTest {
 
             VfxAnimation anim = new VfxAnimationBuilder()
                     .blockState(sequence[0])
-                    .addKeyframe(fireTransition, sequence[1])
-                    .addKeyframe(smokeTransition, sequence[2])
-                    .end(sequence[2])
+                        .addKeyframe(fireTransition, sequence[1])
+                        .addKeyframe(smokeTransition, sequence[2])
+                        .end(sequence[2])
                     .translation(new Vector3f(0, 0, 0))
-                    .end(new Vector3f(dirX * radius, 0, dirZ * radius), Easing.EASE_OUT_EXPO)
+                        .end(new Vector3f(dirX * radius, 0, dirZ * radius), Easing.EASE_OUT_EXPO)
                     .scale(new Vector3f(startScale))
-                    .addKeyframe(0.7f, new Vector3f(startScale * 0.75f), Easing.EASE_IN_QUAD)
-                    .end(new Vector3f(endScale), Easing.EASE_IN_QUAD)
+                        .addKeyframe(0.7f, new Vector3f(startScale * 0.75f), Easing.EASE_IN_QUAD)
+                        .end(new Vector3f(endScale), Easing.EASE_IN_QUAD)
                     .rotation(new Vector3f(randomPitch, randomYaw, randomRoll))
-                    .end(new Vector3f(randomEndPitch, randomEndYaw, randomEndRoll), Easing.EASE_OUT_QUAD)
+                        .end(new Vector3f(randomEndPitch, randomEndYaw, randomEndRoll), Easing.EASE_OUT_QUAD)
                     .overlay(new Vector3f(1f, 0.5f, 0f), 0.8f)
-                    .addColorKeyframe(fireTransition, new Vector3f(0.8f, 0.2f, 0f), Easing.EASE_IN_QUAD)
-                    .addColorKeyframe(smokeTransition, new Vector3f(0.1f, 0.1f, 0.1f), Easing.EASE_IN_QUAD)
-                    .addIntensityKeyframe(smokeTransition, 0.2f, Easing.EASE_IN_QUAD)
-                    .end(new Vector3f(0.05f, 0.05f, 0.05f), Easing.LINEAR, 0f, Easing.EASE_IN_QUAD)
+                        .addColorKeyframe(fireTransition, new Vector3f(0.8f, 0.0f, 0f), Easing.EASE_IN_QUAD)
+                        .addColorKeyframe(smokeTransition, new Vector3f(0.1f, 0.0f, 0.0f), Easing.EASE_IN_QUAD)
+                        .addIntensityKeyframe(smokeTransition, 0.2f, Easing.EASE_IN_QUAD)
+                        .end(new Vector3f(0.05f, 0.05f, 0.05f), Easing.LINEAR, 0f, Easing.EASE_IN_QUAD)
                     .build((int)(duration + Math.random() * 10));
 
             entity.playAnimation(anim);

@@ -71,7 +71,7 @@ public class VfxEntityRenderer extends EntityRenderer<VfxEntity, VfxEntityRender
     }
 
     private void applyOverlayColor(VfxEntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector) {
-        if (state.overlayIntensity[0] <= 0f) return;
+        if (state.overlayIntensity[0] <= 0.01f) return;
         collector.submitCustomGeometry(poseStack, RenderTypes.debugFilledBox(), (pose, buffer) -> {
             int r = (int)(state.overlayColor.x * 255);
             int g = (int)(state.overlayColor.y * 255);
