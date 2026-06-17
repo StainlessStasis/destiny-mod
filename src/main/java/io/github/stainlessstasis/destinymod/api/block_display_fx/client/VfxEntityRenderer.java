@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.VfxEntity;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimation;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.entity.DisplayRenderer;

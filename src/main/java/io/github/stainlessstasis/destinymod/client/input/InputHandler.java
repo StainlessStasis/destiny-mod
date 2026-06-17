@@ -37,6 +37,15 @@ public class InputHandler {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null) return; // player can be null while in the main menu and whatnot
+
+        if (key == DestinyModKeybinds.SUBCLASS_SCREEN.get().getKey().getValue()) {
+            if (Minecraft.getInstance().screen instanceof SubclassScreen screen) {
+                screen.onClose();
+            } else {
+                mc.setScreen(new SubclassScreen(Subclasses.SUNBREAKER));
+            }
+        }
+
         if (player.hasContainerOpen() || Minecraft.getInstance().screen != null) return;
 
         if (key == DestinyModKeybinds.MELEE.get().getKey().getValue()) {
@@ -50,12 +59,10 @@ public class InputHandler {
         }
 
         // TODO: remove this
-        if (key == InputConstants.KEY_LALT) {
-            AnimationTest.runShockwaveTest();
-        }
+//        if (key == InputConstants.KEY_LALT) {
+//            AnimationTest.runShockwaveTest();
+//        }
 
-        if (key == DestinyModKeybinds.SUBCLASS_SCREEN.get().getKey().getValue()) {
-            mc.setScreen(new SubclassScreen(Subclasses.SUNBREAKER));
-        }
+
     }
 }
