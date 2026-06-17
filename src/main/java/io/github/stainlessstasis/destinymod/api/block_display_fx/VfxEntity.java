@@ -8,15 +8,12 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("NullableProblems")
 public class VfxEntity extends Entity {
-    private BlockState blockState = Blocks.AIR.defaultBlockState();
     private int brightnessOverride = -1;
 
     private @Nullable VfxAnimation currentAnimation;
@@ -59,8 +56,6 @@ public class VfxEntity extends Entity {
     }
 
     public @Nullable VfxAnimation getCurrentAnimation() { return currentAnimation; }
-    public BlockState getBlockState() { return blockState; }
-    public void setBlockState(BlockState state) { this.blockState = state; }
     public int getBrightnessOverride() { return brightnessOverride; }
     public void setBrightnessOverride(int brightness) { this.brightnessOverride = brightness; }
 

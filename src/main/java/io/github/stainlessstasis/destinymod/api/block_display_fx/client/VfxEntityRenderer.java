@@ -42,9 +42,10 @@ public class VfxEntityRenderer extends EntityRenderer<VfxEntity, VfxEntityRender
         anim.rotationChannel().evaluate(t, state.rotation);
         anim.overlayColorChannel().evaluate(t, state.overlayColor);
         anim.overlayIntensityChannel().evaluate(t, state.overlayIntensity);
+        state.blockState = anim.blockStateChannel().evaluate(t);
         state.brightnessOverride = entity.getBrightnessOverride();
 
-        blockModelResolver.update(state.blockModel, entity.getBlockState(), DisplayRenderer.BLOCK_DISPLAY_CONTEXT);
+        blockModelResolver.update(state.blockModel, state.blockState, DisplayRenderer.BLOCK_DISPLAY_CONTEXT);
     }
 
     @Override

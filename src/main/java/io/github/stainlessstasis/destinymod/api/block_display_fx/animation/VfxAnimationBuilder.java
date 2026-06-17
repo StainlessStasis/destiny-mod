@@ -5,6 +5,7 @@ import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.Interpo
 import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.Keyframe;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.KeyframedChannel;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.easing.Easing;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -38,6 +39,9 @@ public class VfxAnimationBuilder {
                     new Keyframe<>(1f, 0f, Easing.LINEAR)),
             Interpolators::lerpFloat
     );
+    public static final BlockStateChannel DEFAULT_BLOCK_STATE = new BlockStateChannel(
+            List.of(new Keyframe<>(0f, Blocks.WHITE_CONCRETE.defaultBlockState(), Easing.LINEAR))
+    );
 
     private KeyframedChannel<Vector3f, Vector3f> translationChannel;
     private KeyframedChannel<Vector3f, Vector3f> scaleChannel;
@@ -68,7 +72,8 @@ public class VfxAnimationBuilder {
         if (rotationChannel == null) rotationChannel = DEFAULT_ROTATION;
         if (overlayColorChannel == null) overlayColorChannel = DEFAULT_OVERLAY_COLOR;
         if (overlayIntensityChannel == null) overlayIntensityChannel = DEFAULT_OVERLAY_INTENSITY;
-        return new VfxAnimation(translationChannel, scaleChannel, rotationChannel, overlayColorChannel, overlayIntensityChannel, durationTicks);
+        if (blockStateChannel == null) blockStateChannel = DEFAULT_BLOCK_STATE;
+        return new VfxAnimation(translationChannel, scaleChannel, rotationChannel, overlayColorChannel, overlayIntensityChannel, blockStateChannel, durationTicks);
     }
 
     public class TranslationBuilder {
@@ -160,7 +165,7 @@ public class VfxAnimationBuilder {
         private final List<Keyframe<BlockState>> keyframes = new ArrayList<>();
 
         private BlockStateBuilder(BlockState initial) {
-            keyframes.add(new Keyframe<>(0f, initial, Easing.LINEAR)); // easing ignored
+            keyframes.add(new Keyframe<>(0f, initial, Easing.LINEAR));
         }
 
         public BlockStateBuilder addKeyframe(float time, BlockState state) {
@@ -172,6 +177,10 @@ public class VfxAnimationBuilder {
             keyframes.add(new Keyframe<>(1f, state, Easing.LINEAR));
             blockStateChannel = new BlockStateChannel(keyframes);
             return VfxAnimationBuilder.this;
+        }
+
+        public VfxAnimationBuilder end() {
+            return end(keyframes.getFirst().value());
         }
     }
 }
