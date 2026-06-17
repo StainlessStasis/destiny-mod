@@ -2,7 +2,6 @@ package io.github.stainlessstasis.destinymod.client.entity_rendering;
 
 import com.google.common.reflect.TypeToken;
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.client.VfxEntityRenderer;
 import io.github.stainlessstasis.destinymod.client.entity_rendering.layer.MeltingPointRenderLayer;
 import io.github.stainlessstasis.destinymod.client.entity_rendering.layer.ScorchRenderLayer;
 import io.github.stainlessstasis.destinymod.client.entity_rendering.renderer.BonkHammerRenderer;
@@ -46,7 +45,6 @@ public class EntityRendererEvents {
         event.registerEntityRenderer(DestinyModEntities.SUNSPOT.get(), DummyEntityRenderer::new);
         event.registerEntityRenderer(DestinyModEntities.THROWN_GRENADE.get(), ThrownGrenadeRenderer::new);
         event.registerEntityRenderer(DestinyModEntities.THERMITE_GRENADE.get(), DummyEntityRenderer::new);
-        event.registerEntityRenderer(DestinyModEntities.VFX_ENTITY.get(), VfxEntityRenderer::new);
     }
 
     @SubscribeEvent

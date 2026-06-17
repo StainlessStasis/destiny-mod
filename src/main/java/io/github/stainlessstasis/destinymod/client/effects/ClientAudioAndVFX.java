@@ -1,13 +1,13 @@
 package io.github.stainlessstasis.destinymod.client.effects;
 
+import io.github.stainlessstasis.bdanimator.animation.VfxAnimation;
+import io.github.stainlessstasis.bdanimator.animation.VfxAnimationBuilder;
+import io.github.stainlessstasis.bdanimator.easing.Easing;
+import io.github.stainlessstasis.bdanimator.registry.BDAnimatorEntities;
+import io.github.stainlessstasis.bdanimator.vfx.VfxEntity;
 import io.github.stainlessstasis.destinymod.DMColor;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.VfxEntity;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimation;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimationBuilder;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.easing.Easing;
 import io.github.stainlessstasis.destinymod.compat.LDL.FadeOutDynamicLightBehavior;
 import io.github.stainlessstasis.destinymod.compat.LDL.LDLCompat;
-import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
 import io.github.stainlessstasis.destinymod.task.CancellableRunnable;
 import io.github.stainlessstasis.destinymod.task.ClientTaskScheduler;
@@ -366,7 +366,7 @@ public class ClientAudioAndVFX {
                 float smokeTransition = 0.6f + (random.nextFloat() * 0.15f);
                 int duration = 45 + (int) (random.nextFloat() * 5);
 
-                VfxEntity entity = new VfxEntity(DestinyModEntities.VFX_ENTITY.get(), clientLevel);
+                VfxEntity entity = new VfxEntity(BDAnimatorEntities.VFX_ENTITY.get(), clientLevel);
                 entity.setPos(spawnPos);
                 clientLevel.addEntity(entity);
 

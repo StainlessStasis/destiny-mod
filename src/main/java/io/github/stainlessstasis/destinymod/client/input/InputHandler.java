@@ -1,8 +1,8 @@
 package io.github.stainlessstasis.destinymod.client.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import io.github.stainlessstasis.bdanimator.animation.AnimationTest;
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.client.AnimationTest;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.client.ui.SubclassScreen;
@@ -62,7 +62,6 @@ public class InputHandler {
         if (key == InputConstants.KEY_LALT) {
             AnimationTest.runKeyframeTest();
         }
-
 
     }
 }
