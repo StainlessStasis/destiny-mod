@@ -88,6 +88,11 @@ public class VfxAnimationBuilder {
             return this;
         }
 
+        public TranslationBuilder holdKeyframe(float time) {
+            keyframes.add(new Keyframe<>(time, keyframes.getLast().value(), keyframes.getLast().easing()));
+            return this;
+        }
+
         public VfxAnimationBuilder end(Vector3f value, Easing easing) {
             keyframes.add(new Keyframe<>(1f, value, easing));
             translationChannel = new KeyframedChannel<>(keyframes, Interpolators::lerpVector3f);
@@ -104,6 +109,11 @@ public class VfxAnimationBuilder {
 
         public ScaleBuilder addKeyframe(float time, Vector3f value, Easing easing) {
             keyframes.add(new Keyframe<>(time, value, easing));
+            return this;
+        }
+
+        public ScaleBuilder holdKeyframe(float time) {
+            keyframes.add(new Keyframe<>(time, keyframes.getLast().value(), keyframes.getLast().easing()));
             return this;
         }
 
@@ -126,10 +136,19 @@ public class VfxAnimationBuilder {
             return this;
         }
 
+        public RotationBuilder holdKeyframe(float time) {
+            keyframes.add(new Keyframe<>(time, keyframes.getLast().value(), keyframes.getLast().easing()));
+            return this;
+        }
+
         public VfxAnimationBuilder end(Vector3f degrees, Easing easing) {
             keyframes.add(new Keyframe<>(1f, degrees, easing));
             rotationChannel = new KeyframedChannel<>(keyframes, Interpolators::lerpDegrees);
             return VfxAnimationBuilder.this;
+        }
+
+        public VfxAnimationBuilder end(Easing easing) {
+            return end(keyframes.getLast().value(), easing);
         }
     }
 
@@ -147,8 +166,18 @@ public class VfxAnimationBuilder {
             return this;
         }
 
+        public OverlayBuilder holdColorKeyframe(float time) {
+            colorKeyframes.add(new Keyframe<>(time, colorKeyframes.getLast().value(), colorKeyframes.getLast().easing()));
+            return this;
+        }
+
         public OverlayBuilder addIntensityKeyframe(float time, float intensity, Easing easing) {
             intensityKeyframes.add(new Keyframe<>(time, intensity, easing));
+            return this;
+        }
+
+        public OverlayBuilder holdIntensityKeyframe(float time) {
+            intensityKeyframes.add(new Keyframe<>(time, intensityKeyframes.getLast().value(), intensityKeyframes.getLast().easing()));
             return this;
         }
 
@@ -173,6 +202,11 @@ public class VfxAnimationBuilder {
             return this;
         }
 
+        public BlockStateBuilder holdKeyframe(float time) {
+            keyframes.add(new Keyframe<>(time, keyframes.getLast().value(), keyframes.getLast().easing()));
+            return this;
+        }
+
         public VfxAnimationBuilder end(BlockState state) {
             keyframes.add(new Keyframe<>(1f, state, Easing.LINEAR));
             blockStateChannel = new BlockStateChannel(keyframes);
@@ -180,7 +214,7 @@ public class VfxAnimationBuilder {
         }
 
         public VfxAnimationBuilder end() {
-            return end(keyframes.getFirst().value());
+            return end(keyframes.getLast().value());
         }
     }
 }

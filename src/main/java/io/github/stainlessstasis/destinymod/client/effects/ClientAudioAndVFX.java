@@ -1,12 +1,18 @@
 package io.github.stainlessstasis.destinymod.client.effects;
 
 import io.github.stainlessstasis.destinymod.DMColor;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.VfxEntity;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimation;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.animation.VfxAnimationBuilder;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.easing.Easing;
 import io.github.stainlessstasis.destinymod.compat.LDL.FadeOutDynamicLightBehavior;
 import io.github.stainlessstasis.destinymod.compat.LDL.LDLCompat;
+import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
 import io.github.stainlessstasis.destinymod.task.CancellableRunnable;
 import io.github.stainlessstasis.destinymod.task.ClientTaskScheduler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.ParticleTypes;
@@ -14,8 +20,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
+import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 
@@ -326,6 +335,67 @@ public class ClientAudioAndVFX {
                     }
                 }
             });
+        }
+
+        // BLOCK DISPLAYS
+        if (random.nextFloat() < 0.4f) {
+            ClientLevel clientLevel = (ClientLevel) level;
+
+            BlockState[][] colorSequences = {
+                    {Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.NETHERRACK.defaultBlockState(), Blocks.BASALT.defaultBlockState()},
+                    {Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.BLACKSTONE.defaultBlockState()},
+                    {Blocks.GILDED_BLACKSTONE.defaultBlockState(), Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.OBSIDIAN.defaultBlockState()}
+            };
+
+            int debrisCount = isFirstStep ? 4 : 1 + (int) (random.nextFloat() * 2);
+
+            for (int i = 0; i < debrisCount; i++) {
+                double widthBias = (random.nextFloat() - 0.5) * width;
+                Vec3 spawnPos = pos.add(rightDir.scale(widthBias));
+
+                BlockState[] sequence = colorSequences[(int) (random.nextFloat() * colorSequences.length)];
+
+                float peakHeight = 0.1f + (random.nextFloat() * 0.15f);
+                float startScale = 0.5f + (random.nextFloat() * 0.2f);
+                float peakScale = 1.2f + (random.nextFloat() * 0.3f);
+
+                float randomYaw = (float) ((random.nextFloat()-0.5) * 30);
+                float randomPitch = (float) ((random.nextFloat()-0.5) * 15);
+                float randomRoll = (float) ((random.nextFloat()-0.5) * 30);
+
+                float fireTransition = 0.2f + (random.nextFloat() * 0.15f);
+                float smokeTransition = 0.6f + (random.nextFloat() * 0.15f);
+                int duration = 35 + (int) (random.nextFloat() * 20);
+
+                VfxEntity entity = new VfxEntity(DestinyModEntities.VFX_ENTITY.get(), clientLevel);
+                entity.setPos(spawnPos);
+                clientLevel.addEntity(entity);
+
+                VfxAnimation anim = new VfxAnimationBuilder()
+                        .blockState(sequence[0])
+                            .addKeyframe(fireTransition, sequence[1])
+                            .addKeyframe(smokeTransition, sequence[2])
+                            .end(sequence[2])
+                        .translation(new Vector3f(0, -1f, 0))
+                            .addKeyframe(0.05f, new Vector3f(0, peakHeight, 0), Easing.EASE_IN_EXPO)
+                            .holdKeyframe(0.2f)
+                            .addKeyframe(0.9f, new Vector3f(0, -0.5f, 0), Easing.EASE_OUT_QUAD)
+                            .end(new Vector3f(0, -2f, 0), Easing.EASE_OUT_EXPO)
+                        .rotation(new Vector3f(randomYaw, randomPitch, randomRoll))
+                            .end(Easing.LINEAR)
+                        .scale(new Vector3f(startScale))
+                            .addKeyframe(0.1f, new Vector3f(peakScale), Easing.EASE_IN_EXPO)
+                            .addKeyframe(0.8f, new Vector3f(peakScale*0.5f), Easing.LINEAR)
+                            .end(new Vector3f(peakScale * 0.1f), Easing.EASE_OUT_EXPO)
+                        .overlay(new Vector3f(1f, 0.5f, 0f), 0.9F)
+                            .addColorKeyframe(0.20f, new Vector3f(1f, 0.3f, 0f), Easing.LINEAR)
+                            .addColorKeyframe(0.75f, new Vector3f(0.12f, 0.03f, 0.03f), Easing.EASE_IN_QUAD)
+                            .addIntensityKeyframe(0.75f, 0.4f, Easing.EASE_IN_QUAD)
+                            .end(new Vector3f(0f), Easing.LINEAR, 0f, Easing.EASE_OUT_QUAD)
+                        .build(duration);
+
+                entity.playAnimation(anim);
+            }
         }
     }
 
