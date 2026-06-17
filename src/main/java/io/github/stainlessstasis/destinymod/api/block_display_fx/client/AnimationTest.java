@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.api.block_display_fx.client;
 
 import io.github.stainlessstasis.destinymod.api.block_display_fx.VfxEntity;
-import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.RotationChannel;
+import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.RotationDegreesChannel;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.Vector3fChannel;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.channel.VfxAnimation;
 import io.github.stainlessstasis.destinymod.api.block_display_fx.easing.Easing;
@@ -12,11 +12,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class AnimationTest {
-    private static final int COUNT = 1000;
+    private static final int COUNT = 5000;
 
     public static void run() {
         LocalPlayer player = Minecraft.getInstance().player;
@@ -69,18 +68,14 @@ public class AnimationTest {
                             ),
                             Easing.EASE_IN_QUAD
                     ),
-                    new RotationChannel(
-                            new Quaternionf(),
-                            new Quaternionf().rotationYXZ(
-                                    (float) Math.toRadians(Math.random() * 360),
-                                    (float) Math.toRadians(Math.random() * 360),
-                                    (float) Math.toRadians(Math.random() * 360)
-                            ),
+                    new RotationDegreesChannel(
+                            new Vector3f(0, 0, 0),
+                            new Vector3f((float) (Math.random()*720), (float) (Math.random()*720), (float) (Math.random()*720)),
                             Easing.EASE_IN_QUAD
                     )
             );
 
-            int duration = 180 + (int)(Math.random() * 180);
+            int duration = 1800 + (int)(Math.random() * 900);
             entity.playAnimation(anim, duration);
         }
 

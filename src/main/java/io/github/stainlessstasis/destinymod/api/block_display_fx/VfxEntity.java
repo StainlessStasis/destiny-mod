@@ -54,6 +54,7 @@ public class VfxEntity extends Entity {
     public BlockState getBlockState() { return blockState; }
     public void setBlockState(BlockState state) { this.blockState = state; }
     public int getBrightnessOverride() { return brightnessOverride; }
+    public void setBrightnessOverride(int brightness) { this.brightnessOverride = brightness; }
 
     @Override protected void defineSynchedData(SynchedEntityData.Builder builder) {}
     @Override public boolean hurtServer(ServerLevel level, DamageSource source, float v) { return false; }
