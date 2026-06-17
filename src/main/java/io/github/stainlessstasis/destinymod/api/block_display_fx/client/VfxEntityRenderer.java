@@ -60,6 +60,7 @@ public class VfxEntityRenderer extends EntityRenderer<VfxEntity, VfxEntityRender
                 null
         );
         poseStack.mulPose(transformation);
+        poseStack.translate(-0.5f, -0.5f, -0.5f);
 
         int light = state.brightnessOverride != -1 ? state.brightnessOverride : state.lightCoords;
         state.blockModel.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
