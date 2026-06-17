@@ -370,28 +370,27 @@ public class ClientAudioAndVFX {
                 entity.setPos(spawnPos);
                 clientLevel.addEntity(entity);
 
-                VfxAnimation anim = new VfxAnimationBuilder()
-                        .blockState(sequence[0])
-                            .addKeyframe(fireTransition, sequence[1])
-                            .addKeyframe(smokeTransition, sequence[2])
-                            .end(sequence[2])
-                        .translation(new Vector3f(0, 0.1f, 0))
-                            .holdKeyframe(0.05f)
-                            .addKeyframe(0.075f, new Vector3f(0, peakHeight, 0), Easing.EASE_IN_EXPO)
-                            .holdKeyframe(0.4f)
-                            .addKeyframe(0.9f, new Vector3f(0, peakHeight-0.25f, 0), Easing.EASE_OUT_QUAD)
-                            .end(new Vector3f(0, -1f, 0), Easing.EASE_IN_BACK)
-                        .rotation(new Vector3f(randomYaw, randomPitch, randomRoll))
-                            .end(Easing.LINEAR)
-                        .scale(new Vector3f(startScale))
-                            .addKeyframe(0.05f, new Vector3f(peakScale), Easing.EASE_IN_EXPO)
-                            .addKeyframe(0.95f, new Vector3f(peakScale*0.8f), Easing.LINEAR)
-                            .end(new Vector3f(peakScale * 0.1f), Easing.EASE_OUT_EXPO)
-                        .overlay(new Vector3f(1f, 0.5f, 0f), 0.9F)
-                            .addColorKeyframe(0.20f, new Vector3f(1f, 0.3f, 0f), Easing.LINEAR)
-                            .addColorKeyframe(0.55f, new Vector3f(0.12f, 0.03f, 0.03f), Easing.EASE_IN_QUAD)
-                            .addIntensityKeyframe(0.75f, 0.4f, Easing.EASE_IN_QUAD)
-                            .end(new Vector3f(0f), Easing.LINEAR, 0f, Easing.EASE_OUT_QUAD)
+                VfxAnimation anim = VfxAnimationBuilder.create()
+                        .blockState(sequence[0], b -> b
+                                .addKeyframe(fireTransition, sequence[1])
+                                .addKeyframe(smokeTransition, sequence[2]))
+                        .translation(0, 0.1f, 0, t -> t
+                                .holdKeyframe(0.05f)
+                                .addKeyframe(0.075f, 0, peakHeight, 0, Easing.EASE_IN_EXPO)
+                                .holdKeyframe(0.4f)
+                                .addKeyframe(0.9f, 0, peakHeight - 0.25f, 0, Easing.EASE_OUT_QUAD)
+                                .addKeyframe(1f, 0, -1f, 0, Easing.EASE_IN_BACK))
+                        .rotation(randomYaw, randomPitch, randomRoll, r -> {})
+                        .scale(startScale, s -> s
+                                .addKeyframe(0.05f, peakScale, Easing.EASE_IN_EXPO)
+                                .addKeyframe(0.95f, peakScale * 0.8f)
+                                .addKeyframe(1f, peakScale * 0.1f, Easing.EASE_OUT_EXPO))
+                        .overlay(new Vector3f(1f, 0.5f, 0f), 0.9F, o -> o
+                                .addColorKeyframe(0.20f, new Vector3f(1f, 0.3f, 0f))
+                                .addColorKeyframe(0.55f, new Vector3f(0.12f, 0.03f, 0.03f), Easing.EASE_IN_QUAD)
+                                .addIntensityKeyframe(0.75f, 0.4f, Easing.EASE_IN_QUAD)
+                                .addColorKeyframe(1f, new Vector3f(0f))
+                                .addIntensityKeyframe(1f, 0f, Easing.EASE_OUT_QUAD))
                         .build(duration);
 
                 entity.playAnimation(anim);
