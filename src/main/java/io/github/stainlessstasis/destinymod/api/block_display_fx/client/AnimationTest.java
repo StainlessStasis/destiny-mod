@@ -38,7 +38,7 @@ public class AnimationTest {
                                 (float)(Math.random() * 4),
                                 (float)(Math.random() * 4 - 2)
                         ),
-                        Easing.EASE_IN_QUAD
+                        Easing.EASE_IN_OUT_ELASTIC
                 ),
                 new Vector3fChannel(
                         new Vector3f(0.5f, 0.5f, 0.5f),
@@ -47,12 +47,12 @@ public class AnimationTest {
                                 (float)(Math.random() * 1.5f + 0.5f),
                                 (float)(Math.random() * 1.5f + 0.5f)
                         ),
-                        Easing.EASE_IN_QUAD
+                        Easing.EASE_IN_OUT_ELASTIC
                 ),
                 new RotationDegreesChannel(
                         new Vector3f(0, 0, 0),
                         new Vector3f((float) (Math.random()*30), 360 + (float) (Math.random()*360), (float) (Math.random()*30)),
-                        Easing.EASE_IN_QUAD
+                        Easing.EASE_IN_OUT_ELASTIC
                 )
         );
 
