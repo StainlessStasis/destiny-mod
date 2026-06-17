@@ -1,5 +1,7 @@
 package io.github.stainlessstasis.destinymod.api.block_display_fx.easing;
 
+import net.minecraft.util.RandomSource;
+
 import static io.github.stainlessstasis.destinymod.api.block_display_fx.easing.EasingConstants.*;
 
 // Credit --- Easing formulas from: https://easings.net/
@@ -60,8 +62,12 @@ public enum Easing {
             (1 - EASE_OUT_BOUNCE.apply(1-2*t)) / 2 :
             (1 + EASE_OUT_BOUNCE.apply(2*t-1)) / 2);
 
-    private final EasingFunction formula;
+    private static final Easing[] VALUES = values();
+    public static Easing random(RandomSource random) {
+        return VALUES[random.nextInt(VALUES.length)];
+    }
 
+    private final EasingFunction formula;
     Easing(EasingFunction formula) {
         this.formula = formula;
     }

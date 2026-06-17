@@ -50,6 +50,14 @@ public class VfxEntity extends Entity {
         return t;
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (currentAnimation != null && tickCount - animationStartTick >= animationDurationTicks) {
+            discard();
+        }
+    }
+
     public @Nullable VfxAnimation getCurrentAnimation() { return currentAnimation; }
     public BlockState getBlockState() { return blockState; }
     public void setBlockState(BlockState state) { this.blockState = state; }

@@ -25,10 +25,11 @@ public class AnimationTest {
         if (level == null) return;
 
         VfxEntity entity = new VfxEntity(DestinyModEntities.VFX_ENTITY.get(), level);
-        Vec3 pos = player.getEyePosition().add(player.getLookAngle().normalize().scale(3f));
+        Vec3 pos = player.getEyePosition().add(player.getLookAngle().normalize().scale(6f));
         entity.setPos(pos);
         entity.setBlockState(Blocks.MAGMA_BLOCK.defaultBlockState());
         level.addEntity(entity);
+        float scale = 0.5f;
 
         VfxAnimation anim = new VfxAnimation(
                 new Vector3fChannel(
@@ -38,21 +39,17 @@ public class AnimationTest {
                                 (float)(Math.random() * 4),
                                 (float)(Math.random() * 4 - 2)
                         ),
-                        Easing.EASE_IN_OUT_ELASTIC
+                        Easing.EASE_IN_QUAD
                 ),
                 new Vector3fChannel(
-                        new Vector3f(0.5f, 0.5f, 0.5f),
-                        new Vector3f(
-                                (float)(Math.random() * 1.5f + 0.5f),
-                                (float)(Math.random() * 1.5f + 0.5f),
-                                (float)(Math.random() * 1.5f + 0.5f)
-                        ),
+                        new Vector3f(scale),
+                        new Vector3f(scale*5f),
                         Easing.EASE_IN_OUT_ELASTIC
                 ),
                 new RotationDegreesChannel(
                         new Vector3f(0, 0, 0),
                         new Vector3f((float) (Math.random()*30), 360 + (float) (Math.random()*360), (float) (Math.random()*30)),
-                        Easing.EASE_IN_OUT_ELASTIC
+                        Easing.EASE_OUT_EXPO
                 )
         );
 
@@ -100,7 +97,7 @@ public class AnimationTest {
                                     (float)(Math.random() * 4),
                                     (float)(Math.random() * 4 - 2)
                             ),
-                            Easing.EASE_OUT_QUAD
+                            Easing.random(player.getRandom())
                     ),
                     new Vector3fChannel(
                             new Vector3f(0.5f, 0.5f, 0.5f),
@@ -109,12 +106,12 @@ public class AnimationTest {
                                     (float)(Math.random() * 1.5f + 0.5f),
                                     (float)(Math.random() * 1.5f + 0.5f)
                             ),
-                            Easing.EASE_IN_QUAD
+                            Easing.random(player.getRandom())
                     ),
                     new RotationDegreesChannel(
                             new Vector3f(0, 0, 0),
                             new Vector3f((float) (Math.random()*720), (float) (Math.random()*720), (float) (Math.random()*720)),
-                            Easing.EASE_IN_QUAD
+                            Easing.random(player.getRandom())
                     )
             );
 
