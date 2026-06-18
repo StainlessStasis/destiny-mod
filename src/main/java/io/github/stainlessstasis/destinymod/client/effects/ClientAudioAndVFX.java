@@ -377,10 +377,10 @@ public class ClientAudioAndVFX {
                                 .addKeyframe(smokeTransition, sequence[2]))
                         .translation(0, 0.1f, 0, t -> t
                                 .holdKeyframe(0.05f)
-                                .addKeyframe(0.075f, 0, peakHeight, 0, Easings.EASE_IN_EXPO)
+                                .addKeyframe(0.075f, 0, peakHeight, 0, DMEasings.TEST)
                                 .holdKeyframe(0.4f)
-                                .addKeyframe(0.9f, 0, peakHeight - 0.25f, 0, Easings.EASE_OUT_QUAD)
-                                .addKeyframe(1f, 0, -1f, 0, Easings.EASE_IN_BACK))
+                                .addKeyframe(0.9f, 0, peakHeight - 0.25f, 0, DMEasings.TEST)
+                                .addKeyframe(1f, 0, -1f, 0, DMEasings.TEST))
                         .rotation(randomYaw, randomPitch, randomRoll, r -> {})
                         .scale(startScale, s -> s
                                 .addKeyframe(0.05f, peakScale, Easings.EASE_IN_EXPO)
