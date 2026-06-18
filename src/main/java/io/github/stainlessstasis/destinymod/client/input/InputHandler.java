@@ -60,7 +60,7 @@ public class InputHandler {
 
         // TODO: remove this
         if (key == InputConstants.KEY_LALT) {
-            AnimationTest.runKeyframeTest();
+            AnimationTest.runShockwaveTest();
         }
 
     }
