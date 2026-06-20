@@ -1,17 +1,14 @@
 package io.github.stainlessstasis.destinymod.client.effects;
 
-import io.github.stainlessstasis.bdanimator.animation.VfxAnimation;
-import io.github.stainlessstasis.bdanimator.animation.VfxAnimationBuilder;
-import io.github.stainlessstasis.bdanimator.easing.Easing;
-import io.github.stainlessstasis.bdanimator.easing.Easings;
-import io.github.stainlessstasis.bdanimator.entity.BDAnimatorEntities;
-import io.github.stainlessstasis.bdanimator.entity.VfxEntity;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.compat.LDL.FadeOutDynamicLightBehavior;
 import io.github.stainlessstasis.destinymod.compat.LDL.LDLCompat;
 import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
 import io.github.stainlessstasis.destinymod.task.CancellableRunnable;
 import io.github.stainlessstasis.destinymod.task.ClientTaskScheduler;
+import io.github.stainlessstasis.voxelfx.animation.VfxAnimation;
+import io.github.stainlessstasis.voxelfx.animation.VfxAnimationBuilder;
+import io.github.stainlessstasis.voxelfx.entity.VfxEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -19,6 +16,7 @@ import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.EasingType;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -367,9 +365,7 @@ public class ClientAudioAndVFX {
                 float smokeTransition = 0.6f + (random.nextFloat() * 0.15f);
                 int duration = 45 + (int) (random.nextFloat() * 5);
 
-                VfxEntity entity = new VfxEntity(BDAnimatorEntities.VFX_ENTITY.get(), clientLevel);
-                entity.setPos(spawnPos);
-                clientLevel.addEntity(entity);
+                VfxEntity entity = VfxEntity.create(clientLevel, spawnPos);
 
                 VfxAnimation anim = VfxAnimationBuilder.create()
                         .blockState(sequence[0], b -> b
@@ -377,21 +373,21 @@ public class ClientAudioAndVFX {
                                 .addKeyframe(smokeTransition, sequence[2]))
                         .translation(0, 0.1f, 0, t -> t
                                 .holdKeyframe(0.05f)
-                                .addKeyframe(0.075f, 0, peakHeight, 0, Easings.EASE_IN_EXPO)
+                                .addKeyframe(0.075f, 0, peakHeight, 0, EasingType.IN_EXPO)
                                 .holdKeyframe(0.4f)
-                                .addKeyframe(0.9f, 0, peakHeight - 0.25f, 0, Easings.EASE_OUT_QUAD)
-                                .addKeyframe(1f, 0, -1f, 0, Easings.EASE_IN_BACK))
+                                .addKeyframe(0.9f, 0, peakHeight - 0.25f, 0, EasingType.OUT_QUAD)
+                                .addKeyframe(1f, 0, -1f, 0, EasingType.IN_BACK))
                         .rotation(randomYaw, randomPitch, randomRoll, r -> {})
                         .scale(startScale, s -> s
-                                .addKeyframe(0.05f, peakScale, Easings.EASE_IN_EXPO)
+                                .addKeyframe(0.05f, peakScale, EasingType.IN_EXPO)
                                 .addKeyframe(0.95f, peakScale * 0.8f)
-                                .addKeyframe(1f, peakScale * 0.1f, Easings.EASE_OUT_EXPO))
+                                .addKeyframe(1f, peakScale * 0.1f, EasingType.OUT_EXPO))
                         .overlay(new Vector3f(1f, 0.5f, 0f), 0.9F, o -> o
                                 .addColorKeyframe(0.20f, new Vector3f(1f, 0.3f, 0f))
-                                .addColorKeyframe(0.55f, new Vector3f(0.12f, 0.03f, 0.03f), Easings.EASE_IN_QUAD)
-                                .addIntensityKeyframe(0.75f, 0.4f, Easings.EASE_IN_QUAD)
+                                .addColorKeyframe(0.55f, new Vector3f(0.12f, 0.03f, 0.03f), EasingType.IN_QUAD)
+                                .addIntensityKeyframe(0.75f, 0.4f, EasingType.IN_QUAD)
                                 .addColorKeyframe(1f, new Vector3f(0f))
-                                .addIntensityKeyframe(1f, 0f, Easings.EASE_OUT_QUAD))
+                                .addIntensityKeyframe(1f, 0f, EasingType.OUT_QUAD))
                         .build(duration);
 
                 entity.playAnimation(anim);

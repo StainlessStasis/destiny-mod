@@ -1,7 +1,6 @@
 package io.github.stainlessstasis.destinymod.client.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import io.github.stainlessstasis.bdanimator.animation.AnimationTest;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -57,11 +56,5 @@ public class InputHandler {
             player.swing(InteractionHand.MAIN_HAND);
             ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.GRENADE));
         }
-
-        // TODO: remove this
-        if (key == InputConstants.KEY_LALT) {
-            AnimationTest.runShockwaveTest();
-        }
-
     }
 }

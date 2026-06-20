@@ -1,6 +1,5 @@
 package io.github.stainlessstasis.destinymod;
 
-import io.github.stainlessstasis.destinymod.client.effects.DMEasings;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
@@ -46,7 +45,6 @@ public class DestinyMod {
         DestinyModAttachments.register(modEventBus);
         DestinyModEntities.register(modEventBus);
         GrenadeBehaviors.registerRegistry(modEventBus);
-        DMEasings.EASINGS.register(modEventBus);
     }
 
     public static Identifier id(String path) {
