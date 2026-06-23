@@ -15,6 +15,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 @EventBusSubscriber(modid = DestinyMod.MODID, value = Dist.CLIENT)
@@ -36,11 +37,12 @@ public class InputHandler {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null) return; // player can be null while in the main menu and whatnot
+        var screen = Minecraft.getInstance().screen;
 
         if (key == DestinyModKeybinds.SUBCLASS_SCREEN.get().getKey().getValue()) {
-            if (Minecraft.getInstance().screen instanceof SubclassScreen screen) {
-                screen.onClose();
-            } else {
+            if (screen instanceof SubclassScreen subclassScreen) {
+                subclassScreen.onClose();
+            } else if (screen == null) {
                 mc.setScreen(new SubclassScreen(Subclasses.SUNBREAKER));
             }
         }
