@@ -4,8 +4,10 @@ import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
+import io.github.stainlessstasis.destinymod.entity.BarricadeEntity;
 import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.entity.ThrownGrenadeEntity;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.netty.buffer.ByteBuf;
@@ -67,6 +69,21 @@ public record AbilityCastPacket(AbilityType slot) implements CustomPacketPayload
                         );
                         grenade.setBehavior(GrenadeBehaviors.THERMITE);
                         grenade.setupFromAbility(Abilities.THERMITE_GRENADE);
+                        AbilityCooldownManager.addCooldown(player, ability);
+                    }
+                });
+            }
+
+            if (packet.slot == AbilityType.CLASS_ABILITY) {
+                var ability = PlayerSubclassData.getRegisteredClassAbility(player);
+                if (AbilityCooldownManager.isOnCooldown(player, ability)) {
+                    return;
+                }
+
+                context.enqueueWork(() -> {
+                    if (player.level() instanceof ServerLevel serverLevel) {
+                        BarricadeEntity barricadeEntity = new BarricadeEntity(DestinyModEntities.BARRICADE.get(), serverLevel, player.position(), player, ability.get(serverLevel));
+                        serverLevel.addFreshEntity(barricadeEntity);
                         AbilityCooldownManager.addCooldown(player, ability);
                     }
                 });

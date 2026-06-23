@@ -29,6 +29,13 @@ public class DestinyModKeybinds {
                     GLFW.GLFW_KEY_V,
                     KEY_CATEGORY
             ));
+    public static final Lazy<KeyMapping> CLASS_ABILITY = Lazy.of(() ->
+            new KeyMapping(
+                    "key."+DestinyMod.MODID+".class_ability",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_LEFT_ALT,
+                    KEY_CATEGORY
+            ));
     public static final Lazy<KeyMapping> SUBCLASS_SCREEN = Lazy.of(() ->
             new KeyMapping(
                     "key."+DestinyMod.MODID+".subclass_screen",
@@ -41,6 +48,7 @@ public class DestinyModKeybinds {
     public static void registerKeybinds(RegisterKeyMappingsEvent event) {
         event.register(MELEE.get());
         event.register(GRENADE.get());
+        event.register(CLASS_ABILITY.get());
         event.register(SUBCLASS_SCREEN.get());
     }
 }

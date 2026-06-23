@@ -1,6 +1,5 @@
 package io.github.stainlessstasis.destinymod.client.input;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -15,7 +14,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 @EventBusSubscriber(modid = DestinyMod.MODID, value = Dist.CLIENT)
@@ -57,6 +55,10 @@ public class InputHandler {
         if (key == DestinyModKeybinds.GRENADE.get().getKey().getValue()) {
             player.swing(InteractionHand.MAIN_HAND);
             ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.GRENADE));
+        }
+
+        if (key == DestinyModKeybinds.CLASS_ABILITY.get().getKey().getValue()) {
+            ClientPacketDistributor.sendToServer(new AbilityCastPacket(AbilityType.CLASS_ABILITY));
         }
     }
 }

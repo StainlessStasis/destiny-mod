@@ -100,6 +100,7 @@ public class DestinyMod {
             PlayerSubclassData.setEquippedSubclass(player, Subclasses.SUNBREAKER);
             PlayerSubclassData.replaceAbility(player, AbilityType.MELEE, Abilities.THROWING_HAMMER);
             PlayerSubclassData.replaceAbility(player, AbilityType.GRENADE, Abilities.THERMITE_GRENADE);
+            PlayerSubclassData.replaceAbility(player, AbilityType.CLASS_ABILITY, Abilities.BARRICADE);
             player.setData(DestinyModAttachments.PLAYER_UNLOCKED_ASPECTS, Aspects.getAll());
             PlayerSubclassData.setMaxAspectsEquippable(player, 2);
         }

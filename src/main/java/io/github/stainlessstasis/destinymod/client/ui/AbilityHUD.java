@@ -27,6 +27,8 @@ public class AbilityHUD {
     public static final Identifier THROWING_HAMMER_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_ui/throwing_hammer_charged.png");
     public static final Identifier THERMITE_GRENADE = DestinyMod.id("textures/gui/sprites/destiny_ui/thermite_grenade.png");
     public static final Identifier THERMITE_GRENADE_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_ui/thermite_grenade_charged.png");
+    public static final Identifier TOWERING_BARRICADE = DestinyMod.id("textures/gui/sprites/destiny_ui/thermite_grenade.png");
+    public static final Identifier TOWERING_BARRICADE_CHARGED = DestinyMod.id("textures/gui/sprites/destiny_ui/thermite_grenade_charged.png");
 
     @SubscribeEvent
     public static void onRenderGuiLayers(RenderGuiLayerEvent.Post event) {
@@ -44,6 +46,11 @@ public class AbilityHUD {
         var grenade = PlayerSubclassData.getRegisteredGrenade(player);
         if (grenade != null) {
             activeAbilities.add(new AbilityUIDisplay(grenade, THERMITE_GRENADE, THERMITE_GRENADE_CHARGED));
+        }
+
+        var classAbility = PlayerSubclassData.getRegisteredClassAbility(player);
+        if (classAbility != null) {
+            activeAbilities.add(new AbilityUIDisplay(classAbility, TOWERING_BARRICADE, TOWERING_BARRICADE_CHARGED));
         }
 
         if (activeAbilities.isEmpty()) return;
