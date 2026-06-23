@@ -60,7 +60,7 @@ public class DestinyModEntities {
                             ThermiteGrenadeEntity::createDefault,
                             MobCategory.MISC
                     )
-                    .sized(3.25f, 2.1f)
+                    .sized(0.5f, 0.5f)
                     .noSave()
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("thermite_grenade")))
@@ -73,7 +73,7 @@ public class DestinyModEntities {
                             BarricadeEntity::createDefault,
                             MobCategory.MISC
                     )
-                    .sized(0.5f, 0.5f)
+                    .sized(3.25f, 2.1f)
                     .noSave()
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("barricade")))
