@@ -42,15 +42,13 @@ public class ProjectileUtilMixin {
 
         // TODO: use CombatUtils method
         List<Entity> obbCandidates = level.getEntities(projectile, searchArea,
-                entity -> entity instanceof OBBEntity && filter.test(entity));
+                entity -> entity instanceof OBBEntity);
 
         if (obbCandidates.isEmpty()) return;
-        System.out.println("CANDIDATES: "+obbCandidates);
 
         List<EntityHitResult> results = new ArrayList<>(cir.getReturnValue());
 
         for (Entity candidate : obbCandidates) {
-            // skip if already hit by vanilla AABB test
             boolean alreadyHit = results.stream().anyMatch(result -> result.getEntity() == candidate);
             if (alreadyHit) continue;
 
