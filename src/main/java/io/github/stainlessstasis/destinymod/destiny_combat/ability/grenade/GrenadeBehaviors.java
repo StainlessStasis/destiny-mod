@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade;
 import com.mojang.math.Constants;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
-import io.github.stainlessstasis.destinymod.entity.ThermiteGrenadeEntity;
+import io.github.stainlessstasis.destinymod.entity.ability.ThermiteGrenadeEntity;
 import io.github.stainlessstasis.destinymod.registry.DestinyRegistries;
 import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.ThermalVentProperty;

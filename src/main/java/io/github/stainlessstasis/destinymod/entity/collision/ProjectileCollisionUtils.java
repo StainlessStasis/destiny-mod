@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.ability.collision;
+package io.github.stainlessstasis.destinymod.entity.collision;
 
 import com.mojang.math.Constants;
 import net.minecraft.core.BlockPos;

@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.entity;
+package io.github.stainlessstasis.destinymod.entity.ability;
 
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -6,10 +6,11 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.BouncingProjectile;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.CollisionContext;
+import io.github.stainlessstasis.destinymod.entity.collision.BouncingProjectile;
+import io.github.stainlessstasis.destinymod.entity.collision.CollisionContext;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehavior;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
+import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.registry.property.ability.GrenadePhysicsProperty;

@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.data;
 import com.mojang.serialization.Codec;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldowns;
+import io.github.stainlessstasis.destinymod.entity.Resizable;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.buff.SolInvictus;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
@@ -116,6 +117,14 @@ public class DestinyModAttachments {
 //                    .sync(DestinyElement.STREAM_CODEC)
 //                    .build()
 //    );
+
+    public static final Supplier<AttachmentType<Resizable.Dimensions>> CUSTOM_DIMENSIONS = ATTACHMENTS.register(
+            "custom_dimensions", () -> AttachmentType.builder(() -> new Resizable.Dimensions(0.5f, 0.5f))
+                    .serialize(Resizable.Dimensions.CODEC)
+                    .sync(Resizable.Dimensions.STREAM_CODEC)
+                    .copyOnDeath()
+                    .build()
+    );
 
     public static void register(IEventBus bus) {
         ATTACHMENTS.register(bus);

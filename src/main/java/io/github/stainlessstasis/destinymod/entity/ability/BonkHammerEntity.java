@@ -1,12 +1,13 @@
-package io.github.stainlessstasis.destinymod.entity;
+package io.github.stainlessstasis.destinymod.entity.ability;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.BouncingProjectile;
+import io.github.stainlessstasis.destinymod.entity.collision.BouncingProjectile;
+import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
-import io.github.stainlessstasis.destinymod.destiny_combat.ability.collision.CollisionContext;
+import io.github.stainlessstasis.destinymod.entity.collision.CollisionContext;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.cooldown.AbilityCooldownManager;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;

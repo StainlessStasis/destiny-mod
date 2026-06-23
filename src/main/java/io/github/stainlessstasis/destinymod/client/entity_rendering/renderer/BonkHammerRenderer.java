@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client.entity_rendering.renderer;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.entity.BonkHammerEntity;
+import io.github.stainlessstasis.destinymod.entity.ability.BonkHammerEntity;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.constant.dataticket.DataTicket;

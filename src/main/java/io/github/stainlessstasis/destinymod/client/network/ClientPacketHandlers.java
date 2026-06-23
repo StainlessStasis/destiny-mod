@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client.network;
 
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
-import io.github.stainlessstasis.destinymod.entity.ThermiteGrenadeEntity;
+import io.github.stainlessstasis.destinymod.entity.ability.ThermiteGrenadeEntity;
 import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.phys.Vec3;

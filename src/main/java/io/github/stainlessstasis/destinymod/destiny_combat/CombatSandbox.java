@@ -1,6 +1,5 @@
 package io.github.stainlessstasis.destinymod.destiny_combat;
 
-import com.google.gson.internal.GsonTypes;
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclass;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
@@ -13,7 +12,7 @@ import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.debuff.MeltingPoint;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
-import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
+import io.github.stainlessstasis.destinymod.entity.ability.SunspotEntity;
 import io.github.stainlessstasis.destinymod.registry.datapack.Aspects;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAbility;
 import io.github.stainlessstasis.destinymod.registry.property.aspect.BlazingPyreProperty;

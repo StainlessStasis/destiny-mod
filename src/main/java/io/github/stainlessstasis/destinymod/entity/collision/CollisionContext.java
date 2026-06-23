@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.destiny_combat.ability.collision;
+package io.github.stainlessstasis.destinymod.entity.collision;
 
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;

@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.entity;
+package io.github.stainlessstasis.destinymod.entity.ability;
 
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;

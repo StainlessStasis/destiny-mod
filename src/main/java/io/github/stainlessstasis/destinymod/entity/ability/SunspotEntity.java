@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.entity;
+package io.github.stainlessstasis.destinymod.entity.ability;
 
 import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;

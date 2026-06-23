@@ -1,8 +1,8 @@
 package io.github.stainlessstasis.destinymod.entity;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
+import io.github.stainlessstasis.destinymod.entity.ability.*;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -73,7 +73,7 @@ public class DestinyModEntities {
                             BarricadeEntity::createDefault,
                             MobCategory.MISC
                     )
-                    .sized(3.25f, 2.1f)
+                    .sized(BarricadeEntity.WIDTH, BarricadeEntity.HEIGHT)
                     .noSave()
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("barricade")))

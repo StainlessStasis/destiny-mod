@@ -3,7 +3,7 @@ package io.github.stainlessstasis.destinymod.client.effects;
 import io.github.stainlessstasis.destinymod.DMColor;
 import io.github.stainlessstasis.destinymod.compat.LDL.FadeOutDynamicLightBehavior;
 import io.github.stainlessstasis.destinymod.compat.LDL.LDLCompat;
-import io.github.stainlessstasis.destinymod.entity.SunspotEntity;
+import io.github.stainlessstasis.destinymod.entity.ability.SunspotEntity;
 import io.github.stainlessstasis.destinymod.task.CancellableRunnable;
 import io.github.stainlessstasis.destinymod.task.ClientTaskScheduler;
 import io.github.stainlessstasis.voxelfx.animation.VfxAnimation;
