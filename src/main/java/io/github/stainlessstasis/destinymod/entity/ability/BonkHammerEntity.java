@@ -2,7 +2,7 @@ package io.github.stainlessstasis.destinymod.entity.ability;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
-import io.github.stainlessstasis.destinymod.entity.collision.BouncingProjectile;
+import io.github.stainlessstasis.destinymod.entity.projectile.BouncingProjectile;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;

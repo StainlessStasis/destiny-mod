@@ -6,7 +6,7 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.DestinyAbility;
-import io.github.stainlessstasis.destinymod.entity.collision.BouncingProjectile;
+import io.github.stainlessstasis.destinymod.entity.projectile.BouncingProjectile;
 import io.github.stainlessstasis.destinymod.entity.collision.CollisionContext;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehavior;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;

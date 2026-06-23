@@ -1,6 +1,7 @@
-package io.github.stainlessstasis.destinymod.entity.collision;
+package io.github.stainlessstasis.destinymod.entity.projectile;
 
 import com.mojang.math.Constants;
+import io.github.stainlessstasis.destinymod.entity.collision.CollisionContext;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 

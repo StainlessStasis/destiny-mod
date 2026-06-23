@@ -1,5 +1,7 @@
-package io.github.stainlessstasis.destinymod.entity.collision;
+package io.github.stainlessstasis.destinymod.entity.projectile;
 
+import io.github.stainlessstasis.destinymod.entity.collision.CollisionContext;
+import io.github.stainlessstasis.destinymod.entity.collision.ProjectileCollisionUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
