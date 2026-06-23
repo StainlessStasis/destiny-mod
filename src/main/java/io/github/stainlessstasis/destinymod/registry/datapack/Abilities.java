@@ -34,6 +34,7 @@ public class Abilities {
     // MAIN ABILITIES
     public static final RegisteredAbility THROWING_HAMMER = register("throwing_hammer");
     public static final RegisteredAbility THERMITE_GRENADE = register("thermite_grenade");
+    public static final RegisteredAbility BARRICADE = register("barricade");
 
     // PASSIVES
     public static final RegisteredAbility SOL_INVICTUS = register("sol_invictus");

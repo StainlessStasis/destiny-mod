@@ -32,8 +32,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 
-import java.util.Set;
-
 @Mod(DestinyMod.MODID)
 public class DestinyMod {
     public static final String MODID = "destinymod";

@@ -9,12 +9,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import org.jspecify.annotations.Nullable;
 
 public class DestinyDamageBuilder {
     private final ResourceKey<DamageType> damageTypeKey;
-    private final LivingEntity victim;
+    private final Entity victim;
 
     private RegisteredDamageType attributedDamageType = DMDamageTypes.NONE;
     private @Nullable Entity directEntity;
@@ -24,12 +23,12 @@ public class DestinyDamageBuilder {
     private float damage = 1f;
     private int invulnerabilityTicks = -1;
 
-    private DestinyDamageBuilder(ResourceKey<DamageType> damageTypeKey, LivingEntity victim) {
+    private DestinyDamageBuilder(ResourceKey<DamageType> damageTypeKey, Entity victim) {
         this.damageTypeKey = damageTypeKey;
         this.victim = victim;
     }
 
-    public static DestinyDamageBuilder create(ResourceKey<DamageType> damageTypeKey, LivingEntity victim) {
+    public static DestinyDamageBuilder create(ResourceKey<DamageType> damageTypeKey, Entity victim) {
         return new DestinyDamageBuilder(damageTypeKey, victim);
     }
 

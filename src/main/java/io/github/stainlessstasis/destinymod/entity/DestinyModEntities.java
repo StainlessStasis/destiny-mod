@@ -25,10 +25,8 @@ public class DestinyModEntities {
                     .noSave()
                     .clientTrackingRange(8)
                     .updateInterval(1)
-                    .build(ResourceKey.create(
-                            Registries.ENTITY_TYPE,
-                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "hammer_of_sol")
-                    ))
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("hammer_of_sol")))
+
     );
 
     public static final Supplier<EntityType<@NotNull SunspotEntity>> SUNSPOT = ENTITY_TYPES.register(
@@ -40,10 +38,7 @@ public class DestinyModEntities {
                     .sized(3f, 2.5f)
                     .noSave()
                     .clientTrackingRange(8)
-                    .build(ResourceKey.create(
-                            Registries.ENTITY_TYPE,
-                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "sunspot")
-                    ))
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("sunspot")))
     );
 
     public static final Supplier<EntityType<@NotNull ThrownGrenadeEntity>> THROWN_GRENADE = ENTITY_TYPES.register(
@@ -55,10 +50,8 @@ public class DestinyModEntities {
                     .sized(0.3f, 0.3f)
                     .noSave()
                     .clientTrackingRange(8)
-                    .build(ResourceKey.create(
-                            Registries.ENTITY_TYPE,
-                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "thrown_grenade")
-                    ))
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("thrown_grenade")))
+
     );
 
     public static final Supplier<EntityType<@NotNull ThermiteGrenadeEntity>> THERMITE_GRENADE = ENTITY_TYPES.register(
@@ -67,13 +60,24 @@ public class DestinyModEntities {
                             ThermiteGrenadeEntity::createDefault,
                             MobCategory.MISC
                     )
+                    .sized(3.25f, 2.1f)
+                    .noSave()
+                    .clientTrackingRange(8)
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("thermite_grenade")))
+
+    );
+
+    public static final Supplier<EntityType<@NotNull BarricadeEntity>> BARRICADE = ENTITY_TYPES.register(
+            "barricade",
+            () -> EntityType.Builder.of(
+                            BarricadeEntity::createDefault,
+                            MobCategory.MISC
+                    )
                     .sized(0.5f, 0.5f)
                     .noSave()
                     .clientTrackingRange(8)
-                    .build(ResourceKey.create(
-                            Registries.ENTITY_TYPE,
-                            Identifier.fromNamespaceAndPath(DestinyMod.MODID, "thermite_grenade")
-                    ))
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("barricade")))
+
     );
 
     public static void register(IEventBus eventBus) {

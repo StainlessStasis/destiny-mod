@@ -17,22 +17,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SunspotEntity extends AbstractAbilityEntity {
+public class SunspotEntity extends DestinyAbilityEntity {
     public static final float RADIUS = 2f;
     public static final int HIT_INTERVAL = 10;
     public static final int MAX_LIFETIME = 160;
 
     private final Map<LivingEntity, Integer> attackCooldowns = new HashMap<>();
 
-    private SunspotEntity(EntityType<? extends AbstractAbilityEntity> type, Level level) {
+    private SunspotEntity(EntityType<? extends DestinyAbilityEntity> type, Level level) {
         super(type, level, Abilities.SUNSPOT.get(level));
     }
 
-    public static SunspotEntity createDefault(EntityType<? extends AbstractAbilityEntity> entityType, Level level) {
+    public static SunspotEntity createDefault(EntityType<? extends DestinyAbilityEntity> entityType, Level level) {
         return new SunspotEntity(entityType, level);
     }
 
-    public SunspotEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, @Nullable LivingEntity owner) {
+    public SunspotEntity(EntityType<? extends DestinyAbilityEntity> type, Level level, Vec3 pos, @Nullable LivingEntity owner) {
         this(type, level);
         setPos(pos);
         setOwner(owner);

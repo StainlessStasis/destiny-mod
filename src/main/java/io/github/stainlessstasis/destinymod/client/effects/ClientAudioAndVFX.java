@@ -346,7 +346,7 @@ public class ClientAudioAndVFX {
                     {Blocks.GILDED_BLACKSTONE.defaultBlockState(), Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.OBSIDIAN.defaultBlockState()}
             };
 
-            int debrisCount = 2 + (int) (random.nextFloat() * 2);
+            int debrisCount = 1 + (int) (random.nextFloat() * 2);
             for (int i = 0; i < debrisCount; i++) {
                 double widthBias = (random.nextFloat() - 0.5) * width;
                 Vec3 spawnPos = pos.add(rightDir.scale(widthBias));
@@ -354,8 +354,8 @@ public class ClientAudioAndVFX {
                 BlockState[] sequence = colorSequences[(int) (random.nextFloat() * colorSequences.length)];
 
                 float peakHeight = 0.05f + (random.nextFloat() * 0.1f);
-                float startScale = 0.5f + (random.nextFloat() * 0.2f);
-                float peakScale = 1.2f + (random.nextFloat() * 0.3f);
+                float startScale = 0.25f + (random.nextFloat() * 0.2f);
+                float peakScale = 0.7f + (random.nextFloat() * 0.3f);
 
                 float randomYaw = (float) ((random.nextFloat()-0.5) * 30);
                 float randomPitch = (float) ((random.nextFloat()-0.5) * 15);
@@ -382,10 +382,10 @@ public class ClientAudioAndVFX {
                                 .addKeyframe(0.05f, peakScale, EasingType.IN_EXPO)
                                 .addKeyframe(0.95f, peakScale * 0.8f)
                                 .addKeyframe(1f, peakScale * 0.1f, EasingType.OUT_EXPO))
-                        .overlay(new Vector3f(1f, 0.5f, 0f), 0.9F, o -> o
-                                .addColorKeyframe(0.20f, new Vector3f(1f, 0.3f, 0f))
+                        .overlay(new Vector3f(1f, 0.5f, 0f), 0.7F, o -> o
+                                .addColorKeyframe(0.20f, new Vector3f(0.8f, 0.2f, 0f))
                                 .addColorKeyframe(0.55f, new Vector3f(0.12f, 0.03f, 0.03f), EasingType.IN_QUAD)
-                                .addIntensityKeyframe(0.75f, 0.4f, EasingType.IN_QUAD)
+                                .addIntensityKeyframe(0.75f, 0.3f, EasingType.IN_QUAD)
                                 .addColorKeyframe(1f, new Vector3f(0f))
                                 .addIntensityKeyframe(1f, 0f, EasingType.OUT_QUAD))
                         .build(duration);

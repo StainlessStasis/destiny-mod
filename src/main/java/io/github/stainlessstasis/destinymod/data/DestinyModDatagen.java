@@ -45,6 +45,9 @@ public class DestinyModDatagen {
                             ),
                             AbilityProperties.THERMITE_GRENADE.get()
                     ));
+                    bootstrap.register(Abilities.BARRICADE.resourceKey(), new Ability(
+                            AbilityType.CLASS_ABILITY, DestinyElement.NONE, 200, 3, -1f, 2f, -1
+                    ));
                     bootstrap.register(Abilities.SOL_INVICTUS.resourceKey(), new Ability(
                             AbilityType.PASSIVE, DestinyElement.NONE, -1, -1, -1, -1, -1
                     ));

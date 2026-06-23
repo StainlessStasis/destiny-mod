@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
+public class ThermiteGrenadeEntity extends DestinyAbilityEntity {
     private static final EntityDataAccessor<Integer> CURRENT_PULSE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> TRAVELED_DISTANCE = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> HAS_THERMAL_VENT = SynchedEntityData.defineId(ThermiteGrenadeEntity.class, EntityDataSerializers.BOOLEAN);
@@ -62,16 +62,16 @@ public class ThermiteGrenadeEntity extends AbstractAbilityEntity {
     private float damageMultiplier = 1f;
     private float scorchMultiplier = 1f;
 
-    private ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level) {
+    private ThermiteGrenadeEntity(EntityType<? extends DestinyAbilityEntity> type, Level level) {
         super(type, level, Abilities.THERMITE_GRENADE.get(level));
         init();
     }
 
-    public static ThermiteGrenadeEntity createDefault(EntityType<? extends AbstractAbilityEntity> entityType, Level level) {
+    public static ThermiteGrenadeEntity createDefault(EntityType<? extends DestinyAbilityEntity> entityType, Level level) {
         return new ThermiteGrenadeEntity(entityType, level);
     }
 
-    public ThermiteGrenadeEntity(EntityType<? extends AbstractAbilityEntity> type, Level level, Vec3 pos, float yaw, @Nullable LivingEntity owner) {
+    public ThermiteGrenadeEntity(EntityType<? extends DestinyAbilityEntity> type, Level level, Vec3 pos, float yaw, @Nullable LivingEntity owner) {
         super(type, level, pos, owner, Abilities.THERMITE_GRENADE.get(level));
         init();
         setYRot(yaw);

@@ -13,18 +13,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public abstract class AbstractAbilityEntity extends Entity implements TraceableEntity, DestinyAbility {
+public abstract class DestinyAbilityEntity extends Entity implements TraceableEntity, DestinyAbility {
     protected final Ability ability;
     protected @Nullable EntityReference<LivingEntity> owner;
 
-    protected AbstractAbilityEntity(EntityType<?> type, Level level, Ability ability) {
+    protected DestinyAbilityEntity(EntityType<?> type, Level level, Ability ability) {
         super(type, level);
         this.ability = ability;
         noPhysics = true;
         refreshDimensions();
     }
 
-    public AbstractAbilityEntity(EntityType<?> type, Level level, Vec3 pos, @Nullable LivingEntity owner, Ability ability) {
+    public DestinyAbilityEntity(EntityType<?> type, Level level, Vec3 pos, @Nullable LivingEntity owner, Ability ability) {
         this(type, level, ability);
         setPos(pos);
         setOwner(owner);
