@@ -26,6 +26,7 @@ public class BarricadeEntity extends DestinyAbilityEntity implements OBBEntity {
     public BarricadeEntity(EntityType<?> type, Level level, Vec3 pos, @Nullable LivingEntity owner, Ability ability) {
         super(type, level, pos, owner, ability);
         setOBBCenter(new Vec3(pos.x, pos.y + (HEIGHT/2f), pos.z));
+        setBoundingBox(getConservativeAABB());
     }
 
     @Override
@@ -39,7 +40,9 @@ public class BarricadeEntity extends DestinyAbilityEntity implements OBBEntity {
     @Override
     protected void reapplyPosition() {
         super.reapplyPosition();
-        setBoundingBox(getConservativeAABB());
+        if (obbCenter != null) {
+            setBoundingBox(getConservativeAABB());
+        }
     }
 
     public void setOBBCenter(Vec3 center) {
