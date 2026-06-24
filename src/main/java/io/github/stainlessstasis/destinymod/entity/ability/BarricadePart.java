@@ -3,6 +3,7 @@ package io.github.stainlessstasis.destinymod.entity.ability;
 import io.github.stainlessstasis.destinymod.entity.collision.OrientedPartEntity;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
@@ -24,6 +25,19 @@ public class BarricadePart extends OrientedPartEntity<BarricadeEntity> {
         dimensions = EntityDimensions.scalable(width, height);
         setBoundingBox(box);
         refreshDimensions();
+    }
+
+    @Override
+    public Vec3 getSurfaceNormal(Vec3 rawAABBNormal, Vec3 incomingVelocity) {
+        float yawRad = (float) Math.toRadians(getParent().getYRot());
+        Vec3 facingDir = new Vec3(-Mth.sin(yawRad), 0, Mth.cos(yawRad));
+
+        // always use facing normal
+        // fixes issue of hammers clipping the edge of a barricade part and phasing through the barricade
+        if (facingDir.dot(incomingVelocity) > 0) {
+            return facingDir.scale(-1);
+        }
+        return facingDir;
     }
 
     @Override

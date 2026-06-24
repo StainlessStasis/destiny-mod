@@ -170,7 +170,7 @@ public final class ProjectileCollisionUtils {
         }
 
         if (bestHit != null && bestHit.getEntity() instanceof OrientedPartEntity<?> part) {
-            bestNormal = part.getSurfaceNormal(bestNormal);
+            bestNormal = part.getSurfaceNormal(bestNormal, bestVictimVelocity);
         }
 
         if (bestHit == null) return Optional.empty();

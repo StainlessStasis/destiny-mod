@@ -27,7 +27,7 @@ public abstract class OrientedPartEntity<T extends Entity> extends PartEntity<T>
      * to transform the normal into something more accurate for a collision against a rotated entity.
      * Used by barricades.
      */
-    public Vec3 getSurfaceNormal(Vec3 rawAABBNormal) {
+    public Vec3 getSurfaceNormal(Vec3 rawAABBNormal, Vec3 incomingVelocity) {
         float yawRad = (float) Math.toRadians(getParent().getYRot());
         Vec3 facingDir = new Vec3(-Mth.sin(yawRad), 0, Mth.cos(yawRad));
         Vec3 rightDir = new Vec3(Mth.cos(yawRad), 0, Mth.sin(yawRad));
