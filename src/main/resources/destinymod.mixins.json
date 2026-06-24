@@ -3,8 +3,7 @@
   "package": "io.github.stainlessstasis.destinymod.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "DamageSourceMixin",
-    "ProjectileUtilMixin"
+    "DamageSourceMixin"
   ],
   "injectors": {
     "defaultRequire": 1
