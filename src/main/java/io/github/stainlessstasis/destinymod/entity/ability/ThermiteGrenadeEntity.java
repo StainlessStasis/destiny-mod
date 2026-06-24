@@ -21,6 +21,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +52,7 @@ public class ThermiteGrenadeEntity extends DestinyAbilityEntity {
     private float maxStepHeight;
     private float width;
     private float height;
-    private final Set<UUID> hitEntitiesThisPulse = new HashSet<>();
+    private final Set<Entity> hitEntitiesThisPulse = new HashSet<>();
     private float lastObservedDistance = 0f;
     private int lastObservedPulse = 0;
 
@@ -252,7 +253,7 @@ public class ThermiteGrenadeEntity extends DestinyAbilityEntity {
 
     private record MarchResult(Vec3 finalPos, boolean isBlocked) {}
 
-    private void damageEntitiesAtPosition(Vec3 pos, Set<UUID> hitEntities) {
+    private void damageEntitiesAtPosition(Vec3 pos, Set<Entity> hitEntities) {
         float width = getWidth();
         float halfWidth = width / 2f;
         float height = getHeight();
@@ -296,7 +297,7 @@ public class ThermiteGrenadeEntity extends DestinyAbilityEntity {
                     .executeDamage();
             StatusEffectManager.applyScorch(target, getOwner(), DMDamageTypes.THERMITE_GRENADE, (int) (this.ability.scorch() * this.scorchMultiplier));
 
-            this.hitEntitiesThisPulse.add(target.getUUID());
+            this.hitEntitiesThisPulse.add(target);
             triggerRekindledFlames();
         }
     }
