@@ -30,6 +30,10 @@ public abstract class DestinyAbilityEntity extends Entity implements TraceableEn
         setOwner(owner);
     }
 
+    public boolean isValidTarget() {
+        return false;
+    }
+
     @Override
     public @NotNull Ability getDestinyAbility() {
         return ability;

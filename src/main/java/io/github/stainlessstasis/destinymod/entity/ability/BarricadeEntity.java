@@ -6,6 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -54,6 +55,12 @@ public class BarricadeEntity extends DestinyAbilityEntity {
         }
     }
 
+    @Override
+    public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource damageSource, float v) {
+        System.out.println("OUCH");
+        return super.hurtServer(serverLevel, damageSource, v);
+    }
+
     public void spawnSegments(ServerLevel level) {
         float yawRad = (float) Math.toRadians(getYRot());
         float cos = Mth.cos(yawRad);
@@ -79,8 +86,8 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     }
 
     public void debugSegments(ServerLevel level) {
-        for (BarricadeSegmentEntity seg : segments) {
-            AABB box = seg.getBoundingBox();
+        for (BarricadeSegmentEntity segment : segments) {
+            AABB box = segment.getBoundingBox();
             double[][] corners = {
                     {box.minX, box.minY, box.minZ},
                     {box.maxX, box.minY, box.minZ},
@@ -98,8 +105,23 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     }
 
     @Override
+    public boolean isMultipartEntity() {
+        return true;
+    }
+
+    @Override
     public PartEntity<?>@NonNull[] getParts() {
         return segments.toArray(new BarricadeSegmentEntity[0]);
+    }
+
+    @Override
+    public boolean isValidTarget() {
+        return true;
+    }
+
+    @Override
+    public boolean canBeHitByProjectile() {
+        return isAlive();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.destinymod.entity.collision;
 
 import com.mojang.math.Constants;
+import io.github.stainlessstasis.destinymod.entity.ability.DestinyAbilityEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -13,9 +14,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class ProjectileCollisionUtils {
     private ProjectileCollisionUtils() {}
@@ -116,17 +119,30 @@ public final class ProjectileCollisionUtils {
 
     private static Set<Entity> getEntityCandidates(Entity entity, AABB searchArea, Set<Entity> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
         Entity owner = entity instanceof Projectile projectile ? projectile.getOwner() : null;
+
         return new HashSet<>(entity.level().getEntities(entity, searchArea, candidate -> {
             if (alreadyCollidedThisTick.stream().anyMatch(candidate::is)) return false;
-            if (!(candidate instanceof LivingEntity) && !(candidate instanceof Projectile)) return false;
-            if (owner != null && candidate.getUUID().equals(owner.getUUID())) return false;
+
+            Entity checkTarget = candidate instanceof PartEntity<?> part ? part.getParent() : candidate;
+            boolean isValidType = checkTarget instanceof LivingEntity
+                    || checkTarget instanceof Projectile
+                    || (checkTarget instanceof DestinyAbilityEntity ability && ability.isValidTarget());
+            if (!isValidType) return false;
+
+            if (owner != null && checkTarget.getUUID().equals(owner.getUUID())) return false;
+
             // skip other projectiles from the same owner
-            if (skipSameOwnerProjectiles && owner != null && candidate instanceof Projectile other) {
+            if (skipSameOwnerProjectiles && owner != null && checkTarget instanceof Projectile other) {
                 Entity otherOwner = other.getOwner();
                 return otherOwner == null || !otherOwner.getUUID().equals(owner.getUUID());
             }
             return true;
-        }));
+        }))
+        .stream()
+        .flatMap(candidate -> candidate.isMultipartEntity()
+                ? Arrays.stream(candidate.getParts()).filter(part -> part != null && part.getBoundingBox().intersects(searchArea))
+                : Stream.of(candidate))
+        .collect(Collectors.toSet());
     }
 
     private static Optional<CollisionContext> collideEntities(Entity entity, Set<Entity> candidates) {

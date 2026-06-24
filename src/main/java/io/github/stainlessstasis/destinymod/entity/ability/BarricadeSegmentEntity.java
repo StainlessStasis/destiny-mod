@@ -4,6 +4,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -15,13 +17,15 @@ public class BarricadeSegmentEntity extends PartEntity<BarricadeEntity> {
     public BarricadeSegmentEntity(BarricadeEntity parent, AABB box) {
         super(parent);
         Vec3 center = box.getCenter();
-        this.setPos(center.x, box.minY, center.z);
-        this.setBoundingBox(box);
-        this.noPhysics = true;
-    }
+        setPos(center.x, box.minY, center.z);
+        noPhysics = true;
 
-    @Override
-    public void tick() {}
+        float width = (float)(box.maxX - box.minX);
+        float height = (float)(box.maxY - box.minY);
+        dimensions = EntityDimensions.scalable(width, height);
+        setBoundingBox(box);
+        refreshDimensions();
+    }
 
     @Override
     public boolean is(@NonNull Entity other) {
@@ -35,10 +39,14 @@ public class BarricadeSegmentEntity extends PartEntity<BarricadeEntity> {
     }
 
     @Override
-    public boolean canBeHitByProjectile() { return true; }
+    public @NonNull EntityDimensions getDimensions(@NonNull Pose pose) {
+        return dimensions;
+    }
 
     @Override
-    public boolean isPickable() { return true; }
+    public boolean canBeHitByProjectile() {
+        return isAlive();
+    }
 
     @Override
     protected void readAdditionalSaveData(@NonNull ValueInput valueInput) {discard();}

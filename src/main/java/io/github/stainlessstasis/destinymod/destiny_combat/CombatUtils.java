@@ -13,6 +13,7 @@ import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -63,12 +64,12 @@ public class CombatUtils {
     }
 
     /**
-     * Gets entities in the specified AABB.
-     * If an owner is provided, then any entities sharing the same owner will be excluded.
-     * If a collection of already hit entities is provided, then any entities in the list will be excluded.
-     */
+     * Gets entities in the specified AABB.<br>
+     * If an owner is provided, then any entities sharing the same owner will be excluded.<br>
+     * If a collection of already hit entities is provided, then any entities in the list will be excluded.<br>
+=     */
     public static <T extends Entity> List<T> getEntitiesInArea(AABB area, Level level, Class<T> clazz, @Nullable Entity owner, @Nullable Collection<Entity> alreadyHit, @Nullable Predicate<T> filter) {
-        return  level.getEntitiesOfClass(clazz, area,
+        return level.getEntitiesOfClass(clazz, area,
                 entity -> {
                     if (owner != null) {
                         if (entity == owner) return false;
