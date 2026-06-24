@@ -21,6 +21,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -43,7 +44,7 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements GeoEntit
     private static final EntityDataAccessor<String> ABILITY_ID = SynchedEntityData.defineId(ThrownGrenadeEntity.class, EntityDataSerializers.STRING);
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
-    private final Set<UUID> collidedThisTick = new HashSet<>();
+    private final Set<Entity> collidedThisTick = new HashSet<>();
     protected Ability ability;
 
     protected ThrownGrenadeEntity(EntityType<? extends ThrowableProjectile> type, Level level) {
@@ -117,7 +118,7 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements GeoEntit
     }
 
     @Override
-    public Set<UUID> getCollidedThisTick() {
+    public Set<Entity> getCollidedThisTick() {
         return collidedThisTick;
     }
 
@@ -130,7 +131,7 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements GeoEntit
 
     @Override
     public void handleEntityCollision(CollisionContext context, EntityHitResult result) {
-        collidedThisTick.add(result.getEntity().getUUID());
+        collidedThisTick.add(result.getEntity());
         if (getDetonateOnEntity()) {
             detonate(context);
         }
@@ -204,4 +205,7 @@ public class ThrownGrenadeEntity extends ThrowableProjectile implements GeoEntit
     public @NonNull AnimatableInstanceCache getAnimatableInstanceCache() {
         return geoCache;
     }
+
+    @Override
+    public boolean shouldBeSaved() {return false;}
 }

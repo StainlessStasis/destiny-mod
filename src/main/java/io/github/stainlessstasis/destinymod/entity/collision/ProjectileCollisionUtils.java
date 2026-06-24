@@ -27,14 +27,14 @@ public final class ProjectileCollisionUtils {
     /**
      * Tests the entity for collisions against blocks and entities. Returns whichever collision is earliest.
      */
-    public static Optional<CollisionContext> checkCollisions(Entity entity, Set<UUID> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
+    public static Optional<CollisionContext> checkCollisions(Entity entity, Set<Entity> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
         return checkCollisions(entity, alreadyCollidedThisTick, entity.getDeltaMovement(), skipSameOwnerProjectiles);
     }
 
     /**
      * Alternative method for checkCollisions which uses a custom movement vector instead of delta movement.
      */
-    public static Optional<CollisionContext> checkCollisions(Entity entity, Set<UUID> alreadyCollidedThisTick, Vec3 movement, boolean skipSameOwnerProjectiles) {
+    public static Optional<CollisionContext> checkCollisions(Entity entity, Set<Entity> alreadyCollidedThisTick, Vec3 movement, boolean skipSameOwnerProjectiles) {
         AABB preTick = entity.getBoundingBox();
         AABB postTick = preTick.move(movement);
         AABB sweepVolume = union(preTick, postTick);
@@ -108,16 +108,16 @@ public final class ProjectileCollisionUtils {
 
     // --- Entities ---
 
-    private static Optional<CollisionContext> checkEntityCollisions(Entity entity, AABB sweepVolume, Set<UUID> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
+    private static Optional<CollisionContext> checkEntityCollisions(Entity entity, AABB sweepVolume, Set<Entity> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
         Set<Entity> candidates = getEntityCandidates(entity, sweepVolume, alreadyCollidedThisTick, skipSameOwnerProjectiles);
         if (candidates.isEmpty()) return Optional.empty();
         return collideEntities(entity, candidates);
     }
 
-    private static Set<Entity> getEntityCandidates(Entity entity, AABB searchArea, Set<UUID> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
+    private static Set<Entity> getEntityCandidates(Entity entity, AABB searchArea, Set<Entity> alreadyCollidedThisTick, boolean skipSameOwnerProjectiles) {
         Entity owner = entity instanceof Projectile projectile ? projectile.getOwner() : null;
         return new HashSet<>(entity.level().getEntities(entity, searchArea, candidate -> {
-            if (alreadyCollidedThisTick.contains(candidate.getUUID())) return false;
+            if (alreadyCollidedThisTick.stream().anyMatch(candidate::is)) return false;
             if (!(candidate instanceof LivingEntity) && !(candidate instanceof Projectile)) return false;
             if (owner != null && candidate.getUUID().equals(owner.getUUID())) return false;
             // skip other projectiles from the same owner

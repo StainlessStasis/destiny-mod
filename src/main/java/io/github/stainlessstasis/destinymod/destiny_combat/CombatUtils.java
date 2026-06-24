@@ -67,7 +67,7 @@ public class CombatUtils {
      * If an owner is provided, then any entities sharing the same owner will be excluded.
      * If a collection of already hit entities is provided, then any entities in the list will be excluded.
      */
-    public static <T extends Entity> List<T> getEntitiesInArea(AABB area, Level level, Class<T> clazz, @Nullable Entity owner, @Nullable Collection<UUID> alreadyHit, @Nullable Predicate<T> filter) {
+    public static <T extends Entity> List<T> getEntitiesInArea(AABB area, Level level, Class<T> clazz, @Nullable Entity owner, @Nullable Collection<Entity> alreadyHit, @Nullable Predicate<T> filter) {
         return  level.getEntitiesOfClass(clazz, area,
                 entity -> {
                     if (owner != null) {
@@ -75,7 +75,7 @@ public class CombatUtils {
                         if (entity instanceof OwnableEntity ownable && ownable.getOwner() == owner) return false;
                         if (entity instanceof TraceableEntity traceable && traceable.getOwner() == owner) return false;
                     }
-                    if (alreadyHit != null && alreadyHit.contains(entity.getUUID())) return false;
+                    if (alreadyHit != null && alreadyHit.stream().anyMatch(entity::is)) return false;
                     if (filter != null) return filter.test(entity);
                     return true;
                 }

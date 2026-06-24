@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface DestinyProjectile {
-    Set<UUID> getCollidedThisTick();
+    Set<Entity> getCollidedThisTick();
 
     default void moveAndCollide() {
         if (!(this instanceof Entity entity)) return;

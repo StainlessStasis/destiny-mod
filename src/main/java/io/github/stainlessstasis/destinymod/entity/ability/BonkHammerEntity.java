@@ -80,7 +80,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private final Ability ability;
-    private final Set<UUID> collidedThisTick = new HashSet<>();
+    private final Set<Entity> collidedThisTick = new HashSet<>();
     private float visualSpinDegrees = 0f;
     private boolean hitCeiling = false;
     private boolean hasEverCollided = false;
@@ -275,7 +275,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     }
 
     @Override
-    public Set<UUID> getCollidedThisTick() {
+    public Set<Entity> getCollidedThisTick() {
         return collidedThisTick;
     }
 
@@ -296,7 +296,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
 
     @Override
     public void handleEntityCollision(CollisionContext context, EntityHitResult result) {
-        this.collidedThisTick.add(result.getEntity().getUUID());
+        this.collidedThisTick.add(result.getEntity());
         vanillaHitEntity(result);
     }
 
@@ -640,4 +640,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
     public @NotNull Ability getDestinyAbility() {
         return ability;
     }
+
+    @Override
+    public boolean shouldBeSaved() {return false;}
 }

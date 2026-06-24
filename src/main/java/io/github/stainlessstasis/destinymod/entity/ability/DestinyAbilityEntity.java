@@ -53,4 +53,6 @@ public abstract class DestinyAbilityEntity extends Entity implements TraceableEn
     }
     @Override
     protected void addAdditionalSaveData(@NonNull ValueOutput valueOutput) {}
+    @Override
+    public boolean shouldBeSaved() {return false;}
 }
