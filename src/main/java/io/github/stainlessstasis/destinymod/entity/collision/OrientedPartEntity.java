@@ -4,10 +4,22 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import org.jspecify.annotations.NonNull;
 
 public abstract class OrientedPartEntity<T extends Entity> extends PartEntity<T> {
     public OrientedPartEntity(T parent) {
         super(parent);
+    }
+
+    @Override
+    public boolean is(@NonNull Entity other) {
+        if (super.is(other)) return true;
+
+        var parent = getParent();
+        if (other instanceof PartEntity<?> otherPart) {
+            if (parent.is(otherPart.getParent())) return true;
+        }
+        return parent == other;
     }
 
     /**

@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -28,6 +29,15 @@ public abstract class DestinyAbilityEntity extends Entity implements TraceableEn
         this(type, level, ability);
         setPos(pos);
         setOwner(owner);
+    }
+
+    @Override
+    public boolean is(@NonNull Entity other) {
+        if (super.is(other)) return true;
+        if (other instanceof PartEntity<?> otherPart) {
+            return otherPart.getParent() == this;
+        }
+        return false;
     }
 
     public boolean isValidAbilityTarget() {
@@ -51,6 +61,7 @@ public abstract class DestinyAbilityEntity extends Entity implements TraceableEn
     public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource damageSource, float v) {
         return false;
     }
+
     @Override
     protected void readAdditionalSaveData(@NonNull ValueInput valueInput) {
         discard();

@@ -4,7 +4,6 @@ import io.github.stainlessstasis.destinymod.entity.collision.OrientedPartEntity;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.storage.ValueInput;
@@ -13,8 +12,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
-public class BarricadeSegmentEntity extends OrientedPartEntity<BarricadeEntity> {
-    public BarricadeSegmentEntity(BarricadeEntity parent, AABB box) {
+public class BarricadePart extends OrientedPartEntity<BarricadeEntity> {
+    public BarricadePart(BarricadeEntity parent, AABB box) {
         super(parent);
         Vec3 center = box.getCenter();
         setPos(center.x, box.minY, center.z);
@@ -25,11 +24,6 @@ public class BarricadeSegmentEntity extends OrientedPartEntity<BarricadeEntity> 
         dimensions = EntityDimensions.scalable(width, height);
         setBoundingBox(box);
         refreshDimensions();
-    }
-
-    @Override
-    public boolean is(@NonNull Entity other) {
-        return this == other || this.getParent() == other;
     }
 
     @Override

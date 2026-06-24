@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -33,7 +34,7 @@ public class BarricadeEntity extends DestinyAbilityEntity {
         return new BarricadeEntity(entityType, level, Vec3.ZERO, null, Abilities.BARRICADE.get(level));
     }
 
-    private final List<BarricadeSegmentEntity> segments = new ArrayList<>();
+    private final List<BarricadePart> segments = new ArrayList<>();
 
     public BarricadeEntity(EntityType<?> type, Level level, Vec3 pos, @Nullable LivingEntity owner, Ability ability) {
         super(type, level, pos, owner, ability);
@@ -58,7 +59,7 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     @Override
     public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource damageSource, float v) {
         System.out.println("OUCH");
-        return super.hurtServer(serverLevel, damageSource, v);
+        return true;
     }
 
     public void spawnSegments(ServerLevel level) {
@@ -80,13 +81,13 @@ public class BarricadeEntity extends DestinyAbilityEntity {
                     x + halfX, getY() + HEIGHT, z + halfZ
             );
 
-            BarricadeSegmentEntity segment = new BarricadeSegmentEntity(this, box);
+            BarricadePart segment = new BarricadePart(this, box);
             segments.add(segment);
         }
     }
 
     public void debugSegments(ServerLevel level) {
-        for (BarricadeSegmentEntity segment : segments) {
+        for (BarricadePart segment : segments) {
             AABB box = segment.getBoundingBox();
             double[][] corners = {
                     {box.minX, box.minY, box.minZ},
@@ -111,7 +112,7 @@ public class BarricadeEntity extends DestinyAbilityEntity {
 
     @Override
     public PartEntity<?>@NonNull[] getParts() {
-        return segments.toArray(new BarricadeSegmentEntity[0]);
+        return segments.toArray(new BarricadePart[0]);
     }
 
     @Override
