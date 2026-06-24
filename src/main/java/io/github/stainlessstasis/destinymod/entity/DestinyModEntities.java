@@ -73,7 +73,7 @@ public class DestinyModEntities {
                             BarricadeEntity::createDefault,
                             MobCategory.MISC
                     )
-                    .sized(BarricadeEntity.WIDTH, BarricadeEntity.HEIGHT)
+                    .sized(0f, 0f)
                     .noSave()
                     .clientTrackingRange(8)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, DestinyMod.id("barricade")))

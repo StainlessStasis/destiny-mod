@@ -17,7 +17,11 @@ public class BarricadeSegmentEntity extends PartEntity<BarricadeEntity> {
         Vec3 center = box.getCenter();
         this.setPos(center.x, box.minY, center.z);
         this.setBoundingBox(box);
+        this.noPhysics = true;
     }
+
+    @Override
+    public void tick() {}
 
     @Override
     public boolean is(@NonNull Entity other) {
@@ -26,7 +30,8 @@ public class BarricadeSegmentEntity extends PartEntity<BarricadeEntity> {
 
     @Override
     public boolean hurtServer(@NonNull ServerLevel level, @NonNull DamageSource source, float damage) {
-        return !this.isInvulnerableToBase(source) && getParent().hurtServer(level, source, damage);
+        if (isInvulnerableToBase(source)) return false;
+        return getParent().hurtServer(level, source, damage);
     }
 
     @Override

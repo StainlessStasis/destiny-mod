@@ -2,14 +2,21 @@ package io.github.stainlessstasis.destinymod.entity.ability;
 
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BarricadeEntity extends DestinyAbilityEntity {
     public static final float WIDTH = 3f;
@@ -17,10 +24,15 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     public static final float HEIGHT = 2.2f;
     public static final float DEPTH = 0.25f;
     public static final float HALF_DEPTH = DEPTH/2f;
+    public static final float SEGMENT_WIDTH = 0.5f;
+    public static final float HALF_SEGMENT_WIDTH = SEGMENT_WIDTH/2f;
+    public static final int SEGMENT_COUNT = (int) Math.ceil((WIDTH / SEGMENT_WIDTH));
 
     public static BarricadeEntity createDefault(EntityType<? extends DestinyAbilityEntity> entityType, Level level) {
         return new BarricadeEntity(entityType, level, Vec3.ZERO, null, Abilities.BARRICADE.get(level));
     }
+
+    private final List<BarricadeSegmentEntity> segments = new ArrayList<>();
 
     public BarricadeEntity(EntityType<?> type, Level level, Vec3 pos, @Nullable LivingEntity owner, Ability ability) {
         super(type, level, pos, owner, ability);
@@ -29,22 +41,72 @@ public class BarricadeEntity extends DestinyAbilityEntity {
         }
         refreshDimensions();
         makeBoundingBox(position());
+        if (level instanceof ServerLevel serverLevel) {
+            spawnSegments(serverLevel);
+        }
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (level() instanceof ServerLevel level) {
+            debugSegments(level);
+        }
+    }
+
+    public void spawnSegments(ServerLevel level) {
+        float yawRad = (float) Math.toRadians(getYRot());
+        float cos = Mth.cos(yawRad);
+        float sin = Mth.sin(yawRad);
+
+        for (int i = 0; i < SEGMENT_COUNT; i++) {
+            // center of this segment in local space
+            float localX = -WIDTH / 2f + (i * SEGMENT_WIDTH) + HALF_SEGMENT_WIDTH;
+
+            double x = getX() + (localX * cos);
+            double z = getZ() + (localX * sin);
+            double halfX = Math.abs(HALF_SEGMENT_WIDTH * cos) + Math.abs(HALF_DEPTH * sin);
+            double halfZ = Math.abs(HALF_SEGMENT_WIDTH * sin) + Math.abs(HALF_DEPTH * cos);
+
+            AABB box = new AABB(
+                    x - halfX, getY(), z - halfZ,
+                    x + halfX, getY() + HEIGHT, z + halfZ
+            );
+
+            BarricadeSegmentEntity segment = new BarricadeSegmentEntity(this, box);
+            segments.add(segment);
+        }
+    }
+
+    public void debugSegments(ServerLevel level) {
+        for (BarricadeSegmentEntity seg : segments) {
+            AABB box = seg.getBoundingBox();
+            double[][] corners = {
+                    {box.minX, box.minY, box.minZ},
+                    {box.maxX, box.minY, box.minZ},
+                    {box.minX, box.minY, box.maxZ},
+                    {box.maxX, box.minY, box.maxZ},
+                    {box.minX, box.maxY, box.minZ},
+                    {box.maxX, box.maxY, box.minZ},
+                    {box.minX, box.maxY, box.maxZ},
+                    {box.maxX, box.maxY, box.maxZ},
+            };
+            for (double[] c : corners) {
+                level.sendParticles(ParticleTypes.FLAME, c[0], c[1], c[2], 1, 0, 0, 0, 0);
+            }
+        }
     }
 
     @Override
-    protected @NonNull AABB makeBoundingBox(@NonNull Vec3 position) {
-        double x = this.getX();
-        double y = this.getY();
-        double z = this.getZ();
-        return new AABB(
-                x - HALF_WIDTH, y, z - HALF_DEPTH,
-                x + HALF_WIDTH, y + HEIGHT, z + HALF_DEPTH
-        );
+    public PartEntity<?>@NonNull[] getParts() {
+        return segments.toArray(new BarricadeSegmentEntity[0]);
+    }
+
+    @Override
+    public void remove(@NonNull RemovalReason reason) {
+        super.remove(reason);
+        segments.forEach(segment -> segment.remove(reason));
+        segments.clear();
     }
 
     @Override

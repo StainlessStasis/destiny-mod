@@ -1,6 +1,6 @@
 {
   "abilityType": "class",
-  "cooldownTicks": 200,
+  "cooldownTicks": 20,
   "damage": 2.0,
   "element": "none",
   "maxCharges": 3
