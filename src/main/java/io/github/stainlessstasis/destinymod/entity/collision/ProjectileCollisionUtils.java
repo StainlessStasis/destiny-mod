@@ -126,7 +126,7 @@ public final class ProjectileCollisionUtils {
             Entity checkTarget = candidate instanceof PartEntity<?> part ? part.getParent() : candidate;
             boolean isValidType = checkTarget instanceof LivingEntity
                     || checkTarget instanceof Projectile
-                    || (checkTarget instanceof DestinyAbilityEntity ability && ability.isValidTarget());
+                    || (checkTarget instanceof DestinyAbilityEntity ability && ability.isValidAbilityTarget());
             if (!isValidType) return false;
 
             if (owner != null && checkTarget.getUUID().equals(owner.getUUID())) return false;

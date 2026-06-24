@@ -115,13 +115,13 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     }
 
     @Override
-    public boolean isValidTarget() {
+    public boolean isValidAbilityTarget() {
         return true;
     }
 
     @Override
     public boolean canBeHitByProjectile() {
-        return isAlive();
+        return false;
     }
 
     @Override
