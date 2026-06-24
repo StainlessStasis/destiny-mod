@@ -7,7 +7,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -35,6 +34,9 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     }
 
     private final List<BarricadePart> segments = new ArrayList<>();
+    private final int lifetime = 15*20;
+    private float maxHealth = 100f;
+    private float health = maxHealth;
 
     public BarricadeEntity(EntityType<?> type, Level level, Vec3 pos, @Nullable LivingEntity owner, Ability ability) {
         super(type, level, pos, owner, ability);
@@ -50,6 +52,15 @@ public class BarricadeEntity extends DestinyAbilityEntity {
 
     @Override
     public void tick() {
+        if (tickCount >= lifetime) {
+            discard();
+            return;
+        }
+        if (health <= 0) {
+            discard();
+            return;
+        }
+
         super.tick();
         if (level() instanceof ServerLevel level) {
             debugSegments(level);
@@ -57,8 +68,16 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     }
 
     @Override
-    public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource damageSource, float v) {
+    public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource source, float damage) {
         System.out.println("OUCH");
+        if (isInvulnerableToBase(source)) return false;
+
+        health -= damage;
+        System.out.println("NEW HEALTH: "+health);
+        if (health <= 0) {
+            discard();
+        }
+
         return true;
     }
 
@@ -103,6 +122,16 @@ public class BarricadeEntity extends DestinyAbilityEntity {
                 level.sendParticles(ParticleTypes.FLAME, c[0], c[1], c[2], 1, 0, 0, 0, 0);
             }
         }
+    }
+
+    public float getHealth() { return health; }
+    public void setHealth(float health) {
+        if (health > maxHealth) health = maxHealth;
+        this.health = health;
+    }
+    public float getMaxHealth() { return maxHealth; }
+    public void setMaxHealth(float maxHealth) {
+        this.maxHealth = maxHealth;
     }
 
     @Override

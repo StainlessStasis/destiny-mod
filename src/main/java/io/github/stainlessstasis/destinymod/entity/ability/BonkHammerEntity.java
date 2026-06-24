@@ -350,54 +350,28 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         Entity entity = hitResult.getEntity();
         Entity currentOwner = this.getOwner();
 
-        if (this.getPierceLevel() > 0) {
-            if (this.piercingIgnoreEntityIds == null) {
-                this.piercingIgnoreEntityIds = new IntOpenHashSet(5);
-            }
-
-            if (this.piercedAndKilledEntities == null) {
-                this.piercedAndKilledEntities = Lists.newArrayListWithCapacity(5);
-            }
-
-            if (this.piercingIgnoreEntityIds.size() >= this.getPierceLevel() + 1) {
-                this.discard();
-                return;
-            }
-
-            this.piercingIgnoreEntityIds.add(entity.getId());
-        }
-
-        if (entity.is(EntityType.ENDERMAN)) {
-            return;
-        }
-
         if (currentOwner instanceof LivingEntity livingOwner) {
             livingOwner.setLastHurtMob(entity);
         }
 
-        int remainingFireTicks = entity.getRemainingFireTicks();
-        if (this.isOnFire()) {
-            entity.igniteForSeconds(5.0F);
-        }
+        Level level = this.level();
+        if (level instanceof ServerLevel serverLevel) {
+            DestinyDamageBuilder builder = DestinyDamageBuilder.create(DMDamageTypes.THROWING_HAMMER.resourceKey(), entity)
+                    .directSource(this)
+                    .attacker(currentOwner != null ? currentOwner : this)
+                    .element(ability.element())
+                    .damage(getDamage())
+                    .invulnerabilityTicks(0)
+                    .knockback(true);
+            DamageSource damageSource = builder.buildDamageSource();
+            builder.executeDamage();
+            EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, entity, damageSource, this.getWeaponItem());
 
-        if (entity instanceof LivingEntity mob) {
-            Level level = this.level();
-            if (level instanceof ServerLevel serverLevel) {
-                DestinyDamageBuilder builder = DestinyDamageBuilder.create(DMDamageTypes.THROWING_HAMMER.resourceKey(), mob)
-                        .directSource(this)
-                        .attacker(currentOwner != null ? currentOwner : this)
-                        .element(ability.element())
-                        .damage(getDamage())
-                        .invulnerabilityTicks(0)
-                        .knockback(true);
-                DamageSource damageSource = builder.buildDamageSource();
-                builder.executeDamage();
-
+            if (entity instanceof LivingEntity mob) {
                 if (hasMeltingPoint()) {
                     StatusEffectManager.applyMeltingPoint(mob);
                 }
 
-                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, mob, damageSource, this.getWeaponItem());
                 LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
 
                 int scorchToApply = ability.scorch();
@@ -407,23 +381,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                 StatusEffectManager.applyScorch(mob, owner, DMDamageTypes.THROWING_HAMMER, scorchToApply);
             }
 
-            this.doPostHurtEffects(mob);
-
-            if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
-                this.piercedAndKilledEntities.add(mob);
-            }
-
-            // TODO: custom statistics?
-//            if (!this.level().isClientSide() && currentOwner instanceof ServerPlayer player) {
-//                if (this.piercedAndKilledEntities != null) {
-//                    CriteriaTriggers.KILLED_BY_ARROW.trigger(player, this.piercedAndKilledEntities, this.firedFromWeapon);
-//                } else if (!entity.isAlive()) {
-//                    CriteriaTriggers.KILLED_BY_ARROW.trigger(player, List.of(entity), this.firedFromWeapon);
-//                }
-//            }
+            this.playHitSound(false);
         }
-
-        this.playHitSound(false);
     }
 
     public float getDamage() {

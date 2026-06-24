@@ -22,6 +22,10 @@ public abstract class OrientedPartEntity<T extends Entity> extends PartEntity<T>
         return parent == other;
     }
 
+    public Vec3 getSurfaceNormal(Vec3 rawAABBNormal) {
+        return getSurfaceNormal(rawAABBNormal, Vec3.ZERO);
+    }
+
     /**
      * Takes the raw normal from a collision against an AABB and uses this part's parent's yaw
      * to transform the normal into something more accurate for a collision against a rotated entity.

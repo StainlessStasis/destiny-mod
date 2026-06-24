@@ -42,7 +42,6 @@ public class BarricadePart extends OrientedPartEntity<BarricadeEntity> {
 
     @Override
     public boolean hurtServer(@NonNull ServerLevel level, @NonNull DamageSource source, float damage) {
-        if (isInvulnerableToBase(source)) return false;
         return getParent().hurtServer(level, source, damage);
     }
 
