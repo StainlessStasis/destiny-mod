@@ -153,7 +153,7 @@ public final class ProjectileCollisionUtils {
         EntityHitResult bestHit = null;
         Vec3 bestNormal = Vec3.ZERO;
         Vec3 bestVictimVelocity = Vec3.ZERO;
-        float bestVictimMass = 0;
+//        float bestVictimMass = 0;
 
         for (Entity candidate : candidates) {
             Vec3 entityVelocity = candidate.getDeltaMovement();
@@ -163,14 +163,18 @@ public final class ProjectileCollisionUtils {
                 bestTime = result.tEntry();
                 bestNormal = result.normal();
                 bestVictimVelocity = entityVelocity;
-                if (candidate instanceof Projectile proj) bestVictimMass = /* proj.getEnergy(); */ 0;
+//                if (candidate instanceof Projectile proj) bestVictimMass = /* proj.getEnergy(); */ 0;
                 Vec3 hitPos = entity.position().add(velocity.scale(bestTime));
                 bestHit = new EntityHitResult(candidate, hitPos);
             }
         }
 
+        if (bestHit != null && bestHit.getEntity() instanceof OrientedPartEntity<?> part) {
+            bestNormal = part.getSurfaceNormal(bestNormal);
+        }
+
         if (bestHit == null) return Optional.empty();
-        return Optional.of(new CollisionContext(bestHit, bestNormal, entity.getDeltaMovement(), bestVictimVelocity, /*projectile.getEnergy()*/ 0, bestVictimMass, bestTime));
+        return Optional.of(new CollisionContext(bestHit, bestNormal, entity.getDeltaMovement(), bestVictimVelocity, 0, 0, bestTime));
     }
 
     // --- the rest of the shit ---

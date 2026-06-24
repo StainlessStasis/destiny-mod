@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.entity.ability;
 
+import io.github.stainlessstasis.destinymod.entity.collision.OrientedPartEntity;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -10,10 +11,9 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
 import org.jspecify.annotations.NonNull;
 
-public class BarricadeSegmentEntity extends PartEntity<BarricadeEntity> {
+public class BarricadeSegmentEntity extends OrientedPartEntity<BarricadeEntity> {
     public BarricadeSegmentEntity(BarricadeEntity parent, AABB box) {
         super(parent);
         Vec3 center = box.getCenter();

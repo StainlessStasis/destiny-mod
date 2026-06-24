@@ -25,9 +25,9 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     public static final float HEIGHT = 2.2f;
     public static final float DEPTH = 0.25f;
     public static final float HALF_DEPTH = DEPTH/2f;
-    public static final float SEGMENT_WIDTH = 0.5f;
-    public static final float HALF_SEGMENT_WIDTH = SEGMENT_WIDTH/2f;
-    public static final int SEGMENT_COUNT = (int) Math.ceil((WIDTH / SEGMENT_WIDTH));
+    public static final float SEGMENT_SIZE = 0.25f;
+    public static final float HALF_SEGMENT_SIZE = SEGMENT_SIZE /2f;
+    public static final int SEGMENT_COUNT = (int) Math.ceil((WIDTH / SEGMENT_SIZE));
 
     public static BarricadeEntity createDefault(EntityType<? extends DestinyAbilityEntity> entityType, Level level) {
         return new BarricadeEntity(entityType, level, Vec3.ZERO, null, Abilities.BARRICADE.get(level));
@@ -68,12 +68,12 @@ public class BarricadeEntity extends DestinyAbilityEntity {
 
         for (int i = 0; i < SEGMENT_COUNT; i++) {
             // center of this segment in local space
-            float localX = -WIDTH / 2f + (i * SEGMENT_WIDTH) + HALF_SEGMENT_WIDTH;
+            float localX = -WIDTH / 2f + (i * SEGMENT_SIZE) + HALF_SEGMENT_SIZE;
 
             double x = getX() + (localX * cos);
             double z = getZ() + (localX * sin);
-            double halfX = Math.abs(HALF_SEGMENT_WIDTH * cos) + Math.abs(HALF_DEPTH * sin);
-            double halfZ = Math.abs(HALF_SEGMENT_WIDTH * sin) + Math.abs(HALF_DEPTH * cos);
+            double halfX = Math.abs(HALF_SEGMENT_SIZE * cos) + Math.abs(HALF_DEPTH * sin);
+            double halfZ = Math.abs(HALF_SEGMENT_SIZE * sin) + Math.abs(HALF_DEPTH * cos);
 
             AABB box = new AABB(
                     x - halfX, getY(), z - halfZ,
