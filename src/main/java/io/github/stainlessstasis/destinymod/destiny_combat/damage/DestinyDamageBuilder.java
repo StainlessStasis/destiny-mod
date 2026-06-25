@@ -72,6 +72,9 @@ public class DestinyDamageBuilder {
         this.damage = damage;
         return this;
     }
+    public float getDamage() {
+        return this.damage;
+    }
 
     public DestinyDamageBuilder invulnerabilityTicks(int invulnerabilityTicks) {
         this.invulnerabilityTicks = invulnerabilityTicks;

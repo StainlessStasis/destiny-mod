@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.entity.ability;
 
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageTarget;
 import io.github.stainlessstasis.destinymod.entity.projectile.BouncingProjectile;
 import io.github.stainlessstasis.destinymod.entity.DestinyModEntities;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
@@ -350,6 +351,10 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         Entity entity = hitResult.getEntity();
         Entity currentOwner = this.getOwner();
 
+        if (!CombatUtils.isDamageableTarget(entity, currentOwner, collidedThisTick, null)) {
+            return;
+        }
+
         if (currentOwner instanceof LivingEntity livingOwner) {
             livingOwner.setLastHurtMob(entity);
         }
@@ -364,21 +369,21 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
                     .invulnerabilityTicks(0)
                     .knockback(true);
             DamageSource damageSource = builder.buildDamageSource();
-            builder.executeDamage();
             EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, entity, damageSource, this.getWeaponItem());
 
-            if (entity instanceof LivingEntity mob) {
-                if (hasMeltingPoint()) {
-                    StatusEffectManager.applyMeltingPoint(mob);
-                }
+            if (entity instanceof DestinyDamageTarget destinyTarget) {
+                destinyTarget.applyDestinyDamage(builder);
 
-                LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
+                if (hasMeltingPoint()) {
+                    destinyTarget.applyMeltingPoint();
+                }
 
                 int scorchToApply = ability.scorch();
                 if (hasHeatseeker()) {
                     scorchToApply += getBonusScorch();
                 }
-                StatusEffectManager.applyScorch(mob, owner, DMDamageTypes.THROWING_HAMMER, scorchToApply);
+                LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
+                destinyTarget.applyScorch(owner, DMDamageTypes.THROWING_HAMMER, scorchToApply);
             }
 
             this.playHitSound(false);

@@ -1,6 +1,8 @@
 package io.github.stainlessstasis.destinymod.entity.ability;
 
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Ability;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageTarget;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -19,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BarricadeEntity extends DestinyAbilityEntity {
+public class BarricadeEntity extends DestinyAbilityEntity implements DestinyDamageTarget {
     public static final float WIDTH = 3f;
     public static final float HALF_WIDTH = WIDTH/2f;
     public static final float HEIGHT = 2.2f;
@@ -68,17 +70,25 @@ public class BarricadeEntity extends DestinyAbilityEntity {
     }
 
     @Override
-    public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource source, float damage) {
-        System.out.println("OUCH");
-        if (isInvulnerableToBase(source)) return false;
+    public boolean applyDestinyDamage(DestinyDamageBuilder builder) {
+        hurt(builder.getDamage());
+        return true;
+    }
 
+    @Override
+    public boolean hurtServer(@NonNull ServerLevel serverLevel, @NonNull DamageSource source, float damage) {
+        if (isInvulnerableToBase(source)) return false;
+        hurt(damage);
+        return true;
+    }
+
+    private void hurt(float damage) {
+        System.out.println("OUCH");
         health -= damage;
-        System.out.println("NEW HEALTH: "+health);
+        System.out.println(health);
         if (health <= 0) {
             discard();
         }
-
-        return true;
     }
 
     public void spawnSegments(ServerLevel level) {

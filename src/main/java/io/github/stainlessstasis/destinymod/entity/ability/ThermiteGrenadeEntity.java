@@ -5,9 +5,9 @@ import io.github.stainlessstasis.destinymod.client.effects.ClientAudioAndVFX;
 import io.github.stainlessstasis.destinymod.destiny_classes.player_equipped.PlayerSubclassData;
 import io.github.stainlessstasis.destinymod.destiny_combat.CombatUtils;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.Aspect;
+import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageTarget;
 import io.github.stainlessstasis.destinymod.registry.damage_type.DMDamageTypes;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
-import io.github.stainlessstasis.destinymod.destiny_combat.status_effect.StatusEffectManager;
 import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.registry.datapack.RegisteredAspect;
@@ -36,7 +36,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 public class ThermiteGrenadeEntity extends DestinyAbilityEntity {
@@ -269,7 +268,7 @@ public class ThermiteGrenadeEntity extends DestinyAbilityEntity {
         Vec3 forwardDir = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
         Vec3 rightDir = new Vec3(-forwardDir.z, 0, forwardDir.x);
 
-        Predicate<LivingEntity> areaFilter = target -> {
+        Predicate<Entity> areaFilter = target -> {
             Vec3 relativePos = target.position().subtract(pos);
 
             double distanceAlongWidth = relativePos.dot(rightDir);
@@ -285,17 +284,20 @@ public class ThermiteGrenadeEntity extends DestinyAbilityEntity {
             return relativePos.y >= -yPadding && relativePos.y <= height;
         };
 
-        List<LivingEntity> targets = CombatUtils.getEntitiesInArea(searchArea, level(), LivingEntity.class, getOwner(), hitEntities, areaFilter);
-        for (LivingEntity target : targets) {
-            DestinyDamageBuilder.create(DMDamageTypes.THERMITE_GRENADE.resourceKey(), target)
+        List<Entity> targets = CombatUtils.getDamageableTargetsInArea(searchArea, level(), getOwner(), hitEntities, areaFilter);
+        for (Entity target : targets) {
+            if (!(target instanceof DestinyDamageTarget destinyTarget)) continue;
+
+            var damageBuilder = DestinyDamageBuilder.create(DMDamageTypes.THERMITE_GRENADE.resourceKey(), target)
                     .damage(this.ability.damage() * this.damageMultiplier)
                     .knockback(false)
                     .directSource(this)
                     .attacker(getOwner())
                     .invulnerabilityTicks(0)
-                    .element(this.ability.element())
-                    .executeDamage();
-            StatusEffectManager.applyScorch(target, getOwner(), DMDamageTypes.THERMITE_GRENADE, (int) (this.ability.scorch() * this.scorchMultiplier));
+                    .element(this.ability.element());
+
+            destinyTarget.applyDestinyDamage(damageBuilder);
+            destinyTarget.applyScorch(getOwner(), DMDamageTypes.THERMITE_GRENADE, (int) (this.ability.scorch() * this.scorchMultiplier));
 
             this.hitEntitiesThisPulse.add(target);
             triggerRekindledFlames();
