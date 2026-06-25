@@ -14,6 +14,7 @@ import io.github.stainlessstasis.destinymod.network.clientbound.IgnitionEffectsP
 import io.github.stainlessstasis.destinymod.network.serverbound.AbilityCastPacket;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.world_interaction.BlockDestructionManager;
 import io.github.stainlessstasis.destinymod.network.serverbound.EquipAspectsPacket;
+import io.github.stainlessstasis.destinymod.registry.item.DestinyModItems;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -42,6 +43,7 @@ public class DestinyMod {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         DestinyModAttachments.register(modEventBus);
         DestinyModEntities.register(modEventBus);
+        DestinyModItems.register(modEventBus);
         GrenadeBehaviors.registerRegistry(modEventBus);
     }
 
