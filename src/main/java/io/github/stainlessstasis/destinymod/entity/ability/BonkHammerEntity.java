@@ -351,7 +351,8 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         Entity entity = hitResult.getEntity();
         Entity currentOwner = this.getOwner();
 
-        if (!CombatUtils.isDamageableTarget(entity, currentOwner, null, null)) {
+        if (!CombatUtils.isDamageableTarget(entity, currentOwner, null, null)
+        || !(CombatUtils.tryCastDestinyDamageTarget(entity) instanceof DestinyDamageTarget destinyTarget)) {
             return;
         }
 
@@ -371,20 +372,18 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
             DamageSource damageSource = builder.buildDamageSource();
             EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, entity, damageSource, this.getWeaponItem());
 
-            if (entity instanceof DestinyDamageTarget destinyTarget) {
-                destinyTarget.applyDestinyDamage(builder);
+            destinyTarget.applyDestinyDamage(builder);
 
-                if (hasMeltingPoint()) {
-                    destinyTarget.applyMeltingPoint();
-                }
-
-                int scorchToApply = ability.scorch();
-                if (hasHeatseeker()) {
-                    scorchToApply += getBonusScorch();
-                }
-                LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
-                destinyTarget.applyScorch(owner, DMDamageTypes.THROWING_HAMMER, scorchToApply);
+            if (hasMeltingPoint()) {
+                destinyTarget.applyMeltingPoint();
             }
+
+            int scorchToApply = ability.scorch();
+            if (hasHeatseeker()) {
+                scorchToApply += getBonusScorch();
+            }
+            LivingEntity owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
+            destinyTarget.applyScorch(owner, DMDamageTypes.THROWING_HAMMER, scorchToApply);
 
             this.playHitSound(false);
         }

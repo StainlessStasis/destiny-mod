@@ -80,8 +80,8 @@ public class CombatUtils {
 
     /**
      * Gets damageable targets (instances of DestinyDamageTarget) in the specified AABB.<br>
-     * If an owner is provided, then any entities sharing the same owner will be excluded.<br>
-     * If a collection of already hit entities is provided, then any entities in the list will be excluded.<br>
+     * If an owner is provided, then any entities sharing the same owner will be excluded, unless ENABLE_SELF_DAMAGING_ABILITIES is true.<br>
+     * If a collection of already hit entities is provided, then any entities in the collection will be excluded.<br>
      */
     public static List<Entity> getDamageableTargetsInArea(
             AABB area, Level level,
@@ -93,20 +93,32 @@ public class CombatUtils {
     public static boolean isDamageableTarget(Entity entity, @Nullable Entity owner, @Nullable Collection<Entity> alreadyHit, @Nullable Predicate<Entity> filter) {
         boolean isDestinyTarget = entity instanceof DestinyDamageTarget ||
                 (entity instanceof PartEntity<?> part && part.getParent() instanceof DestinyDamageTarget);
-        System.out.println("is destiny damage target: "+isDestinyTarget);
         return isDestinyTarget && filter(entity, owner, alreadyHit, filter);
+    }
+
+    public static @Nullable DestinyDamageTarget tryCastDestinyDamageTarget(Entity entity) {
+        if (entity instanceof DestinyDamageTarget target) return target;
+        if (entity instanceof PartEntity<?> part && part.getParent() instanceof DestinyDamageTarget target) return target;
+        return null;
     }
 
     private static boolean filter(Entity entity, @Nullable Entity owner, @Nullable Collection<Entity> alreadyHit, Predicate filter) {
         if (owner != null) {
-            if (entity == owner) return false;
-            if (!Config.ENABLE_SELF_DAMAGING_ABILITIES.getAsBoolean()) {
-                if (entity instanceof OwnableEntity ownable && ownable.getOwner() == owner) return false;
-                if (entity instanceof TraceableEntity traceable && traceable.getOwner() == owner) return false;
-            }
+            if (isSameOwner(entity, owner)) return false;
         }
         if (alreadyHit != null && alreadyHit.stream().anyMatch(entity::is)) return false;
         if (filter != null) return filter.test(entity);
         return true;
+    }
+
+    public static boolean isSameOwner(Entity entity, Entity owner) {
+        if (entity instanceof PartEntity<?> part) entity = part.getParent();
+
+        if (entity == owner) return true;
+        if (!Config.ENABLE_SELF_DAMAGING_ABILITIES.getAsBoolean()) {
+            if (entity instanceof OwnableEntity ownable && ownable.getOwner() == owner) return true;
+            if (entity instanceof TraceableEntity traceable && traceable.getOwner() == owner) return true;
+        }
+        return false;
     }
 }
