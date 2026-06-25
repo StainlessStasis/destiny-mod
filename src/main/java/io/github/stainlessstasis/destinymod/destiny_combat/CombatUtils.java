@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.destiny_combat;
 
+import io.github.stainlessstasis.destinymod.Config;
 import io.github.stainlessstasis.destinymod.destiny_classes.DestinyElement;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageBuilder;
 import io.github.stainlessstasis.destinymod.destiny_combat.damage.DestinyDamageTarget;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -89,14 +91,19 @@ public class CombatUtils {
     }
 
     public static boolean isDamageableTarget(Entity entity, @Nullable Entity owner, @Nullable Collection<Entity> alreadyHit, @Nullable Predicate<Entity> filter) {
-        return entity instanceof DestinyDamageTarget && filter(entity, owner, alreadyHit, filter);
+        boolean isDestinyTarget = entity instanceof DestinyDamageTarget ||
+                (entity instanceof PartEntity<?> part && part.getParent() instanceof DestinyDamageTarget);
+        System.out.println("is destiny damage target: "+isDestinyTarget);
+        return isDestinyTarget && filter(entity, owner, alreadyHit, filter);
     }
 
     private static boolean filter(Entity entity, @Nullable Entity owner, @Nullable Collection<Entity> alreadyHit, Predicate filter) {
         if (owner != null) {
             if (entity == owner) return false;
-            if (entity instanceof OwnableEntity ownable && ownable.getOwner() == owner) return false;
-            if (entity instanceof TraceableEntity traceable && traceable.getOwner() == owner) return false;
+            if (!Config.ENABLE_SELF_DAMAGING_ABILITIES.getAsBoolean()) {
+                if (entity instanceof OwnableEntity ownable && ownable.getOwner() == owner) return false;
+                if (entity instanceof TraceableEntity traceable && traceable.getOwner() == owner) return false;
+            }
         }
         if (alreadyHit != null && alreadyHit.stream().anyMatch(entity::is)) return false;
         if (filter != null) return filter.test(entity);

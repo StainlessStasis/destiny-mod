@@ -351,7 +351,7 @@ public class BonkHammerEntity extends AbstractArrow implements GeoEntity, Destin
         Entity entity = hitResult.getEntity();
         Entity currentOwner = this.getOwner();
 
-        if (!CombatUtils.isDamageableTarget(entity, currentOwner, collidedThisTick, null)) {
+        if (!CombatUtils.isDamageableTarget(entity, currentOwner, null, null)) {
             return;
         }
 
