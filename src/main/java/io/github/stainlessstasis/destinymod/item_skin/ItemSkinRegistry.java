@@ -1,13 +1,16 @@
-package io.github.stainlessstasis.destinymod.client.item_skin;
+package io.github.stainlessstasis.destinymod.item_skin;
 
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
+import io.github.stainlessstasis.destinymod.client.item_skin.HammerSkinModel;
 import io.github.stainlessstasis.destinymod.registry.item.DestinyModItems;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ItemSkinRegistry {
     private static final Map<Identifier, SkinEntry<?>> SKINS = new HashMap<>();
@@ -17,17 +20,21 @@ public class ItemSkinRegistry {
     }
 
     private static <T extends ItemSkin> void register(
-            Identifier skinId, T item, GeoModel<T> model
+            Identifier skinID, T item, GeoModel<T> model
     ) {
-        SKINS.put(skinId, new SkinEntry<>(item, new GeoItemRenderer<>(model), model));
+        SKINS.put(skinID, new SkinEntry<>(item, new GeoItemRenderer<>(model), model));
     }
 
-    public static @Nullable <T extends ItemSkin> SkinEntry<T> get(Identifier skinId) {
-        return (SkinEntry<T>) SKINS.get(skinId);
+    public static @Nullable <T extends ItemSkin> SkinEntry<T> get(Identifier skinID) {
+        return (SkinEntry<T>) SKINS.get(skinID);
     }
 
-    public static boolean hasSkin(Identifier skinId) {
-        return SKINS.containsKey(skinId);
+    public static boolean hasSkin(Identifier skinID) {
+        return SKINS.containsKey(skinID);
+    }
+
+    public static Set<Identifier> getSkinIDs() {
+        return Collections.unmodifiableSet(SKINS.keySet());
     }
 
     public record SkinEntry<T extends ItemSkin>(

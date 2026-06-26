@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.registry.item;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.client.item_skin.HammerSkinItem;
+import io.github.stainlessstasis.destinymod.item_skin.HammerSkinItem;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;

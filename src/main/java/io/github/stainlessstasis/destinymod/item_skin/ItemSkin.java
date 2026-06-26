@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.destinymod.client.item_skin;
+package io.github.stainlessstasis.destinymod.item_skin;
 
 import com.geckolib.animatable.GeoItem;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;

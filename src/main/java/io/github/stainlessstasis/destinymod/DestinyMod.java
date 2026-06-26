@@ -1,8 +1,10 @@
 package io.github.stainlessstasis.destinymod;
 
 import io.github.stainlessstasis.destinymod.data.DestinyModAttachments;
+import io.github.stainlessstasis.destinymod.data.DestinyModDataComponents;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkinCommand;
 import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -19,6 +21,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -42,6 +45,7 @@ public class DestinyMod {
     public DestinyMod(IEventBus modEventBus, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         DestinyModAttachments.register(modEventBus);
+        DestinyModDataComponents.register(modEventBus);
         DestinyModEntities.register(modEventBus);
         DestinyModItems.register(modEventBus);
         GrenadeBehaviors.registerRegistry(modEventBus);
@@ -53,6 +57,11 @@ public class DestinyMod {
 
     @EventBusSubscriber
     public static class ModBusEvents {
+        @SubscribeEvent
+        public static void onRegisterCommands(RegisterCommandsEvent event) {
+            ItemSkinCommand.register(event.getDispatcher());
+        }
+
         @SubscribeEvent
         public static void registerPackets(RegisterPayloadHandlersEvent event) {
             final PayloadRegistrar registrar = event.registrar(NETWORK_VERSION);

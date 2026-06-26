@@ -5,23 +5,23 @@ import com.geckolib.renderer.GeoItemRenderer;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import io.github.stainlessstasis.destinymod.data.DestinyModDataComponents;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkinComponent;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkinRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 public class ItemSkinDispatcher {
-
     public static boolean shouldOverride(ItemStack stack) {
-//        SkinComponent skin = stack.get(ModDataComponents.WEAPON_SKIN.get());
-//        return skin != null && WeaponSkinRegistry.hasSkin(skin.skinId());
-        return stack.getItem() == Items.NETHERITE_SWORD;
+        ItemSkinComponent skin = stack.get(DestinyModDataComponents.ITEM_SKIN.get());
+        return skin != null && ItemSkinRegistry.hasSkin(skin.skinID());
     }
 
     public static void render(
@@ -33,11 +33,10 @@ public class ItemSkinDispatcher {
             SubmitNodeCollector submitNodeCollector,
             int lightCoords
     ) {
-//        SkinComponent skin = stack.get(ModDataComponents.WEAPON_SKIN.get());
-//        if (skin == null) return;
+        ItemSkinComponent skin = stack.get(DestinyModDataComponents.ITEM_SKIN.get());
+        if (skin == null) return;
 
-//        var entry = WeaponSkinRegistry.get(skin.skinId());
-        var entry = ItemSkinRegistry.get(HammerSkinItem.SKIN_ID);
+        var entry = ItemSkinRegistry.get(skin.skinID());
         if (entry == null) return;
 
         renderSkin(entry, stack, vanillaRenderState, ctx, owner, poseStack, submitNodeCollector, lightCoords);
