@@ -39,12 +39,12 @@ public class HammerSkinModel extends ItemSkinModel<HammerSkinItem> {
 
     @Override
     public Vec3 translation(ItemDisplayContext context) {
-        if (!context.firstPerson()) {
-            return new Vec3(0.333, -0.1, -0.2);
-        }
-        if (context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
-            return new Vec3(0.5, 0, 0);
-        }
+//        if (!context.firstPerson()) {
+//            return new Vec3(0.333, -0.1, -0.2);
+//        }
+//        if (context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
+//            return new Vec3(0.5, 0, 0);
+//        }
         return super.translation(context);
     }
 }

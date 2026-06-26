@@ -10,7 +10,6 @@
     "defaultRequire": 1
   },
   "client": [
-    "client.ItemInHandLayerMixin",
-    "client.ItemInHandRendererMixin"
+    "client.ItemModelResolverMixin"
   ]
 }
