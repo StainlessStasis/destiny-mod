@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.client.item_skin.WeaponSkinRegistry;
+import io.github.stainlessstasis.destinymod.client.item_skin.ItemSkinRegistry;
 import io.github.stainlessstasis.destinymod.client.tooltip.ActionHintTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.HeaderTooltipComponent;
@@ -18,7 +18,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -32,7 +31,7 @@ public class DestinyModClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
-        WeaponSkinRegistry.init();
+        ItemSkinRegistry.init();
     }
 
     @SubscribeEvent

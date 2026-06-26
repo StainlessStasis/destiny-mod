@@ -6,10 +6,10 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import net.minecraft.world.item.Item;
 
-public abstract class WeaponSkinItem extends Item implements GeoItem {
+public abstract class ItemSkin extends Item implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public WeaponSkinItem(Item.Properties properties) {
+    public ItemSkin(Item.Properties properties) {
         super(properties);
     }
 

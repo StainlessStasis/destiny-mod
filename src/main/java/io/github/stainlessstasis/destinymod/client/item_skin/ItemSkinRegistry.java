@@ -9,20 +9,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WeaponSkinRegistry {
+public class ItemSkinRegistry {
     private static final Map<Identifier, SkinEntry<?>> SKINS = new HashMap<>();
 
     public static void init() {
         register(HammerSkinItem.SKIN_ID, DestinyModItems.HAMMER_SKIN.get(), new HammerSkinModel());
     }
 
-    private static <T extends WeaponSkinItem> void register(
+    private static <T extends ItemSkin> void register(
             Identifier skinId, T item, GeoModel<T> model
     ) {
         SKINS.put(skinId, new SkinEntry<>(item, new GeoItemRenderer<>(model), model));
     }
 
-    public static @Nullable <T extends WeaponSkinItem> SkinEntry<T> get(Identifier skinId) {
+    public static @Nullable <T extends ItemSkin> SkinEntry<T> get(Identifier skinId) {
         return (SkinEntry<T>) SKINS.get(skinId);
     }
 
@@ -30,7 +30,7 @@ public class WeaponSkinRegistry {
         return SKINS.containsKey(skinId);
     }
 
-    public record SkinEntry<T extends WeaponSkinItem>(
+    public record SkinEntry<T extends ItemSkin>(
             T item,
             GeoItemRenderer<T> renderer,
             GeoModel<T> model
