@@ -39,6 +39,9 @@ public class HammerSkinModel extends ItemSkinModel<HammerSkinItem> {
         if (!context.firstPerson()) {
             return new Vec3(0.25, 0, -0.1);
         }
+        if (context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
+            return new Vec3(0.5, 0, 0);
+        }
         return super.translation(context);
     }
 }
