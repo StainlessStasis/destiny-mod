@@ -8,7 +8,6 @@ import com.mojang.math.Axis;
 import io.github.stainlessstasis.destinymod.data.DestinyModDataComponents;
 import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
 import io.github.stainlessstasis.destinymod.item_skin.ItemSkinComponent;
-import io.github.stainlessstasis.destinymod.item_skin.ItemSkinRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -21,36 +20,25 @@ import org.jetbrains.annotations.Nullable;
 public class ItemSkinDispatcher {
     public static boolean shouldOverride(ItemStack stack) {
         ItemSkinComponent skin = stack.get(DestinyModDataComponents.ITEM_SKIN.get());
-        return skin != null && ItemSkinRegistry.hasSkin(skin.skinID());
+        return skin != null && ClientItemSkins.hasSkin(skin.skinID());
     }
 
     public static void render(
-            ItemStack stack,
-            ItemStackRenderState vanillaRenderState,
-            ItemDisplayContext ctx,
-            @Nullable ItemOwner owner,
-            PoseStack poseStack,
-            SubmitNodeCollector submitNodeCollector,
-            int lightCoords
+            ItemStack stack, ItemStackRenderState vanillaRenderState, ItemDisplayContext ctx, @Nullable ItemOwner owner,
+            PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords
     ) {
         ItemSkinComponent skin = stack.get(DestinyModDataComponents.ITEM_SKIN.get());
         if (skin == null) return;
 
-        var entry = ItemSkinRegistry.get(skin.skinID());
+        var entry = ClientItemSkins.get(skin.skinID());
         if (entry == null) return;
 
         renderSkin(entry, stack, vanillaRenderState, ctx, owner, poseStack, submitNodeCollector, lightCoords);
     }
 
     private static <T extends ItemSkin> void renderSkin(
-            ItemSkinRegistry.SkinEntry<T> entry,
-            ItemStack stack,
-            ItemStackRenderState vanillaRenderState,
-            ItemDisplayContext context,
-            @Nullable ItemOwner owner,
-            PoseStack poseStack,
-            SubmitNodeCollector submitNodeCollector,
-            int lightCoords
+            ClientItemSkins.SkinEntry<T> entry, ItemStack stack, ItemStackRenderState vanillaRenderState, ItemDisplayContext context,
+            @Nullable ItemOwner owner, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords
     ) {
         Minecraft mc = Minecraft.getInstance();
         GeoItemRenderer<T> renderer = entry.renderer();

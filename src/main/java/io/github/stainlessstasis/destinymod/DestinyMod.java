@@ -5,6 +5,7 @@ import io.github.stainlessstasis.destinymod.data.DestinyModDataComponents;
 import io.github.stainlessstasis.destinymod.destiny_classes.Subclasses;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.grenade.GrenadeBehaviors;
 import io.github.stainlessstasis.destinymod.item_skin.ItemSkinCommand;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkinIDs;
 import io.github.stainlessstasis.destinymod.network.clientbound.ThermiteGrenadeSpawnPacket;
 import io.github.stainlessstasis.destinymod.registry.datapack.Abilities;
 import io.github.stainlessstasis.destinymod.destiny_combat.ability.AbilityType;
@@ -21,6 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -58,12 +60,17 @@ public class DestinyMod {
     @EventBusSubscriber
     public static class ModBusEvents {
         @SubscribeEvent
-        public static void onRegisterCommands(RegisterCommandsEvent event) {
+        static void onCommonSetup(FMLCommonSetupEvent event) {
+            ItemSkinIDs.init();
+        }
+
+        @SubscribeEvent
+        static void onRegisterCommands(RegisterCommandsEvent event) {
             ItemSkinCommand.register(event.getDispatcher());
         }
 
         @SubscribeEvent
-        public static void registerPackets(RegisterPayloadHandlersEvent event) {
+        static void registerPackets(RegisterPayloadHandlersEvent event) {
             final PayloadRegistrar registrar = event.registrar(NETWORK_VERSION);
             registrar.playToServer(
                     AbilityCastPacket.TYPE,

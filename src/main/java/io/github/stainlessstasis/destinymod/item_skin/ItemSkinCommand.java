@@ -22,7 +22,7 @@ public class ItemSkinCommand {
                         .then(Commands.literal("add")
                                 .then(Commands.argument("skin", IdentifierArgument.id())
                                         .suggests((ctx, builder) -> {
-                                            ItemSkinRegistry.getSkinIDs().forEach(id ->
+                                            ItemSkinIDs.getAll().forEach(id ->
                                                     builder.suggest(id.toString()));
                                             return builder.buildFuture();
                                         })
@@ -38,7 +38,7 @@ public class ItemSkinCommand {
     private static int applySkin(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Identifier skinId = IdentifierArgument.getId(ctx, "skin");
 
-        if (!ItemSkinRegistry.hasSkin(skinId)) {
+        if (!ItemSkinIDs.has(skinId)) {
             ctx.getSource().sendFailure(Component.literal("Unknown skin: " + skinId));
             return 0;
         }

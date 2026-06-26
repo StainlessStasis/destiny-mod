@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.destinymod.client;
 
 import io.github.stainlessstasis.destinymod.DestinyMod;
-import io.github.stainlessstasis.destinymod.item_skin.ItemSkinRegistry;
+import io.github.stainlessstasis.destinymod.client.item_skin.ClientItemSkins;
 import io.github.stainlessstasis.destinymod.client.tooltip.ActionHintTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.DescriptionTooltipComponent;
 import io.github.stainlessstasis.destinymod.client.tooltip.HeaderTooltipComponent;
@@ -31,7 +31,7 @@ public class DestinyModClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
-        ItemSkinRegistry.init();
+        ClientItemSkins.init();
     }
 
     @SubscribeEvent

@@ -1,8 +1,9 @@
-package io.github.stainlessstasis.destinymod.item_skin;
+package io.github.stainlessstasis.destinymod.client.item_skin;
 
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
-import io.github.stainlessstasis.destinymod.client.item_skin.HammerSkinModel;
+import io.github.stainlessstasis.destinymod.item_skin.HammerSkinItem;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
 import io.github.stainlessstasis.destinymod.registry.item.DestinyModItems;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ItemSkinRegistry {
+public class ClientItemSkins {
     private static final Map<Identifier, SkinEntry<?>> SKINS = new HashMap<>();
 
     public static void init() {
