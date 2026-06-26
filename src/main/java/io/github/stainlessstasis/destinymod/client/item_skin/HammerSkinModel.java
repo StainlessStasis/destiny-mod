@@ -31,15 +31,24 @@ public class HammerSkinModel extends ItemSkinModel<HammerSkinItem> {
         if (isInHand(context)) {
             return new Vec3(0, -90, 0);
         }
+        if (context == ItemDisplayContext.FIXED) {
+            return new Vec3(0, 180, 0);
+        }
+        if (context == ItemDisplayContext.GUI) {
+            return new Vec3(0, 0, -45);
+        }
         return super.rotation(context);
     }
 
     @Override
     public Vec3 scale(ItemDisplayContext context) {
-        if (context == ItemDisplayContext.GROUND || context == ItemDisplayContext.GUI) {
+        if (context == ItemDisplayContext.GROUND) {
             return new Vec3(0.5, 0.5, 0.5);
         }
-        return new Vec3(1, 1, 1).scale(2f / 3f);
+        if (context == ItemDisplayContext.FIXED) {
+            return super.scale(context);
+        }
+        return super.scale(context).scale(2f / 3f);
     }
 
     @Override
@@ -51,13 +60,13 @@ public class HammerSkinModel extends ItemSkinModel<HammerSkinItem> {
             return new Vec3(TRANSFORM, TRANSFORM, TRANSFORM);
         }
         if (context == ItemDisplayContext.FIXED) {
-            return new Vec3(TRANSFORM/2, TRANSFORM/2, TRANSFORM/2);
+            return new Vec3(TRANSFORM*3.5, 0, TRANSFORM*3.25);
         }
         if (context == ItemDisplayContext.GROUND) {
             return new Vec3(TRANSFORM, TRANSFORM*2, TRANSFORM);
         }
         if (context == ItemDisplayContext.GUI) {
-            return new Vec3(TRANSFORM, TRANSFORM, TRANSFORM);
+            return new Vec3(0, TRANSFORM*1.5, 0);
         }
         return super.translation(context);
     }
