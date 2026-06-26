@@ -38,6 +38,7 @@ public abstract class ItemModelResolverMixin {
         output.displayContext = displayContext;
         output.setOversizedInGui(true);
         output.setAnimated(); // NEEDED FOR GUI TO WORK
+        output.appendModelIdentityElement(skin.skinID()); // fixes weird shit that happens when you have multiple of the same type of item (they all shared the skin)
 
         ItemStackRenderState.LayerRenderState layer = output.newLayer();
         layer.setupSpecialModel(SKIN_RENDERER, new ItemSkinRenderArgument(skin, displayContext));
