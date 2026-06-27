@@ -11,6 +11,7 @@ public class DestinyModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(DestinyMod.MODID);
     public static final DeferredItem<HammerSkinItem> HAMMER_SKIN = ITEMS.registerItem("hammer_skin", HammerSkinItem::new, p -> p);
     public static final DeferredItem<CrownSplitterSkinItem> CROWN_SPLITTER_SKIN = ITEMS.registerItem("crown_splitter_skin", CrownSplitterSkinItem::new, p -> p);
+    public static final DeferredItem<CrownSplitterSkinItem> CROWN_SPLITTER_BLOODY_SKIN = ITEMS.registerItem("crown_splitter_bloody_skin", CrownSplitterSkinItem::new, p -> p);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

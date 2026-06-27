@@ -26,5 +26,6 @@ public class ItemSkinIDs {
     public static void init() {
         register(HammerSkinItem.SKIN_ID);
         register(CrownSplitterSkinItem.SKIN_ID);
+        register(CrownSplitterSkinItem.BLOODY_SKIN_ID);
     }
 }
