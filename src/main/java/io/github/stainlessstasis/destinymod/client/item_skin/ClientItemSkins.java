@@ -2,6 +2,7 @@ package io.github.stainlessstasis.destinymod.client.item_skin;
 
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
+import io.github.stainlessstasis.destinymod.client.item_skin.models.CrownSplitterBloodyModel;
 import io.github.stainlessstasis.destinymod.client.item_skin.models.CrownSplitterModel;
 import io.github.stainlessstasis.destinymod.client.item_skin.models.HammerSkinModel;
 import io.github.stainlessstasis.destinymod.item_skin.items.CrownSplitterSkinItem;
@@ -22,6 +23,7 @@ public class ClientItemSkins {
     public static void init() {
         register(HammerSkinItem.SKIN_ID, DestinyModItems.HAMMER_SKIN.get(), new HammerSkinModel());
         register(CrownSplitterSkinItem.SKIN_ID, DestinyModItems.CROWN_SPLITTER_SKIN.get(), new CrownSplitterModel());
+        register(CrownSplitterSkinItem.BLOODY_SKIN_ID, DestinyModItems.CROWN_SPLITTER_BLOODY_SKIN.get(), new CrownSplitterBloodyModel());
     }
 
     private static <T extends ItemSkin> void register(
