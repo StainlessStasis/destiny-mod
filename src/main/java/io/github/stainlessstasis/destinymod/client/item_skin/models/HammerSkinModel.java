@@ -1,9 +1,10 @@
-package io.github.stainlessstasis.destinymod.client.item_skin;
+package io.github.stainlessstasis.destinymod.client.item_skin.models;
 
 import com.geckolib.renderer.base.GeoRenderState;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.entity_rendering.renderer.BonkHammerRenderer;
-import io.github.stainlessstasis.destinymod.item_skin.HammerSkinItem;
+import io.github.stainlessstasis.destinymod.client.item_skin.ItemSkinModel;
+import io.github.stainlessstasis.destinymod.item_skin.items.HammerSkinItem;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
