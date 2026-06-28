@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.destinymod.client.item_skin;
 
+import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoItemRenderer;
 import com.geckolib.renderer.base.GeoRenderState;
@@ -47,7 +48,10 @@ public class ItemSkinDispatcher {
         }
 
         float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        
         GeoRenderState renderState = renderer.createRenderState(skinItem, renderData);
+        renderState.addGeckolibData(DataTickets.PACKED_LIGHT, lightCoords);
+
         renderer.captureDefaultRenderState(skinItem, renderData, renderState, partialTick);
         renderer.fireCompileRenderStateEvent(skinItem, renderData, renderState, partialTick);
         renderer.submit(renderState, poseStack, submitNodeCollector, 0);
