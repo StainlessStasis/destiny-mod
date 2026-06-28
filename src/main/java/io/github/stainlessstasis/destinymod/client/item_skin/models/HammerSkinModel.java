@@ -6,6 +6,7 @@ import io.github.stainlessstasis.destinymod.client.entity_rendering.renderer.Bon
 import io.github.stainlessstasis.destinymod.client.item_skin.ItemSkinModel;
 import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Brightness;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 
@@ -25,6 +26,11 @@ public class HammerSkinModel extends ItemSkinModel<ItemSkin> {
     @Override
     public Identifier getAnimationResource(ItemSkin animatable) {
         return null;
+    }
+
+    @Override
+    public int getBrightnessOverride() {
+        return Brightness.FULL_BRIGHT.pack();
     }
 
     @Override

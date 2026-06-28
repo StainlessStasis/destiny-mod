@@ -35,22 +35,28 @@ public class ItemSkinDispatcher {
 
         poseStack.pushPose();
 
+        float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        GeoRenderState renderState = renderer.createRenderState(skinItem, renderData);
+        int packedLight = lightCoords;
+
         GeoModel<T> model = entry.model();
-        if (model instanceof ItemSkinTransform transform) {
-            Vec3 t = transform.translation(displayMode, context);
-            Vec3 r = transform.rotation(displayMode, context);
-            Vec3 s = transform.scale(displayMode, context);
+        if (model instanceof ItemSkinModel<?> itemSkinModel) {
+            Vec3 t = itemSkinModel.translation(displayMode, context);
+            Vec3 r = itemSkinModel.rotation(displayMode, context);
+            Vec3 s = itemSkinModel.scale(displayMode, context);
+
             poseStack.translate(t.x, t.y, t.z);
             poseStack.mulPose(Axis.XP.rotationDegrees((float) r.x));
             poseStack.mulPose(Axis.YP.rotationDegrees((float) r.y));
             poseStack.mulPose(Axis.ZP.rotationDegrees((float) r.z));
             poseStack.scale((float) s.x, (float) s.y, (float) s.z);
+
+            if (itemSkinModel.hasBrightnessOverride()) {
+                packedLight = itemSkinModel.getBrightnessOverride();
+            }
         }
 
-        float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-        
-        GeoRenderState renderState = renderer.createRenderState(skinItem, renderData);
-        renderState.addGeckolibData(DataTickets.PACKED_LIGHT, lightCoords);
+        renderState.addGeckolibData(DataTickets.PACKED_LIGHT, packedLight);
 
         renderer.captureDefaultRenderState(skinItem, renderData, renderState, partialTick);
         renderer.fireCompileRenderStateEvent(skinItem, renderData, renderState, partialTick);
