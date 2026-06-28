@@ -22,8 +22,8 @@ public class ItemSkinIDs {
     }
 
     public static void init() {
-        register(ItemSkin.HAMMER_OF_SOL);
-        register(ItemSkin.CROWN_SPLITTER);
-        register(ItemSkin.CROWN_SPLITTER_BLOODY);
+        for (Identifier id : ItemSkin.SKIN_IDS) {
+            register(id);
+        }
     }
 }

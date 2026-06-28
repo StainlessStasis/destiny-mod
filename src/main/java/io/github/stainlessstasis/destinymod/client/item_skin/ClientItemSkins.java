@@ -5,6 +5,7 @@ import com.geckolib.renderer.GeoItemRenderer;
 import io.github.stainlessstasis.destinymod.client.item_skin.models.CrownSplitterBloodyModel;
 import io.github.stainlessstasis.destinymod.client.item_skin.models.CrownSplitterModel;
 import io.github.stainlessstasis.destinymod.client.item_skin.models.HammerSkinModel;
+import io.github.stainlessstasis.destinymod.client.item_skin.models.HeartshadowModel;
 import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
 import io.github.stainlessstasis.destinymod.registry.item.DestinyModItems;
 import net.minecraft.resources.Identifier;
@@ -22,6 +23,7 @@ public class ClientItemSkins {
         register(ItemSkin.HAMMER_OF_SOL, DestinyModItems.HAMMER_SKIN.get(), new HammerSkinModel());
         register(ItemSkin.CROWN_SPLITTER, DestinyModItems.CROWN_SPLITTER_SKIN.get(), new CrownSplitterModel());
         register(ItemSkin.CROWN_SPLITTER_BLOODY, DestinyModItems.CROWN_SPLITTER_BLOODY_SKIN.get(), new CrownSplitterBloodyModel());
+        register(ItemSkin.HEARTSHADOW, DestinyModItems.HEARTSHADOW_SKIN.get(), new HeartshadowModel());
     }
 
     private static <T extends ItemSkin> void register(

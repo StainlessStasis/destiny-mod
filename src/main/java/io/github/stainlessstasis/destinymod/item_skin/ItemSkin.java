@@ -8,10 +8,21 @@ import io.github.stainlessstasis.destinymod.DestinyMod;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemSkin extends Item implements GeoItem {
-    public static final Identifier HAMMER_OF_SOL = DestinyMod.id("hammer_of_sol");
-    public static final Identifier CROWN_SPLITTER = DestinyMod.id("crown_splitter");
-    public static final Identifier CROWN_SPLITTER_BLOODY = DestinyMod.id("crown_splitter_bloody");
+    public static final List<Identifier> SKIN_IDS = new ArrayList<>();
+    public static final Identifier HAMMER_OF_SOL = register("hammer_of_sol");
+    public static final Identifier CROWN_SPLITTER = register("crown_splitter");
+    public static final Identifier CROWN_SPLITTER_BLOODY = register("crown_splitter_bloody");
+    public static final Identifier HEARTSHADOW = register("heartshadow");
+
+    private static Identifier register(String id_) {
+        Identifier id = DestinyMod.id(id_);
+        SKIN_IDS.add(id);
+        return id;
+    }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
