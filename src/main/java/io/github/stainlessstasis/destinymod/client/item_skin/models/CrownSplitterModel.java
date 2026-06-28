@@ -3,13 +3,12 @@ package io.github.stainlessstasis.destinymod.client.item_skin.models;
 import com.geckolib.renderer.base.GeoRenderState;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.item_skin.ItemSkinModel;
-import io.github.stainlessstasis.destinymod.item_skin.items.CrownSplitterSkinItem;
-import io.github.stainlessstasis.destinymod.item_skin.items.HammerSkinItem;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 
-public class CrownSplitterModel extends ItemSkinModel<CrownSplitterSkinItem> {
+public class CrownSplitterModel extends ItemSkinModel<ItemSkin> {
     public static final float TRANSFORM = 0.1875f;
 
     @Override
@@ -23,7 +22,7 @@ public class CrownSplitterModel extends ItemSkinModel<CrownSplitterSkinItem> {
     }
 
     @Override
-    public Identifier getAnimationResource(CrownSplitterSkinItem animatable) {
+    public Identifier getAnimationResource(ItemSkin animatable) {
         return null;
     }
 

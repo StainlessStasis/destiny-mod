@@ -4,12 +4,12 @@ import com.geckolib.renderer.base.GeoRenderState;
 import io.github.stainlessstasis.destinymod.DestinyMod;
 import io.github.stainlessstasis.destinymod.client.entity_rendering.renderer.BonkHammerRenderer;
 import io.github.stainlessstasis.destinymod.client.item_skin.ItemSkinModel;
-import io.github.stainlessstasis.destinymod.item_skin.items.HammerSkinItem;
+import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 
-public class HammerSkinModel extends ItemSkinModel<HammerSkinItem> {
+public class HammerSkinModel extends ItemSkinModel<ItemSkin> {
     public static float TRANSFORM = 0.275f;
 
     @Override
@@ -23,7 +23,7 @@ public class HammerSkinModel extends ItemSkinModel<HammerSkinItem> {
     }
 
     @Override
-    public Identifier getAnimationResource(HammerSkinItem animatable) {
+    public Identifier getAnimationResource(ItemSkin animatable) {
         return null;
     }
 

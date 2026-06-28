@@ -1,7 +1,5 @@
 package io.github.stainlessstasis.destinymod.item_skin;
 
-import io.github.stainlessstasis.destinymod.item_skin.items.CrownSplitterSkinItem;
-import io.github.stainlessstasis.destinymod.item_skin.items.HammerSkinItem;
 import net.minecraft.resources.Identifier;
 
 import java.util.Collections;
@@ -24,8 +22,8 @@ public class ItemSkinIDs {
     }
 
     public static void init() {
-        register(HammerSkinItem.SKIN_ID);
-        register(CrownSplitterSkinItem.SKIN_ID);
-        register(CrownSplitterSkinItem.BLOODY_SKIN_ID);
+        register(ItemSkin.HAMMER_OF_SOL);
+        register(ItemSkin.CROWN_SPLITTER);
+        register(ItemSkin.CROWN_SPLITTER_BLOODY);
     }
 }
