@@ -28,51 +28,47 @@ public class HammerSkinModel extends ItemSkinModel<ItemSkin> {
     }
 
     @Override
-    public Vec3 rotation(ItemDisplayContext context) {
-        if (isInHand(context)) {
+    public Vec3 rotation(ItemDisplayContext displayMode, AdditionalItemDisplayContext context) {
+        if (context.isInHand()) {
             return new Vec3(0, -90, 0);
         }
-        if (context == ItemDisplayContext.FIXED) {
+        if (displayMode == ItemDisplayContext.FIXED) {
             return new Vec3(0, 180, 0);
         }
-        if (context == ItemDisplayContext.GUI) {
+        if (displayMode == ItemDisplayContext.GUI) {
             return new Vec3(0, 0, -45);
         }
-        return super.rotation(context);
+        return super.getDefaultRotation();
     }
 
     @Override
-    public Vec3 scale(ItemDisplayContext context) {
-        if (context == ItemDisplayContext.GROUND) {
+    public Vec3 scale(ItemDisplayContext displayMode, AdditionalItemDisplayContext context) {
+        if (displayMode == ItemDisplayContext.GROUND) {
             return new Vec3(0.5, 0.5, 0.5);
         }
-        if (context == ItemDisplayContext.FIXED) {
-            return super.scale(context);
+        if (displayMode == ItemDisplayContext.FIXED) {
+            return super.getDefaultScale();
         }
-        return super.scale(context).scale(2f / 3f);
+        return super.getDefaultScale().scale(2f / 3f);
     }
 
     @Override
-    public Vec3 translation(ItemDisplayContext context) {
-        if (isInHand(context)) {
+    public Vec3 translation(ItemDisplayContext displayMode, AdditionalItemDisplayContext context) {
+        if (context.isInHand()) {
             return new Vec3(TRANSFORM*3, TRANSFORM, TRANSFORM);
         }
-        if (context == ItemDisplayContext.ON_SHELF) {
+        if (displayMode == ItemDisplayContext.ON_SHELF) {
             return new Vec3(TRANSFORM, TRANSFORM, TRANSFORM);
         }
-        if (context == ItemDisplayContext.FIXED) {
+        if (displayMode == ItemDisplayContext.FIXED) {
             return new Vec3(TRANSFORM*3.5, 0, TRANSFORM*3.25);
         }
-        if (context == ItemDisplayContext.GROUND) {
+        if (displayMode == ItemDisplayContext.GROUND) {
             return new Vec3(TRANSFORM, TRANSFORM*2, TRANSFORM);
         }
-        if (context == ItemDisplayContext.GUI) {
+        if (displayMode == ItemDisplayContext.GUI) {
             return new Vec3(0, TRANSFORM*1.5, 0);
         }
-        return super.translation(context);
-    }
-
-    private boolean isInHand(ItemDisplayContext context) {
-        return context.firstPerson() || context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND ||  context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+        return super.getDefaultTranslation();
     }
 }

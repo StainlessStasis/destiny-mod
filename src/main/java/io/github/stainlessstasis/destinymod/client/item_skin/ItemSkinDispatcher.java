@@ -5,6 +5,7 @@ import com.geckolib.renderer.GeoItemRenderer;
 import com.geckolib.renderer.base.GeoRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import io.github.stainlessstasis.destinymod.client.item_skin.models.AdditionalItemDisplayContext;
 import io.github.stainlessstasis.destinymod.item_skin.ItemSkin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -24,19 +25,20 @@ public class ItemSkinDispatcher {
         Minecraft mc = Minecraft.getInstance();
         GeoItemRenderer<T> renderer = entry.renderer();
         T skinItem = entry.item();
-        ItemDisplayContext ctx = arg.context();
+        ItemDisplayContext displayMode = arg.displayMode();
+        AdditionalItemDisplayContext context = AdditionalItemDisplayContext.create(displayMode);
 
         GeoItemRenderer.RenderData renderData = new GeoItemRenderer.RenderData(
-                ItemStack.EMPTY, new ItemStackRenderState(), ctx, mc.level, null
+                ItemStack.EMPTY, new ItemStackRenderState(), displayMode, mc.level, null
         );
 
         poseStack.pushPose();
 
         GeoModel<T> model = entry.model();
         if (model instanceof ItemSkinTransform transform) {
-            Vec3 t = transform.translation(ctx);
-            Vec3 r = transform.rotation(ctx);
-            Vec3 s = transform.scale(ctx);
+            Vec3 t = transform.translation(displayMode, context);
+            Vec3 r = transform.rotation(displayMode, context);
+            Vec3 s = transform.scale(displayMode, context);
             poseStack.translate(t.x, t.y, t.z);
             poseStack.mulPose(Axis.XP.rotationDegrees((float) r.x));
             poseStack.mulPose(Axis.YP.rotationDegrees((float) r.y));
